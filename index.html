@@ -75,26 +75,16 @@
     <img src="logo.png" alt="Logo Morières Basket Club" class="logo">
     <h1>Morières Basket Club</h1>
     <p>Depuis 1993 - Morières-lès-Avignon</p>
-  </header>
+  <div id="header-placeholder"></div>
 
-  <nav>
-    <a href="index.html">Accueil</a>
-    <div class="dropdown">
-      <a href="#">Nos équipes</a>
-      <div class="dropdown-content">
-        <a href="u9.html">U9</a>
-        <a href="u11-1.html">U11-1</a>
-        <a href="u11-2.html">U11-2</a>
-        <a href="u13.html">U13</a>
-        <a href="u17.html">U17</a>
-        <a href="seniors.html">Séniors M</a>
-        <a href="loisirs-m.html">Loisirs M</a>
-        <a href="loisirs-f.html">Loisirs F</a>
-      </div>
-    </div>
-    <a href="planning.html">Planning</a>
-    <a href="contact.html">Contact</a>
-  </nav>
+<script>
+  fetch("header.html")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("header-placeholder").innerHTML = data;
+    });
+</script>
+
 
   <div class="content">
     <h2>Bienvenue au Morières Basket Club !</h2>
