@@ -82,25 +82,107 @@
   </script>
 
 
- <div class="content" style="max-width: 900px; margin: auto; padding: 2em;">
-  <section style="background-color: #f9f9f9; padding: 2em; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center;">
-    <h2 style="color: #c8102e; margin-bottom: 0.5em;">Bienvenue au Morières Basket Club ! 🏀</h2>
-    <p style="font-size: 1.1em; line-height: 1.6em;">
-      Fondé en 1993, le club de Morières-lès-Avignon accueille joueurs et joueuses de tous âges et tous niveaux.  
-      Que tu rêves de finale départementale ou que tu veuilles juste transpirer entre copains, notre club a une place pour toi !
-    </p>
-    <a href="contact.html" class="button-download" style="margin-top: 1em; display: inline-block;">📬 Nous contacter</a>
-  </section>
+ <style>
+  .hero {
+    background: linear-gradient(145deg, #c8102e 60%, #8c0b1f);
+    color: white;
+    padding: 4em 2em;
+    text-align: center;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
 
-  <section style="margin-top: 3em;">
-    <h3 style="color: #c8102e;">📌 À venir sur le site :</h3>
-    <ul style="font-size: 1.1em; line-height: 1.6em;">
-      <li>✔️ Pages équipes avec les calendriers et classements en direct</li>
-      <li>✔️ Planning des entraînements mis à jour</li>
-      <li>✔️ Résultats et classements dynamiques</li>
-    </ul>
-  </section>
+  .hero img {
+    width: 120px;
+    margin-bottom: 1em;
+  }
+
+  .hero h1 {
+    font-size: 2.8em;
+    margin: 0;
+  }
+
+  .hero p {
+    font-size: 1.2em;
+    margin-top: 0.5em;
+    opacity: 0.9;
+  }
+
+  .section {
+    max-width: 900px;
+    margin: 3em auto;
+    padding: 2em;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.05);
+  }
+
+  .section h2 {
+    color: #c8102e;
+    font-size: 1.8em;
+    margin-bottom: 0.5em;
+  }
+
+  .section ul {
+    font-size: 1.1em;
+    line-height: 1.7em;
+    padding-left: 1.5em;
+  }
+
+  .cta-buttons {
+    margin-top: 2em;
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    flex-wrap: wrap;
+  }
+
+  .cta-buttons a {
+    padding: 0.8em 1.5em;
+    background-color: #c8102e;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: background 0.2s ease;
+  }
+
+  .cta-buttons a:hover {
+    background-color: #a30c24;
+  }
+</style>
+
+<div class="hero">
+  <img src="logo.png" alt="Logo Morières Basket Club" />
+  <h1>Morières Basket Club</h1>
+  <p>🏀 Depuis 1993 – Fier de nos couleurs, fort de nos valeurs</p>
 </div>
+
+<div class="section">
+  <h2>🔍 Qui sommes-nous ?</h2>
+  <p>
+    Club familial et passionné situé à Morières-lès-Avignon, nous formons les basketteurs et basketteuses de demain, des U9 jusqu’aux loisirs adultes.
+    <br><br>
+    Notre équipe est 100% bénévole, 200% motivée et 300% plus sympa que celle du club d'à côté (mais chut).
+  </p>
+</div>
+
+<div class="section">
+  <h2>🚀 Prochainement sur le site</h2>
+  <ul>
+    <li>✅ Pages équipes avec résultats en direct</li>
+    <li>✅ Planning des entraînements mis à jour</li>
+    <li>✅ Inscriptions et infos pratiques en ligne</li>
+  </ul>
+
+  <div class="cta-buttons">
+    <a href="planning.html">🗓 Voir le planning</a>
+    <a href="contact.html">📬 Nous contacter</a>
+    <a href="u13.html">📊 Résultats d’équipe</a>
+  </div>
+</div>
+
 
 
   <footer>
