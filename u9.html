@@ -21,8 +21,15 @@
     <!-- Colle ici le widget classement Score'n'co pour U9 -->
   </div>
 
-  <footer style="background-color: #c8102e; color: white; text-align: center; padding: 1em; margin-top: 2em;">
-    &copy; 2025 Morières Basket Club - Page de l’équipe U9
-  </footer>
+  <div id="footer-placeholder"></div>
+
+<script>
+  fetch("footer.html")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("footer-placeholder").innerHTML = data;
+    });
+</script>
+
 </body>
 </html>
