@@ -105,6 +105,42 @@
   transform: scale(1.05);
 }
 
+  .quote-banner {
+  position: relative;
+  background-image: url('images/banner-basket.jpg'); /* change le chemin si besoin */
+  background-size: cover;
+  background-position: center;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  clip-path: polygon(0 10%, 100% 0%, 100% 90%, 0% 100%);
+  margin-top: 3em;
+}
+
+.quote-content {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+  padding: 2em;
+  border-radius: 10px;
+  max-width: 80%;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.quote-text {
+  font-size: 1.8em;
+  font-weight: bold;
+  margin: 0;
+}
+
+.quote-author {
+  font-size: 1.2em;
+  margin-top: 0.5em;
+  font-style: italic;
+  color: #ddd;
+}
+
   </style>
 </head>
 <body>
@@ -159,6 +195,13 @@
               allowfullscreen></iframe>
     </div>
   </div>
+  
+  <div class="quote-banner">
+  <div class="quote-content">
+    <p class="quote-text">« La sueur sèche, les douleurs passent, mais les victoires restent. »</p>
+    <p class="quote-author">— Coach anonyme mais mythique</p>
+  </div>
+</div>
 
   <div class="section">
   <h2>📸 Galerie photo</h2>
