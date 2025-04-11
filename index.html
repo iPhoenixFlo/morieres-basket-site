@@ -272,6 +272,36 @@
     transform: translateX(-50%);
   }
 }
+.sponsor-intro {
+  text-align: center;
+  padding: 2em 1em 1em;
+  background: linear-gradient(90deg, #fff 0%, #f8f8f8 100%);
+}
+
+.sponsor-intro h2 {
+  font-size: 2.2em;
+  font-weight: 900;
+  color: #c8102e;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+  margin: 0;
+  position: relative;
+  display: inline-block;
+}
+
+.sponsor-intro h2 span {
+  font-size: 1em;
+  vertical-align: middle;
+  animation: bounce 1.5s infinite ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
 
   </style>
 </head>
@@ -336,6 +366,10 @@
     <a href="images/photo4.jpg" class="lightbox"><img src="images/photo4.jpg" alt="Victoire à l’extérieur" /></a>
     <!-- Ajoute autant de photos que tu veux -->
   </div>
+</div>
+  
+<div class="sponsor-intro">
+  <h2>Ils font briller le maillot <span>🏀</span></h2>
 </div>
 
   <section class="sponsor-carousel">
