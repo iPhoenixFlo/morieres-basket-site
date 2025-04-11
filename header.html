@@ -1,57 +1,109 @@
-<header>
-  <img src="logo.png" alt="Logo Morières Basket Club" class="logo" style="width: 150px; display: block; margin: auto;" />
-  <h1 style="text-align: center; margin-bottom: 0;">Morières Basket Club</h1>
-  <p style="text-align: center; margin-top: 0;">Depuis 1993 - Morières-lès-Avignon</p>
+<!-- HEADER STYLÉ MORIÈRES BASKET CLUB - VERSION BETCLIC STYLE -->
+<header style="
+  background: linear-gradient(135deg, #c8102e, #8b0c1e);
+  color: white;
+  padding: 1.5em 1em;
+  text-align: center;
+  border-bottom: 3px solid #8b0c1e;
+  font-family: 'Poppins', sans-serif;
+">
+  <img src="logo.png" alt="Logo Morières Basket Club" class="logo" style="width: 120px; margin-bottom: 0.5em; transition: transform 0.3s ease;" />
+  <h1 style="margin: 0; font-size: 2.2em; letter-spacing: 1px;">Morières Basket Club</h1>
+  <p style="margin: 0.3em 0 0; font-size: 1em; opacity: 0.85;">Depuis 1993 – Morières-lès-Avignon</p>
 </header>
 
-<nav style="background-color: #efefef; padding: 1em; text-align: center;">
-  <a href="index.html" style="margin: 0 1em; color: #c8102e; text-decoration: none; font-weight: bold;">Accueil</a>
- <div class="dropdown" style="position: relative; display: inline-block;">
-  <a href="javascript:void(0);" style="margin: 0 1em; color: #c8102e; text-decoration: none; font-weight: bold;">Nos équipes ▼</a>
-  <div class="dropdown-content" style="
-      display: none;
-      position: absolute;
-      background-color: #f9f9f9;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-      z-index: 1;
-      text-align: left;
-    ">
-    <a href="u9.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U9</a>
-    <a href="u11-1.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U11-1</a>
-    <a href="u11-2.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U11-2</a>
-    <a href="u13.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U13</a>
-    <a href="u17.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U17</a>
-    <a href="seniors.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">Séniors M</a>
-    <a href="loisirs-m.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">Loisirs M</a>
-    <a href="loisirs-f.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">Loisirs F</a>
+<nav style="
+  background-color: #f8f8f8;
+  padding: 0.8em;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  font-family: 'Poppins', sans-serif;
+  text-transform: uppercase;
+  font-size: 0.95em;
+  font-weight: 600;
+">
+  <a href="index.html" class="nav-link">Accueil</a>
+
+  <div class="dropdown" style="display: inline-block; position: relative;">
+    <a href="javascript:void(0);" class="nav-link">Nos équipes ▼</a>
+    <div class="dropdown-content">
+      <a href="u9.html">U9</a>
+      <a href="u11-1.html">U11-1</a>
+      <a href="u11-2.html">U11-2</a>
+      <a href="u13.html">U13</a>
+      <a href="u17.html">U17</a>
+      <a href="seniors.html">Séniors M</a>
+      <a href="loisirs-m.html">Loisirs M</a>
+      <a href="loisirs-f.html">Loisirs F</a>
+    </div>
   </div>
-</div>
 
-<style>
-  .dropdown:hover .dropdown-content {
-    display: block !important;
-  }
-</style>
-
-  <a href="planning.html" style="margin: 0 1em; color: #c8102e; text-decoration: none; font-weight: bold;">Planning</a>
-  <a href="contact.html" style="margin: 0 1em; color: #c8102e; text-decoration: none; font-weight: bold;">Contact</a>
+  <a href="planning.html" class="nav-link">Planning</a>
+  <a href="contact.html" class="nav-link">Contact</a>
 </nav>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const dropdown = document.querySelector(".dropdown");
-    const dropdownContent = dropdown.querySelector(".dropdown-content");
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-    if (dropdown && dropdownContent) {
-      dropdown.addEventListener("mouseenter", () => {
-        dropdownContent.style.display = "block";
-      });
+  .nav-link {
+    margin: 0 1.2em;
+    color: #c8102e;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 5px;
+    transition: color 0.2s ease;
+  }
 
-      dropdown.addEventListener("mouseleave", () => {
-        dropdownContent.style.display = "none";
-      });
-    }
-  });
-</script>
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background-color: #c8102e;
+    transition: width 0.3s ease, left 0.3s ease;
+  }
 
+  .nav-link:hover {
+    color: #8b0c1e;
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+    left: 0;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    z-index: 999;
+    text-align: left;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .dropdown-content a {
+    display: block;
+    padding: 12px 16px;
+    color: #c8102e;
+    text-decoration: none;
+    font-size: 0.9em;
+  }
+
+  .dropdown-content a:hover {
+    background-color: #f2f2f2;
+    color: #8b0c1e;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  .logo:hover {
+    transform: scale(1.05);
+  }
+</style>
