@@ -179,7 +179,14 @@
     </table>
   </div>
 
-  <footer>
-    &copy; 2025 Morières Basket Club - Planning des entraînements
-  </footer>
+  <div id="footer-placeholder"></div>
+
+<script>
+  fetch("footer.html")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("footer-placeholder").innerHTML = data;
+    });
+</script>
+
 </body>
