@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Morières Basket Club</title>
   <style>
     body {
@@ -12,55 +12,19 @@
       margin: 0;
       padding: 0;
     }
-    header {
-      background-color: #c8102e;
-      color: white;
-      padding: 1em;
-      text-align: center;
-    }
-    nav {
-      background-color: #efefef;
-      padding: 1em;
-      text-align: center;
-    }
-    nav a {
-      margin: 0 1em;
-      color: #c8102e;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #f9f9f9;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-      z-index: 1;
-    }
-    .dropdown-content a {
-      color: #c8102e;
-      padding: 12px 16px;
-      text-decoration: none;
-      display: block;
-      text-align: left;
-    }
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
+
     .content {
       padding: 2em;
       max-width: 900px;
       margin: auto;
     }
+
     .logo {
       width: 150px;
       display: block;
       margin: auto;
     }
+
     footer {
       background-color: #c8102e;
       color: white;
@@ -68,9 +32,63 @@
       padding: 1em;
       margin-top: 2em;
     }
+
+    .hero {
+      background: linear-gradient(145deg, #c8102e 60%, #8c0b1f);
+      color: white;
+      padding: 2em 1em;
+      text-align: center;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .section {
+      max-width: 900px;
+      margin: 3em auto;
+      padding: 2em;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .section h2 {
+      color: #c8102e;
+      font-size: 1.8em;
+      margin-bottom: 0.5em;
+    }
+
+    .section ul {
+      font-size: 1.1em;
+      line-height: 1.7em;
+      padding-left: 1.5em;
+    }
+
+    .cta-buttons {
+      margin-top: 2em;
+      display: flex;
+      justify-content: center;
+      gap: 1em;
+      flex-wrap: wrap;
+    }
+
+    .cta-buttons a {
+      padding: 0.8em 1.5em;
+      background-color: #c8102e;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: background 0.2s ease;
+    }
+
+    .cta-buttons a:hover {
+      background-color: #a30c24;
+    }
   </style>
 </head>
 <body>
+
   <div id="header-placeholder"></div>
 
   <script>
@@ -81,109 +99,49 @@
       });
   </script>
 
-
- <style>
-  .hero {
-  background: linear-gradient(145deg, #c8102e 60%, #8c0b1f);
-  color: white;
-  padding: 2em 1em; /* anciennement 4em 2em */
-  text-align: center;
-  border-radius: 0 0 20px 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-}
-
-  .section {
-    max-width: 900px;
-    margin: 3em auto;
-    padding: 2em;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.05);
-  }
-
-  .section h2 {
-    color: #c8102e;
-    font-size: 1.8em;
-    margin-bottom: 0.5em;
-  }
-
-  .section ul {
-    font-size: 1.1em;
-    line-height: 1.7em;
-    padding-left: 1.5em;
-  }
-
-  .cta-buttons {
-    margin-top: 2em;
-    display: flex;
-    justify-content: center;
-    gap: 1em;
-    flex-wrap: wrap;
-  }
-
-  .cta-buttons a {
-    padding: 0.8em 1.5em;
-    background-color: #c8102e;
-    color: white;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: background 0.2s ease;
-  }
-
-  .cta-buttons a:hover {
-    background-color: #a30c24;
-  }
-</style>
-
-<div class="hero">
-  <img src="logo.png" alt="Logo Morières Basket Club" />
-  <h1>Morières Basket Club</h1>
-  <p>🏀 Depuis 1993 – Fier de nos couleurs, fort de nos valeurs</p>
-</div>
-
-<div class="section">
-  <h2>🔍 Qui sommes-nous ?</h2>
-  <p>
-    Club familial et passionné situé à Morières-lès-Avignon, nous formons les basketteurs et basketteuses de demain, des U9 jusqu’aux loisirs adultes.
-    <br><br>
-    Notre équipe est 100% bénévole, 200% motivée et 300% plus sympa que celle du club d'à côté (mais chut).
-  </p>
-</div>
-
-<div class="section">
-  <h2>🚀 Prochainement sur le site</h2>
-  <ul>
-    <li>✅ Pages équipes avec résultats en direct</li>
-    <li>✅ Planning des entraînements mis à jour</li>
-    <li>✅ Inscriptions et infos pratiques en ligne</li>
-  </ul>
-
-  <div class="cta-buttons">
-    <a href="planning.html">🗓 Voir le planning</a>
-    <a href="contact.html">📬 Nous contacter</a>
-    <a href="u13.html">📊 Résultats d’équipe</a>
+  <div class="hero">
+    <h2 style="font-weight: 400; font-size: 1.6em;">
+      🏀 Depuis 1993 – Fier de nos couleurs, fort de nos valeurs
+    </h2>
   </div>
-</div>
- 
+
   <div class="section">
-  <h2>📆 Prochaines rencontres</h2>
-  <p>Les prochains matchs de nos équipes, à domicile ou à l’extérieur :</p>
-  <div style="overflow-x:auto;">
-    <iframe src="https://widgets.scorenco.com/week-events/110213"
-            style="height: 500px; width: 100%; border: none;"
-            frameborder="0"
-            allowfullscreen></iframe>
+    <h2>🔍 Qui sommes-nous ?</h2>
+    <p>
+      Club familial et passionné situé à Morières-lès-Avignon, nous formons les basketteurs et basketteuses de demain, des U9 jusqu’aux loisirs adultes.
+      <br /><br />
+      Notre équipe est 100% bénévole, 200% motivée et 300% plus sympa que celle du club d'à côté (mais chut).
+    </p>
   </div>
-</div>
 
+  <div class="section">
+    <h2>🚀 Prochainement sur le site</h2>
+    <ul>
+      <li>✅ Pages équipes avec résultats en direct</li>
+      <li>✅ Planning des entraînements mis à jour</li>
+      <li>✅ Inscriptions et infos pratiques en ligne</li>
+    </ul>
 
+    <div class="cta-buttons">
+      <a href="planning.html">🗓 Voir le planning</a>
+      <a href="contact.html">📬 Nous contacter</a>
+      <a href="u13.html">📊 Résultats d’équipe</a>
+    </div>
+  </div>
 
-
+  <div class="section">
+    <h2>📆 Prochaines rencontres</h2>
+    <p>Les prochains matchs de nos équipes, à domicile ou à l’extérieur :</p>
+    <div style="overflow-x:auto;">
+      <iframe src="https://widgets.scorenco.com/week-events/110213"
+              style="height: 500px; width: 100%; border: none;"
+              frameborder="0"
+              allowfullscreen></iframe>
+    </div>
+  </div>
 
   <footer>
-    &copy; 2025 Morières Basket Club - Site propulsé par du café et du HTML gratuit.
+    &copy; 2025 Morières Basket Club – Site propulsé par du café et du HTML gratuit.
   </footer>
 </body>
 </html>
