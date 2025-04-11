@@ -218,21 +218,48 @@
   transform: scale(1.05);
 }
 
-.sponsor-button {
+.sponsor-btn {
   display: inline-block;
   background-color: #c8102e;
   color: white;
-  padding: 0.8em 1.5em;
-  border-radius: 50px;
   font-weight: bold;
-  text-decoration: none;
-  transition: background 0.2s ease;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  font-size: 1.1em;
+  padding: 0.8em 2em;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
 }
 
-.sponsor-button:hover {
-  background-color: #a30c24;
+.sponsor-btn:hover {
+  background-color: #a50c24;
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
+
+.sponsor-btn::after {
+  content: "🏀";
+  position: absolute;
+  right: 1.2em;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: right 0.3s ease;
+}
+
+.sponsor-btn:hover::after {
+  right: 0.8em;
+  animation: spin 0.8s ease-in-out;
+}
+
+@keyframes spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  50% { transform: translateY(-50%) rotate(180deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
 .sponsor-carousel {
   overflow: hidden;
   padding: 2em 0;
@@ -398,8 +425,10 @@
 </section>
 
 
-  <a href="partenaires.html" class="sponsor-button">Voir nos partenaires</a>
-</section>
+<div style="text-align: center; margin: 2em 0;">
+  <a href="partenaires.html" class="sponsor-btn">Voir nos partenaires</a>
+</div>
+
 
 <div class="section">
     <h2>🚀 Prochainement sur le site</h2>
