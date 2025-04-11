@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planning - Morières Basket Club</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #c8102e;
+      color: white;
+      padding: 1em;
+      text-align: center;
+    }
+    nav {
+      background-color: #efefef;
+      padding: 1em;
+      text-align: center;
+    }
+    nav a {
+      margin: 0 1em;
+      color: #c8102e;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    .content {
+      padding: 2em;
+      max-width: 900px;
+      margin: auto;
+    }
+    .logo {
+      width: 150px;
+      display: block;
+      margin: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2em;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #c8102e;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    footer {
+      background-color: #c8102e;
+      color: white;
+      text-align: center;
+      padding: 1em;
+      margin-top: 2em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo Morières Basket Club" class="logo" />
+    <h1>Planning des Entraînements</h1>
+    <p>Pour que personne ne vienne un jeudi alors que c’est fermé.</p>
+  </header>
+
+  <nav>
+    <a href="index.html">Accueil</a>
+    <div class="dropdown">
+      <a href="#">Nos équipes</a>
+      <div class="dropdown-content">
+        <a href="u9.html">U9</a>
+        <a href="u11-1.html">U11-1</a>
+        <a href="u11-2.html">U11-2</a>
+        <a href="u13.html">U13</a>
+        <a href="u17.html">U17</a>
+        <a href="seniors.html">Séniors M</a>
+        <a href="loisirs-m.html">Loisirs M</a>
+        <a href="loisirs-f.html">Loisirs F</a>
+      </div>
+    </div>
+    <a href="planning.html">Planning</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <div class="content">
+    <table>
+      <thead>
+        <tr>
+          <th>Catégorie</th>
+          <th>Jour</th>
+          <th>Heure</th>
+          <th>Lieu</th>
+          <th>Coach</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>U9</td>
+          <td>Mercredi</td>
+          <td>17h00 - 18h00</td>
+          <td>Gymnase P. Perdiguier</td>
+          <td>À renseigner</td>
+        </tr>
+        <tr>
+          <td>U11-1</td>
+          <td>Mardi & Jeudi</td>
+          <td>17h30 - 19h00</td>
+          <td>Gymnase P. Perdiguier</td>
+          <td>À renseigner</td>
+        </tr>
+        <tr>
+          <td>U11-2</td>
+          <td>Mercredi</td>
+          <td>16h00 - 17h30</td>
+          <td>Gymnase P. Perdiguier</td>
+          <td>À renseigner</td>
+        </tr>
+        <tr>
+          <td>U13</td>
+          <td>Lundi & Vendredi</td>
+          <td>18h00 - 19h30</td>
+          <td>Gymnase P. Perdiguier</td>
+          <td>À renseigner</td>
+        </tr>
+        <tr>
+          <td>U17</td>
+          <td>Mercredi & Samedi</td>
+          <td>19h00 - 20h30</td>
+          <td>Gymnase P. Perdiguier</td>
+          <td>À renseigner</td>
+        </tr>
+        <tr>
+          <td>Séniors M</td>
+          <td>Mardi & Jeudi</td>
+          <td>20h00 - 22h00</td>
+          <td>Gymnase P. Perdiguier</td>
+          <td>À renseigner</td>
+        </tr>
+        <tr>
+          <td>Loisirs M</td>
+          <td>Vendredi</td>
+          <td>20h00 - 22h00</td>
+          <td>Gymnase P. Perdiguier</td>
+          <td>À renseigner</td>
+        </tr>
+        <tr>
+          <td>Loisirs F</td>
+          <td>Lundi</td>
+          <td>20h00 - 22h00</td>
+          <td>Gymnase P. Perdiguier</td>
+          <td>À renseigner</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    &copy; 2025 Morières Basket Club - Planning des entraînements
+  </footer>
+</body>
+</html>
