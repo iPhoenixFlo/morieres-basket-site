@@ -130,23 +130,55 @@
 <!-- Mini Lightbox (optionnelle si tu veux l’effet fullscreen au clic) -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll('.lightbox').forEach(link => {
+    const galleryLinks = document.querySelectorAll('.lightbox');
+    const images = Array.from(galleryLinks).map(link => link.getAttribute('href'));
+
+    let currentIndex = -1;
+
+    function openLightbox(index) {
+      currentIndex = index;
+      const src = images[index];
+
+      const overlay = document.createElement('div');
+      overlay.className = 'lightbox-overlay';
+      overlay.innerHTML = `
+        <div style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;">
+          <button class="lightbox-nav left" style="position:absolute;left:20px;color:white;font-size:2em;background:none;border:none;cursor:pointer;">❮</button>
+          <img src="${src}" style="max-width:90%;max-height:90%;border-radius:10px;">
+          <button class="lightbox-nav right" style="position:absolute;right:20px;color:white;font-size:2em;background:none;border:none;cursor:pointer;">❯</button>
+          <span style="position:absolute;top:20px;right:30px;font-size:2em;color:white;cursor:pointer;">×</span>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+
+      // Close
+      overlay.querySelector('span').addEventListener('click', () => overlay.remove());
+
+      // Previous
+      overlay.querySelector('.left').addEventListener('click', (e) => {
+        e.stopPropagation();
+        overlay.remove();
+        openLightbox((currentIndex - 1 + images.length) % images.length);
+      });
+
+      // Next
+      overlay.querySelector('.right').addEventListener('click', (e) => {
+        e.stopPropagation();
+        overlay.remove();
+        openLightbox((currentIndex + 1) % images.length);
+      });
+    }
+
+    galleryLinks.forEach((link, index) => {
       link.addEventListener('click', e => {
         e.preventDefault();
-        const src = link.getAttribute('href');
-        const overlay = document.createElement('div');
-        overlay.className = 'lightbox-overlay';
-        overlay.innerHTML = `
-          <div style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;">
-            <img src="${src}" style="max-width:90%;max-height:90%;border-radius:10px;">
-            <span style="position:absolute;top:20px;right:30px;font-size:2em;color:white;cursor:pointer;">×</span>
-          </div>`;
-        overlay.querySelector('span').addEventListener('click', () => overlay.remove());
-        document.body.appendChild(overlay);
+        openLightbox(index);
       });
     });
   });
 </script>
+
 
 </body>
 </html>
