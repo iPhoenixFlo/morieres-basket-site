@@ -85,6 +85,26 @@
     .cta-buttons a:hover {
       background-color: #a30c24;
     }
+
+    .gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+  margin-top: 1.5em;
+}
+
+.gallery-grid img {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.gallery-grid img:hover {
+  transform: scale(1.05);
+}
+
   </style>
 </head>
 <body>
@@ -100,7 +120,7 @@
   </script>
 
   <div class="hero">
-    <h2 style="font-weight: 400; font-size: 1.6em;">
+    <h2 style="font-weight: 200; font-size: 1em;">
       🏀 Depuis 1993 – Fier de nos couleurs, fort de nos valeurs
     </h2>
   </div>
@@ -140,6 +160,19 @@
     </div>
   </div>
 
+  <div class="section">
+  <h2>📸 Galerie photo</h2>
+  <p>Découvrez nos plus belles actions, nos sourires de victoire et nos claquettes dunk ratées :</p>
+
+  <div class="gallery-grid">
+    <a href="images/photo1.jpg" class="lightbox"><img src="images/photo1.jpg" alt="Match U13" /></a>
+    <a href="images/photo2.jpg" class="lightbox"><img src="images/photo2.jpg" alt="Tournoi seniors" /></a>
+    <a href="images/photo3.jpg" class="lightbox"><img src="images/photo3.jpg" alt="Entraînement U9" /></a>
+    <a href="images/photo4.jpg" class="lightbox"><img src="images/photo4.jpg" alt="Victoire à l’extérieur" /></a>
+    <!-- Ajoute autant de photos que tu veux -->
+  </div>
+</div>
+
   <div id="footer-placeholder"></div>
 
 <script>
@@ -148,6 +181,41 @@
     .then(data => {
       document.getElementById("footer-placeholder").innerHTML = data;
     });
+</script>
+<!-- Lightbox minimaliste -->
+<style>
+  .lightbox-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  .lightbox-overlay img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.lightbox').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const src = link.getAttribute('href');
+      const overlay = document.createElement('div');
+      overlay.className = 'lightbox-overlay';
+      overlay.innerHTML = `<img src="${src}" alt=""><div style="position: fixed; top: 20px; right: 30px; font-size: 2em; color: white; cursor: pointer;">×</div>`;
+      document.body.appendChild(overlay);
+
+      overlay.addEventListener('click', () => overlay.remove());
+    });
+  });
 </script>
 
 </body>
