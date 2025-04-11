@@ -6,19 +6,34 @@
 
 <nav style="background-color: #efefef; padding: 1em; text-align: center;">
   <a href="index.html" style="margin: 0 1em; color: #c8102e; text-decoration: none; font-weight: bold;">Accueil</a>
-  <div class="dropdown" style="display: inline-block; position: relative;">
-   <a href="javascript:void(0);" style="margin: 0 1em; color: #c8102e; text-decoration: none; font-weight: bold;">Nos équipes ▼</a>
-    <div class="dropdown-content" style="display: none; position: absolute; background-color: #f9f9f9; min-width: 160px; box-shadow: 0px 8px 16px rgba(0,0,0,0.2); text-align: left;">
-      <a href="u9.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U9</a>
-      <a href="u11-1.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U11-1</a>
-      <a href="u11-2.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U11-2</a>
-      <a href="u13.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U13</a>
-      <a href="u17.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U17</a>
-      <a href="seniors.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">Séniors M</a>
-      <a href="loisirs-m.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">Loisirs M</a>
-      <a href="loisirs-f.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">Loisirs F</a>
-    </div>
+ <div class="dropdown" style="position: relative; display: inline-block;">
+  <a href="javascript:void(0);" style="margin: 0 1em; color: #c8102e; text-decoration: none; font-weight: bold;">Nos équipes ▼</a>
+  <div class="dropdown-content" style="
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+      text-align: left;
+    ">
+    <a href="u9.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U9</a>
+    <a href="u11-1.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U11-1</a>
+    <a href="u11-2.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U11-2</a>
+    <a href="u13.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U13</a>
+    <a href="u17.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">U17</a>
+    <a href="seniors.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">Séniors M</a>
+    <a href="loisirs-m.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">Loisirs M</a>
+    <a href="loisirs-f.html" style="display: block; padding: 12px 16px; text-decoration: none; color: #c8102e;">Loisirs F</a>
   </div>
+</div>
+
+<style>
+  .dropdown:hover .dropdown-content {
+    display: block !important;
+  }
+</style>
+
   <a href="planning.html" style="margin: 0 1em; color: #c8102e; text-decoration: none; font-weight: bold;">Planning</a>
   <a href="contact.html" style="margin: 0 1em; color: #c8102e; text-decoration: none; font-weight: bold;">Contact</a>
 </nav>
