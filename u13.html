@@ -100,27 +100,16 @@
     <img src="logo.png" alt="Logo Morières Basket Club" class="logo" style="width: 150px; display: block; margin: auto;">
     <h1>Équipe U13</h1>
     <p>Calendrier, résultats et classement</p>
-  </header>
-  
-<nav>
-    <a href="index.html">Accueil</a>
-    <div class="dropdown">
-      <a href="#">Nos équipes</a>
-      <div class="dropdown-content">
-        <a href="u9.html">U9</a>
-        <a href="u11-1.html">U11-1</a>
-        <a href="u11-2.html">U11-2</a>
-        <a href="u13.html">U13</a>
-        <a href="u17.html">U17</a>
-        <a href="seniors.html">Séniors M</a>
-        <a href="loisirs-m.html">Loisirs M</a>
-        <a href="loisirs-f.html">Loisirs F</a>
-      </div>
-    </div>
-    <a href="#">Planning</a>
-    <a href="#">Résultats</a>
-    <a href="#">Contact</a>
-  </nav>
+  <div id="header-placeholder"></div>
+
+<script>
+  fetch("header.html")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("header-placeholder").innerHTML = data;
+    });
+</script>
+
   
   <div class="content">
     <h2>Calendrier des matchs</h2>
