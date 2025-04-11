@@ -100,26 +100,16 @@
     <img src="logo.png" alt="Logo Morières Basket Club" class="logo" />
     <h1>Planning des Entraînements</h1>
     <p>Pour que personne ne vienne un jeudi alors que c’est fermé.</p>
-  </header>
+  <div id="header-placeholder"></div>
 
-  <nav>
-    <a href="index.html">Accueil</a>
-    <="dropdown">
-      <a href="#">Nos équipes</a>
-      <="dropdown-content">
-        <a href="u9.html">U9</a>
-        <a href="u11-1.html">U11-1</a>
-        <a href="u11-2.html">U11-2</a>
-        <a href="u13.html">U13</a>
-        <a href="u17.html">U17</a>
-        <a href="seniors.html">Séniors M</a>
-        <a href="loisirs-m.html">Loisirs M</a>
-        <a href="loisirs-f.html">Loisirs F</a>
-      </div>
-    </div>
-    <a href="planning.html">Planning</a>
-    <a href="contact.html">Contact</a>
-  </nav>
+<script>
+  fetch("header.html")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("header-placeholder").innerHTML = data;
+    });
+</script>
+
 
   <div class="content">
     <a href="planning-entrainements.pdf" download class="button-download">📥 Télécharger le planning en PDF</a>
