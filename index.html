@@ -71,19 +71,15 @@
   </style>
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="Logo Morières Basket Club" class="logo">
-    <h1>Morières Basket Club</h1>
-    <p>Depuis 1993 - Morières-lès-Avignon</p>
   <div id="header-placeholder"></div>
 
-<script>
-  fetch("header.html")
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("header-placeholder").innerHTML = data;
-    });
-</script>
+  <script>
+    fetch("header.html")
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("header-placeholder").innerHTML = data;
+      });
+  </script>
 
 
   <div class="content">
