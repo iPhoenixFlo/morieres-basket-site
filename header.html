@@ -1,6 +1,6 @@
-<!-- HEADER MORIÈRES – STICKY. SMOOTH. MVP. -->
+<!-- ✅ HEADER STICKY FONCTIONNEL AVEC LOGO QUI RÉTRÉCIT -->
 <header id="site-header">
-  <img src="logo.png" alt="Logo Morières Basket Club" class="logo" />
+  <img src="logo.png" alt="Logo Morières Basket Club" class="logo" id="logo-header" />
 </header>
 
 <nav id="site-nav">
@@ -38,13 +38,17 @@
   }
 
   header#site-header.scrolled {
-    padding: 0.8em 1em;
+    padding: 0.5em 1em;
     background: #ffffff;
   }
 
   .logo {
     width: 120px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, width 0.3s ease;
+  }
+
+  header#site-header.scrolled .logo {
+    width: 80px;
   }
 
   .logo:hover {
@@ -54,17 +58,11 @@
   nav#site-nav {
     position: sticky;
     top: 0;
-    background-color: #fdfdfd;
-    z-index: 999;
+    background-color: #ffffff;
+    z-index: 1000;
     padding: 1em 0.5em;
     text-align: center;
-    box-shadow: none;
-    transition: box-shadow 0.3s ease, background 0.3s ease;
-  }
-
-  nav#site-nav.scrolled {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    background-color: #ffffff;
   }
 
   .nav-link {
@@ -123,16 +121,15 @@
 </style>
 
 <script>
-  // Scroll effect header + nav
   window.addEventListener('scroll', function () {
     const header = document.getElementById('site-header');
-    const nav = document.getElementById('site-nav');
     if (window.scrollY > 30) {
       header.classList.add('scrolled');
-      nav.classList.add('scrolled');
     } else {
       header.classList.remove('scrolled');
-      nav.classList.remove('scrolled');
     }
   });
 </script>
+
+<!-- Contenu de test pour scroll -->
+<div style="height: 2000px;"></div>
