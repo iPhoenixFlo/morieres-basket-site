@@ -1,27 +1,11 @@
-<!-- HEADER STYLÉ MORIÈRES BASKET CLUB - VERSION UPGRADE MVP -->
-<header style="
-  background: linear-gradient(to bottom, #f26b6b 0%, #ffffff 100%);
-  padding: 1.5em 1em;
-  text-align: center;
-  font-family: 'Poppins', sans-serif;
-">
-  <img src="logo.png" alt="Logo Morières Basket Club" class="logo" style="width: 120px; margin-bottom: 0.5em; transition: transform 0.3s ease;" />
+<!-- HEADER MORIÈRES – STICKY. SMOOTH. MVP. -->
+<header id="site-header">
+  <img src="logo.png" alt="Logo Morières Basket Club" class="logo" />
 </header>
 
-<nav style="
-  background-color: #fdfdfd;
-  padding: 1em 0.5em;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  font-family: 'Poppins', sans-serif;
-  text-transform: uppercase;
-  font-size: 1.1em;
-  font-weight: 600;
-  border-top: 1px solid #eee;
-">
+<nav id="site-nav">
   <a href="index.html" class="nav-link">🏠 Accueil</a>
-
-  <div class="dropdown" style="display: inline-block; position: relative;">
+  <div class="dropdown">
     <a href="javascript:void(0);" class="nav-link">🏀 Nos équipes ▼</a>
     <div class="dropdown-content">
       <a href="u9.html">👶 U9</a>
@@ -34,13 +18,54 @@
       <a href="loisirs-f.html">🎯 Loisirs F</a>
     </div>
   </div>
-
   <a href="planning.html" class="nav-link">📅 Planning</a>
   <a href="contact.html" class="nav-link">📬 Contact</a>
 </nav>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  header#site-header {
+    background: linear-gradient(to bottom, #f26b6b 0%, #ffffff 100%);
+    text-align: center;
+    padding: 1.5em 1em;
+    transition: padding 0.3s ease, background 0.3s ease;
+  }
+
+  header#site-header.scrolled {
+    padding: 0.8em 1em;
+    background: #ffffff;
+  }
+
+  .logo {
+    width: 120px;
+    transition: transform 0.3s ease;
+  }
+
+  .logo:hover {
+    transform: scale(1.05);
+  }
+
+  nav#site-nav {
+    position: sticky;
+    top: 0;
+    background-color: #fdfdfd;
+    z-index: 999;
+    padding: 1em 0.5em;
+    text-align: center;
+    box-shadow: none;
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+  }
+
+  nav#site-nav.scrolled {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    background-color: #ffffff;
+  }
 
   .nav-link {
     margin: 0 1em;
@@ -50,17 +75,9 @@
     padding: 6px 8px;
     transition: color 0.3s ease, background 0.3s ease;
     border-radius: 5px;
-  }
-
-  .nav-link::after {
-    content: '';
-    position: absolute;
-    width: 0%;
-    height: 2px;
-    bottom: 0;
-    left: 50%;
-    background-color: #c8102e;
-    transition: width 0.3s ease, left 0.3s ease;
+    font-weight: 600;
+    font-size: 1.1em;
+    text-transform: uppercase;
   }
 
   .nav-link:hover {
@@ -68,15 +85,15 @@
     background-color: #c8102e;
   }
 
-  .nav-link:hover::after {
-    width: 100%;
-    left: 0;
+  .dropdown {
+    display: inline-block;
+    position: relative;
   }
 
   .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #fff;
+    background-color: white;
     min-width: 180px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     z-index: 999;
@@ -103,8 +120,19 @@
   .dropdown:hover .dropdown-content {
     display: block;
   }
-
-  .logo:hover {
-    transform: scale(1.05);
-  }
 </style>
+
+<script>
+  // Scroll effect header + nav
+  window.addEventListener('scroll', function () {
+    const header = document.getElementById('site-header');
+    const nav = document.getElementById('site-nav');
+    if (window.scrollY > 30) {
+      header.classList.add('scrolled');
+      nav.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+      nav.classList.remove('scrolled');
+    }
+  });
+</script>
