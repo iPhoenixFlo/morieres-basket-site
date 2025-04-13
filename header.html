@@ -8,143 +8,95 @@
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background-color: #fff;
     }
 
-    #site-header {
+    header {
+      background-color: #c8102e;
+      color: white;
       position: fixed;
       top: 0;
       width: 100%;
-      background-color: transparent;
       z-index: 9999;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .nav-bar {
-      background-color: #af241c;
-      padding: 2.5em 0;
-      position: relative;
-    }
-
-    .nav-inner {
-      max-width: 1200px;
+    .header-container {
+      max-width: 1300px;
       margin: 0 auto;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      padding: 1em 2em;
       position: relative;
-      padding: 0 2em;
     }
 
-    .nav-left,
-    .nav-right {
+    .header-left, .header-right {
       display: flex;
-      gap: 2em;
       align-items: center;
+      gap: 2em;
+    }
+
+    .header-center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .header-center img {
+      height: 80px;
+      width: auto;
+      display: block;
     }
 
     .nav-link {
       color: white;
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 600;
+      font-size: 1em;
     }
 
     .nav-link:hover {
-      opacity: 0.7;
+      opacity: 0.8;
     }
 
-    .logo-center {
-      position: absolute;
-      left: 50%;
-      top: 100%;
-      transform: translate(-50%, -50%);
-      z-index: 1000;
+    .menu-icon {
+      font-size: 1.5em;
+      cursor: pointer;
     }
 
-    .logo-center img {
-      width: 90px;
-      height: auto;
-      display: block;
-    }
-
-    .dropdown {
-      position: relative;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background-color: white;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-      border-radius: 6px;
-      overflow: hidden;
-      z-index: 1000;
-    }
-
-    .dropdown-content a {
-      color: #af241c;
-      text-decoration: none;
-      display: block;
-      padding: 0.5em 1em;
-      font-weight: 500;
-    }
-
-    .dropdown-content a:hover {
-      background-color: #eee;
-    }
-
-    .dropdown:hover .dropdown-content {
-      display: block;
-    }
-
-    .content-spacer {
-      padding-top: 130px;
+    .search-icon {
+      font-size: 1.5em;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <header id="site-header">
-    <div class="nav-bar">
-      <div class="nav-inner">
-
-        <!-- Menu gauche -->
-        <div class="nav-left">
-          <a href="index.html" class="nav-link">Accueil</a>
-          <div class="dropdown">
-            <a href="#" class="nav-link">Équipes ▼</a>
-            <div class="dropdown-content">
-              <a href="u9.html">U9</a>
-              <a href="u11-1.html">U11-1</a>
-              <a href="u11-2.html">U11-2</a>
-              <a href="u13.html">U13</a>
-              <a href="u17.html">U17</a>
-              <a href="seniors.html">Séniors</a>
-              <a href="loisirs-m.html">Loisirs M</a>
-              <a href="loisirs-f.html">Loisirs F</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Logo centré -->
-        <div class="logo-center">
-          <a href="index.html">
-            <img src="logo.png" alt="Logo Morières Basket Club" />
-          </a>
-        </div>
-
-        <!-- Menu droit -->
-        <div class="nav-right">
-          <a href="planning.html" class="nav-link">Planning</a>
-          <a href="contact.html" class="nav-link">Contact</a>
-        </div>
-
-      </div>
+<header>
+  <div class="header-container">
+    <div class="header-left">
+      <div class="menu-icon">&#9776;</div>
+      <a href="#" class="nav-link">Billetterie</a>
+      <a href="#" class="nav-link">Boutique</a>
     </div>
-  </header>
 
-  <div class="content-spacer"></div>
+    <div class="header-center">
+      <a href="index.html">
+        <img src="logo.png" alt="Logo Morières Basket Club">
+      </a>
+    </div>
+
+    <div class="header-right">
+      <a href="#" class="nav-link">Académie Gautier CB</a>
+      <a href="#" class="nav-link">Camps Été</a>
+      <a href="#" class="nav-link">Association</a>
+      <div class="search-icon">&#128269;</div>
+    </div>
+  </div>
+</header>
+
+<div class="content-spacer" style="padding-top: 110px;"></div>
 
 </body>
 </html>
