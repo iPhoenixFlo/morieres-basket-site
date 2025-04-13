@@ -1,6 +1,12 @@
-<!-- HEADER MORIÈRES – FIXED POUR DE VRAI -->
-<header id="site-header" style="background: linear-gradient(to bottom, #f26b6b 0%, #ffffff 100%); text-align: center; padding: 1.5em 1em;">
-  <img src="logo.png" alt="Logo Morières Basket Club" class="logo" />
+<!-- HEADER MORIÈRES – STICKY + STYLE CHOLET -->
+<header id="site-header">
+  <div class="header-inner">
+    <div class="logo-wrapper">
+      <a href="index.html">
+        <img src="logo.png" alt="Logo Morières Basket Club" class="center-logo" />
+      </a>
+    </div>
+  </div>
 </header>
 
 <nav id="site-nav">
@@ -28,28 +34,7 @@
   body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    padding-top: 180px; /* Compensation hauteur header + nav */
-  }
-
-  .logo {
-    width: 120px;
-    transition: transform 0.3s ease;
-  }
-
-  .logo:hover {
-    transform: scale(1.05);
-  }
-
-  nav#site-nav {
-    position: fixed;
-    top: 100px; /* sous le header */
-    left: 0;
-    right: 0;
-    background-color: #ffffff;
-    z-index: 9999;
-    padding: 1em 0.5em;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    padding-top: 220px; /* header + nav */
   }
 
   header#site-header {
@@ -57,7 +42,44 @@
     top: 0;
     left: 0;
     right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, #f26b6b 0%, #ffffff 100%);
     z-index: 1000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .logo-wrapper {
+    position: absolute;
+    top: 60px;
+    background: white;
+    border-radius: 50%;
+    padding: 6px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    z-index: 1100;
+  }
+
+  .center-logo {
+    height: 100px;
+    transition: transform 0.3s ease;
+  }
+
+  .center-logo:hover {
+    transform: scale(1.05);
+  }
+
+  nav#site-nav {
+    position: fixed;
+    top: 120px;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    z-index: 9999;
+    padding: 1em 0.5em;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   }
 
   .nav-link {
@@ -114,3 +136,15 @@
     display: block;
   }
 </style>
+
+<script>
+  // Optionnel : header dynamique en scroll
+  window.addEventListener('scroll', function () {
+    const header = document.getElementById('site-header');
+    if (window.scrollY > 30) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+  });
+</script>
