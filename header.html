@@ -32,19 +32,7 @@
     }
 
     .nav-icon {
-      width: 40px;
-      text-align: center;
-      font-size: 1.5em;
-      cursor: pointer;
-      color: white;
-    }
-
-    .nav-icon.left {
-      order: 0;
-    }
-
-    .nav-icon.right {
-      order: 4;
+      display: none;
     }
 
     .nav-side {
@@ -52,7 +40,6 @@
       gap: 1.5em;
       align-items: center;
       flex: 1;
-      justify-content: center;
     }
 
     .nav-left {
@@ -76,17 +63,61 @@
 
     .logo {
       height: 80px;
+      width: 80px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid white;
+      background-color: white;
     }
 
     .nav-link {
       color: white;
       text-decoration: none;
       font-weight: 600;
-      transition: opacity 0.2s ease;
+      position: relative;
     }
 
     .nav-link:hover {
       opacity: 0.7;
+    }
+
+    /* Dropdown styles */
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: white;
+      padding: 0.5em 1em;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      border-radius: 0.5em;
+      min-width: 150px;
+      z-index: 10000;
+    }
+
+    .dropdown-content a {
+      display: block;
+      padding: 0.4em 0;
+      color: #c8102e;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .dropdown-content a:hover {
+      text-decoration: underline;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    /* Padding under fixed header */
+    .content-spacer {
+      padding-top: 110px;
     }
   </style>
 </head>
@@ -95,15 +126,22 @@
   <header id="site-header">
     <div class="nav-container">
 
-      <!-- Icône menu burger (gauche) -->
-      <div class="nav-icon left">
-        <span class="burger-icon">☰</span>
-      </div>
-
-      <!-- Menu de gauche -->
+      <!-- Menu gauche -->
       <nav class="nav-side nav-left">
-        <a href="#" class="nav-link">Billetterie</a>
-        <a href="#" class="nav-link">Boutique</a>
+        <a href="index.html" class="nav-link">Accueil</a>
+        <div class="dropdown">
+          <a href="#" class="nav-link">Équipes ▼</a>
+          <div class="dropdown-content">
+            <a href="u9.html">U9</a>
+            <a href="u11-1.html">U11-1</a>
+            <a href="u11-2.html">U11-2</a>
+            <a href="u13.html">U13</a>
+            <a href="u17.html">U17</a>
+            <a href="seniors.html">Séniors</a>
+            <a href="loisirs-m.html">Loisirs M</a>
+            <a href="loisirs-f.html">Loisirs F</a>
+          </div>
+        </div>
       </nav>
 
       <!-- Logo centré -->
@@ -113,23 +151,17 @@
         </a>
       </div>
 
-      <!-- Menu de droite -->
+      <!-- Menu droit -->
       <nav class="nav-side nav-right">
-        <a href="#" class="nav-link">Académie</a>
-        <a href="#" class="nav-link">Camps Été</a>
-        <a href="#" class="nav-link">Association</a>
+        <a href="planning.html" class="nav-link">Planning</a>
+        <a href="contact.html" class="nav-link">Contact</a>
       </nav>
-
-      <!-- Icône loupe (droite) -->
-      <div class="nav-icon right">
-        <span class="search-icon">🔍</span>
-      </div>
 
     </div>
   </header>
 
-  <!-- Espace pour compenser la hauteur du header fixe -->
-  <div style="padding-top: 110px;"></div>
+  <!-- Espace pour ne pas que le contenu passe sous le header -->
+  <div class="content-spacer"></div>
 
 </body>
 </html>
