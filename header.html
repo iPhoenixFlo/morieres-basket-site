@@ -1,6 +1,6 @@
-<!-- ✅ HEADER STICKY FONCTIONNEL AVEC LOGO QUI RÉTRÉCIT -->
+<!-- HEADER MORIÈRES – AVEC STICKY QUI COLLE VRAIMENT -->
 <header id="site-header">
-  <img src="logo.png" alt="Logo Morières Basket Club" class="logo" id="logo-header" />
+  <img src="logo.png" alt="Logo Morières Basket Club" class="logo" />
 </header>
 
 <nav id="site-nav">
@@ -34,23 +34,17 @@
     background: linear-gradient(to bottom, #f26b6b 0%, #ffffff 100%);
     text-align: center;
     padding: 1.5em 1em;
-    transition: padding 0.3s ease, background 0.3s ease;
-    z-index: 900;
-    position: relative;
+    transition: padding 0.3s ease;
+    z-index: 1000;
   }
 
   header#site-header.scrolled {
-    padding: 0.5em 1em;
-    background: #ffffff;
+    padding: 0.8em 1em;
   }
 
   .logo {
     width: 120px;
-    transition: transform 0.3s ease, width 0.3s ease;
-  }
-
-  header#site-header.scrolled .logo {
-    width: 80px;
+    transition: transform 0.3s ease;
   }
 
   .logo:hover {
@@ -60,8 +54,8 @@
   nav#site-nav {
     position: sticky;
     top: 0;
-    background-color: #ffffff;
-    z-index: 1000;
+    background-color: #fff;
+    z-index: 9999;
     padding: 1em 0.5em;
     text-align: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
@@ -96,7 +90,7 @@
     background-color: white;
     min-width: 180px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    z-index: 999;
+    z-index: 9999;
     text-align: left;
     border-radius: 8px;
     overflow: hidden;
@@ -123,6 +117,7 @@
 </style>
 
 <script>
+  // Optionnel : header dynamique en scroll
   window.addEventListener('scroll', function () {
     const header = document.getElementById('site-header');
     if (window.scrollY > 30) {
@@ -132,6 +127,3 @@
     }
   });
 </script>
-
-<!-- Contenu de test pour scroll -->
-<div style="height: 2000px;"></div>
