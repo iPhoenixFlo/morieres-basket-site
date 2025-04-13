@@ -1,4 +1,4 @@
-<!-- HEADER MORIÈRES – STICKY & ALIGNÉ COMME UN COUTEAU SUISSE -->
+<!-- HEADER MORIÈRES – FIXED, BALANCÉ ET PAS DÉBILE -->
 <header id="site-header">
   <div class="nav-container">
     <div class="nav-side nav-left">
@@ -29,6 +29,9 @@
   </div>
 </header>
 
+<!-- Décale le contenu principal pour ne pas passer sous le header -->
+<div style="padding-top: 100px;"></div>
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
@@ -38,11 +41,12 @@
   }
 
   #site-header {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: 9999;
+    width: 100%;
     background-color: #c8102e;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 9999;
   }
 
   .nav-container {
@@ -63,66 +67,4 @@
   }
 
   .logo-center {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .logo {
-    height: 70px;
-    width: auto;
-    transition: transform 0.3s ease;
-  }
-
-  .logo:hover {
-    transform: scale(1.05);
-  }
-
-  .nav-link {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.05em;
-    padding: 0.3em 0.5em;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-  }
-
-  .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .dropdown {
-    position: relative;
-  }
-
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: white;
-    min-width: 200px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    border-radius: 5px;
-    overflow: hidden;
-    z-index: 1001;
-  }
-
-  .dropdown-content a {
-    display: block;
-    padding: 0.8em 1em;
-    color: #c8102e;
-    font-weight: 500;
-    font-size: 0.95em;
-    text-decoration: none;
-  }
-
-  .dropdown-content a:hover {
-    background-color: #f8f8f8;
-  }
-
-  .dropdown:hover .dropdown-content {
-    display: block;
-  }
-</style>
+    position: absolute
