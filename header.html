@@ -58,52 +58,34 @@
     }
 
     .logo {
-      height: 120px;
-      width: 120px;
-      object-fit: cover;
-      background-color: transparent;
+      width: 150px;
+      display: block;
+      margin: auto;
     }
-
-    .nav-link {
+    
+    nav {
+      background-color: #af241c;
+      padding: 1em;
+      text-align: center;
+    }
+    nav a {
+      margin: 0 1em;
       color: #ffffff;
       text-decoration: none;
-      font-weight: 600;
-      transition: color 0.2s ease;
+      font-weight: bold;
     }
-
-    .nav-link:hover {
-      color: #800000;
-    }
-
     .dropdown {
       position: relative;
+      display: inline-block;
     }
-
     .dropdown-content {
       display: none;
       position: absolute;
-      top: 100%;
-      left: 0;
-      background-color: white;
-      padding: 0.5em 1em;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-      border-radius: 0.5em;
-      min-width: 150px;
-      z-index: 10000;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
     }
-
-    .dropdown-content a {
-      display: block;
-      padding: 0.4em 0;
-      color: #c8102e;
-      font-weight: 500;
-      text-decoration: none;
-    }
-
-    .dropdown-content a:hover {
-      text-decoration: underline;
-    }
-
     .dropdown:hover .dropdown-content {
       display: block;
     }
