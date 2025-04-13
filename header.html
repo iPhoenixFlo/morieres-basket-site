@@ -1,103 +1,111 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Morières Basket Club</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background-color: #fff;
     }
 
     #site-header {
       position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: transparent;
+      z-index: 9999;
     }
 
-    .nav-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 1em 2em;
+    .nav-bar {
+      background-color: #af241c;
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
+      padding: 1.5em 2em;
       position: relative;
     }
 
-    .nav-side {
+    .nav-left,
+    .nav-right {
       display: flex;
       gap: 2em;
       align-items: center;
-      flex: 1;
     }
 
-    .nav-left {
-      justify-content: flex-start;
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
     }
 
-    .nav-right {
-      justify-content: flex-end;
+    .nav-link:hover {
+      opacity: 0.7;
     }
 
     .logo-center {
       position: absolute;
       left: 50%;
-      transform: translateX(-50%);
-      top: 0;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      border-radius: 50%;
+      padding: 0.2em;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    .logo {
-      width: 150px;
+    .logo-center img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
       display: block;
-      margin: auto;
     }
-    
-    nav {
-      background-color: #af241c;
-      padding: 1em;
-      text-align: center;
-    }
-    
-    nav a {
-      margin: 0 1em;
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: bold;
-    }
+
     .dropdown {
       position: relative;
-      display: inline-block;
     }
+
     .dropdown-content {
       display: none;
       position: absolute;
-      background-color: #f9f9f9;
-      min-width: 160px;
-      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-      z-index: 1;
+      top: 100%;
+      left: 0;
+      background-color: white;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+      overflow: hidden;
+      z-index: 1000;
     }
+
+    .dropdown-content a {
+      color: #af241c;
+      text-decoration: none;
+      display: block;
+      padding: 0.5em 1em;
+      font-weight: 500;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #eee;
+    }
+
     .dropdown:hover .dropdown-content {
       display: block;
     }
 
     .content-spacer {
-      padding-top: 110px;
+      padding-top: 130px;
     }
   </style>
 </head>
 <body>
 
   <header id="site-header">
-    <div class="nav-container">
+    <div class="nav-bar">
 
       <!-- Menu gauche -->
-      <nav class="nav-side nav-left">
+      <div class="nav-left">
         <a href="index.html" class="nav-link">Accueil</a>
         <div class="dropdown">
           <a href="#" class="nav-link">Équipes ▼</a>
@@ -112,25 +120,25 @@
             <a href="loisirs-f.html">Loisirs F</a>
           </div>
         </div>
-      </nav>
+      </div>
 
       <!-- Logo centré -->
       <div class="logo-center">
         <a href="index.html">
-          <img src="logo.png" alt="Logo Morières Basket Club" class="logo" />
+          <img src="logo.png" alt="Logo Morières Basket Club" />
         </a>
       </div>
 
       <!-- Menu droit -->
-      <nav class="nav-side nav-right">
+      <div class="nav-right">
         <a href="planning.html" class="nav-link">Planning</a>
         <a href="contact.html" class="nav-link">Contact</a>
-      </nav>
+      </div>
 
     </div>
   </header>
 
-  <!-- Espace pour éviter que le contenu passe sous le header -->
+  <!-- Espace pour ne pas faire écraser le contenu -->
   <div class="content-spacer"></div>
 
 </body>
