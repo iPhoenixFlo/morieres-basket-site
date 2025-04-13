@@ -1,32 +1,32 @@
-<!-- HEADER MORIÈRES – STICKY + STYLE CHOLET -->
-<header id="site-header">
-  <div class="header-inner">
-    <div class="logo-wrapper">
-      <a href="index.html">
-        <img src="logo.png" alt="Logo Morières Basket Club" class="center-logo" />
-      </a>
+<!-- HEADER MORIÈRES - VERSION INSPIRE CHOLET STYLE -->
+<header id="site-header" class="header-cholet">
+  <div class="nav-container">
+    <div class="nav-left">
+      <!-- Placeholder for future menu icon -->
     </div>
+    <div class="logo-container">
+      <img src="logo.png" alt="Logo Morières Basket Club" class="logo-centered" />
+    </div>
+    <nav id="site-nav" class="nav-right">
+      <a href="index.html" class="nav-link">🏠 Accueil</a>
+      <div class="dropdown">
+        <a href="javascript:void(0);" class="nav-link">🏀 Nos équipes ▼</a>
+        <div class="dropdown-content">
+          <a href="u9.html">👶 U9</a>
+          <a href="u11-1.html">⚡ U11-1</a>
+          <a href="u11-2.html">⚡ U11-2</a>
+          <a href="u13.html">🔥 U13</a>
+          <a href="u17.html">💪 U17</a>
+          <a href="seniors.html">🏆 Séniors M</a>
+          <a href="loisirs-m.html">🎯 Loisirs M</a>
+          <a href="loisirs-f.html">🎯 Loisirs F</a>
+        </div>
+      </div>
+      <a href="planning.html" class="nav-link">📅 Planning</a>
+      <a href="contact.html" class="nav-link">📬 Contact</a>
+    </nav>
   </div>
 </header>
-
-<nav id="site-nav">
-  <a href="index.html" class="nav-link">🏠 Accueil</a>
-  <div class="dropdown">
-    <a href="javascript:void(0);" class="nav-link">🏀 Nos équipes ▼</a>
-    <div class="dropdown-content">
-      <a href="u9.html">👶 U9</a>
-      <a href="u11-1.html">⚡ U11-1</a>
-      <a href="u11-2.html">⚡ U11-2</a>
-      <a href="u13.html">🔥 U13</a>
-      <a href="u17.html">💪 U17</a>
-      <a href="seniors.html">🏆 Séniors M</a>
-      <a href="loisirs-m.html">🎯 Loisirs M</a>
-      <a href="loisirs-f.html">🎯 Loisirs F</a>
-    </div>
-  </div>
-  <a href="planning.html" class="nav-link">📅 Planning</a>
-  <a href="contact.html" class="nav-link">📬 Contact</a>
-</nav>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -34,117 +34,101 @@
   body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    padding-top: 220px; /* header + nav */
   }
 
-  header#site-header {
-    position: fixed;
+  .header-cholet {
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
-    height: 120px;
-    background: linear-gradient(to bottom, #f26b6b 0%, #ffffff 100%);
+    background-color: #d5102d;
     z-index: 1000;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 0.5em 0;
   }
 
-  .logo-wrapper {
+  .nav-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1em;
+    position: relative;
+  }
+
+  .nav-left {
+    flex: 1;
+  }
+
+  .logo-container {
     position: absolute;
-    top: 60px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: white;
     border-radius: 50%;
-    padding: 6px;
-    box-shadow: 0 0 12px rgba(0,0,0,0.15);
-    z-index: 1100;
+    padding: 0.5em;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   }
 
-  .center-logo {
-    height: 100px;
-    transition: transform 0.3s ease;
+  .logo-centered {
+    width: 80px;
+    height: auto;
+    display: block;
   }
 
-  .center-logo:hover {
-    transform: scale(1.05);
-  }
-
-  nav#site-nav {
-    position: fixed;
-    top: 120px;
-    left: 0;
-    right: 0;
-    background-color: #fff;
-    z-index: 9999;
-    padding: 1em 0.5em;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    flex: 1;
+    justify-content: flex-end;
   }
 
   .nav-link {
-    margin: 0 1em;
-    color: #c8102e;
+    color: white;
     text-decoration: none;
-    position: relative;
-    padding: 6px 8px;
-    transition: color 0.3s ease, background 0.3s ease;
-    border-radius: 5px;
     font-weight: 600;
-    font-size: 1.1em;
+    font-size: 1em;
     text-transform: uppercase;
+    padding: 0.5em;
+    transition: color 0.2s ease, background-color 0.2s ease;
   }
 
   .nav-link:hover {
-    color: white;
-    background-color: #c8102e;
+    background-color: white;
+    color: #c8102e;
+    border-radius: 4px;
   }
 
   .dropdown {
-    display: inline-block;
     position: relative;
   }
 
   .dropdown-content {
     display: none;
     position: absolute;
+    top: 100%;
     background-color: white;
-    min-width: 180px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    z-index: 99999;
-    text-align: left;
     border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    min-width: 180px;
     overflow: hidden;
-    margin-top: 10px;
+    z-index: 999;
   }
 
   .dropdown-content a {
     display: block;
-    padding: 12px 16px;
-    color: #c8102e;
+    padding: 10px 16px;
     text-decoration: none;
-    font-size: 0.95em;
+    color: #c8102e;
     font-weight: 500;
   }
 
   .dropdown-content a:hover {
-    background-color: #f9f9f9;
-    color: #8b0c1e;
+    background-color: #f5f5f5;
   }
 
   .dropdown:hover .dropdown-content {
     display: block;
   }
 </style>
-
-<script>
-  // Optionnel : header dynamique en scroll
-  window.addEventListener('scroll', function () {
-    const header = document.getElementById('site-header');
-    if (window.scrollY > 30) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-  });
-</script>
