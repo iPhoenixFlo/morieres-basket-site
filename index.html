@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
@@ -328,6 +328,23 @@
       letter-spacing: 0.5px;
       clip-path: polygon(0 0, 100% 0%, 100% 100%, 0 80%);
     }
+
+    .main-layout {
+      display: flex;
+      gap: 2em; /* espace entre les deux blocs */
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2em;
+      box-sizing: border-box;
+    }
+
+    .main-content {
+      flex: 2;
+}
+
+.sidebar {
+  flex: 1;
+}
     
 @keyframes bounce {
   0%, 100% {
@@ -356,7 +373,10 @@
   <h1 style="font-size: 1.6em;">Jouez avec le coeur, gagnez avec honneur</h1>
   </div>
 
-  <div class="section">
+  <div class="main-layout">
+   <div class="main-content">
+    
+    <div class="section">
     <h2>🔍 Qui sommes-nous ?</h2>
     <p>
       Club familial et passionné situé à Morières-lès-Avignon, nous formons les basketteurs et basketteuses de demain, des U9 jusqu’aux loisirs adultes.
@@ -502,6 +522,10 @@
     });
   });
 </script>
-  
+   </div>
+ <aside class="sidebar">
+    <!-- les infos du club, les actus, etc. -->
+  </aside>
+</div>
 </body>
 </html>
