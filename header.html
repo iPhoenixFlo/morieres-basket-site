@@ -1,30 +1,33 @@
-<nav id="site-nav">
-  <div class="nav-left">
-    <a href="index.html" class="nav-link">🏠 Accueil</a>
-    <div class="dropdown">
-      <a href="#" class="nav-link">🏀 Nos équipes ▼</a>
-      <div class="dropdown-content">
-        <a href="u9.html">U9</a>
-        <a href="u11-1.html">U11-1</a>
-        <a href="u11-2.html">U11-2</a>
-        <a href="u13.html">U13</a>
-        <a href="u17.html">U17</a>
-        <a href="seniors.html">Séniors M</a>
-        <a href="loisirs-m.html">Loisirs M</a>
-        <a href="loisirs-f.html">Loisirs F</a>
+<!-- HEADER MORIÈRES – PROPRE, STICKY, BALANCÉ -->
+<header id="site-header">
+  <nav class="main-nav">
+    <div class="nav-left">
+      <a href="index.html" class="nav-link">🏠 Accueil</a>
+      <div class="dropdown">
+        <a href="javascript:void(0);" class="nav-link">🏀 Nos équipes ▼</a>
+        <div class="dropdown-content">
+          <a href="u9.html">👶 U9</a>
+          <a href="u11-1.html">⚡ U11-1</a>
+          <a href="u11-2.html">⚡ U11-2</a>
+          <a href="u13.html">🔥 U13</a>
+          <a href="u17.html">💪 U17</a>
+          <a href="seniors.html">🏆 Séniors M</a>
+          <a href="loisirs-m.html">🎯 Loisirs M</a>
+          <a href="loisirs-f.html">🎯 Loisirs F</a>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="nav-center">
-    <img src="logo.png" alt="Logo Morières" class="logo" />
-  </div>
+    <div class="logo-container">
+      <a href="index.html"><img src="logo.png" alt="Logo Morières Basket Club" class="logo" /></a>
+    </div>
 
-  <div class="nav-right">
-    <a href="planning.html" class="nav-link">📅 Planning</a>
-    <a href="contact.html" class="nav-link">📬 Contact</a>
-  </div>
-</nav>
+    <div class="nav-right">
+      <a href="planning.html" class="nav-link">📅 Planning</a>
+      <a href="contact.html" class="nav-link">📬 Contact</a>
+    </div>
+  </nav>
+</header>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -34,31 +37,39 @@
     font-family: 'Poppins', sans-serif;
   }
 
-  #site-nav {
+  #site-header {
     position: sticky;
     top: 0;
+    background-color: #c8102e;
     z-index: 1000;
-    background: #fff;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .main-nav {
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 1em 2em;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    max-width: 1400px;
+    margin: 0 auto;
   }
 
   .nav-left, .nav-right {
     display: flex;
+    gap: 1.5em;
     align-items: center;
-    gap: 1em;
   }
 
-  .nav-center {
+  .logo-container {
+    flex: 0 0 auto;
     display: flex;
     justify-content: center;
+    align-items: center;
   }
 
   .logo {
-    height: 65px;
+    height: 70px;
+    width: auto;
     transition: transform 0.3s ease;
   }
 
@@ -67,19 +78,18 @@
   }
 
   .nav-link {
-    color: #c8102e;
+    color: white;
     text-decoration: none;
     font-weight: 600;
-    font-size: 1em;
-    padding: 6px 10px;
-    border-radius: 5px;
-    text-transform: uppercase;
-    transition: 0.3s;
+    font-size: 1.05em;
+    position: relative;
+    padding: 0.3em 0.5em;
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
   }
 
   .nav-link:hover {
-    background: #c8102e;
-    color: #fff;
+    background-color: rgba(255,255,255,0.1);
   }
 
   .dropdown {
@@ -89,26 +99,31 @@
   .dropdown-content {
     display: none;
     position: absolute;
-    background-color: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     top: 100%;
     left: 0;
-    min-width: 160px;
-    z-index: 1002;
-  }
-
-  .dropdown:hover .dropdown-content {
-    display: block;
+    background: white;
+    color: #c8102e;
+    min-width: 200px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 1001;
   }
 
   .dropdown-content a {
     display: block;
-    padding: 10px;
-    color: #c8102e;
+    padding: 0.8em 1em;
     text-decoration: none;
+    color: #c8102e;
+    font-weight: 500;
+    font-size: 0.95em;
   }
 
   .dropdown-content a:hover {
-    background-color: #f9f9f9;
+    background-color: #f8f8f8;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
   }
 </style>
