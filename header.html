@@ -1,70 +1,135 @@
-<!-- HEADER MORIÈRES – FIXED, BALANCÉ ET PAS DÉBILE -->
-<header id="site-header">
-  <div class="nav-container">
-    <div class="nav-side nav-left">
-      <a href="index.html" class="nav-link">🏠 Accueil</a>
-      <div class="dropdown">
-        <a href="javascript:void(0);" class="nav-link">🏀 Nos équipes ▼</a>
-        <div class="dropdown-content">
-          <a href="u9.html">👶 U9</a>
-          <a href="u11-1.html">⚡ U11-1</a>
-          <a href="u11-2.html">⚡ U11-2</a>
-          <a href="u13.html">🔥 U13</a>
-          <a href="u17.html">💪 U17</a>
-          <a href="seniors.html">🏆 Séniors M</a>
-          <a href="loisirs-m.html">🎯 Loisirs M</a>
-          <a href="loisirs-f.html">🎯 Loisirs F</a>
-        </div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morières Basket Club</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #fff;
+    }
+
+    #site-header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: #c8102e;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      z-index: 9999;
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1em 2em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .nav-icon {
+      width: 40px;
+      text-align: center;
+      font-size: 1.5em;
+      cursor: pointer;
+      color: white;
+    }
+
+    .nav-icon.left {
+      order: 0;
+    }
+
+    .nav-icon.right {
+      order: 4;
+    }
+
+    .nav-side {
+      display: flex;
+      gap: 1.5em;
+      align-items: center;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .nav-left {
+      justify-content: flex-start;
+    }
+
+    .nav-right {
+      justify-content: flex-end;
+    }
+
+    .logo-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo {
+      height: 80px;
+    }
+
+    .nav-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+    }
+
+    .nav-link:hover {
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+
+  <header id="site-header">
+    <div class="nav-container">
+
+      <!-- Icône menu burger (gauche) -->
+      <div class="nav-icon left">
+        <span class="burger-icon">☰</span>
       </div>
+
+      <!-- Menu de gauche -->
+      <nav class="nav-side nav-left">
+        <a href="#" class="nav-link">Billetterie</a>
+        <a href="#" class="nav-link">Boutique</a>
+      </nav>
+
+      <!-- Logo centré -->
+      <div class="logo-center">
+        <a href="index.html">
+          <img src="logo.png" alt="Logo Morières Basket Club" class="logo" />
+        </a>
+      </div>
+
+      <!-- Menu de droite -->
+      <nav class="nav-side nav-right">
+        <a href="#" class="nav-link">Académie</a>
+        <a href="#" class="nav-link">Camps Été</a>
+        <a href="#" class="nav-link">Association</a>
+      </nav>
+
+      <!-- Icône loupe (droite) -->
+      <div class="nav-icon right">
+        <span class="search-icon">🔍</span>
+      </div>
+
     </div>
+  </header>
 
-    <div class="logo-center">
-      <a href="index.html"><img src="logo.png" alt="Logo Morières Basket Club" class="logo" /></a>
-    </div>
+  <!-- Espace pour compenser la hauteur du header fixe -->
+  <div style="padding-top: 110px;"></div>
 
-    <div class="nav-side nav-right">
-      <a href="planning.html" class="nav-link">📅 Planning</a>
-      <a href="contact.html" class="nav-link">📬 Contact</a>
-    </div>
-  </div>
-</header>
-
-<!-- Décale le contenu principal pour ne pas passer sous le header -->
-<div style="padding-top: 100px;"></div>
-
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
-
-  body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  #site-header {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    background-color: #c8102e;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    z-index: 9999;
-  }
-
-  .nav-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 1em 2em;
-    position: relative;
-  }
-
-  .nav-side {
-    display: flex;
-    gap: 1.5em;
-    align-items: center;
-    flex: 1;
-  }
-
-  .logo-center {
-    position: absolute
+</body>
+</html>
