@@ -4,11 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Morières Basket Club</title>
-
   <style>
-    /* SPACER POUR LE HEADER FIXE */
     .content-spacer {
-      padding-top: 120px; /* Adapte si ton header change de hauteur */
+      padding-top: 120px;
     }
 
     body {
@@ -19,14 +17,137 @@
       padding: 0;
     }
 
-    /* (tout ton CSS reste inchangé ici, je te laisse souffrir en paix avec tes classes sponsor-btn et carousel-slide pendant que je m’occupe du header) */
+    .content {
+      padding: 2em;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .logo {
+      width: 150px;
+      display: block;
+      margin: auto;
+    }
+
+    footer {
+      background-color: #c8102e;
+      color: white;
+      text-align: center;
+      padding: 1em;
+      margin-top: 2em;
+    }
+
+    .hero {
+      background: #ffffff;
+      padding: 1.5em 1em;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      border-radius: 0 0 15px 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .section {
+      max-width: 900px;
+      margin: 3em auto;
+      padding: 2em;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .section h2 {
+      color: #c8102e;
+      font-size: 1.8em;
+      margin-bottom: 0.5em;
+    }
+
+    .section ul {
+      font-size: 1.1em;
+      line-height: 1.7em;
+      padding-left: 1.5em;
+    }
+
+    .cta-buttons {
+      margin-top: 2em;
+      display: flex;
+      justify-content: center;
+      gap: 1em;
+      flex-wrap: wrap;
+    }
+
+    .cta-buttons a {
+      padding: 0.8em 1.5em;
+      background-color: #c8102e;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: background 0.2s ease;
+    }
+
+    .cta-buttons a:hover {
+      background-color: #a30c24;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 1.5em;
+    }
+
+    .gallery-grid img {
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+
+    .gallery-grid img:hover {
+      transform: scale(1.05);
+    }
+
+    .quote-banner {
+      position: relative;
+      background-image: url('images/banner-basket.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      clip-path: polygon(0 10%, 100% 0%, 100% 90%, 0% 100%);
+      margin-top: 3em;
+    }
+
+    .quote-content {
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      text-align: center;
+      padding: 2em;
+      border-radius: 10px;
+      max-width: 80%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    .quote-text {
+      font-size: 1.8em;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .quote-author {
+      font-size: 1.2em;
+      margin-top: 0.5em;
+      font-style: italic;
+      color: #ddd;
+    }
   </style>
 </head>
 <body>
-
-  <!-- 📦 Header dynamique -->
   <div id="header-placeholder"></div>
-
   <script>
     fetch("header.html")
       .then(response => response.text())
@@ -34,3 +155,65 @@
         document.getElementById("header-placeholder").innerHTML = data;
       });
   </script>
+
+  <div class="content-spacer"></div>
+
+  <div class="hero">
+    <h2 style="font-weight: 200; font-size: 1em;">
+      🏀 Depuis 1993 – Jouez avec le coeur - Gagnez avec honneur
+    </h2>
+  </div>
+
+  <div class="section">
+    <h2>🔍 Qui sommes-nous ?</h2>
+    <p>
+      Club familial et passionné situé à Morières-lès-Avignon, nous formons les basketteurs et basketteuses de demain, des U9 jusqu’aux loisirs adultes.<br /><br />
+      Notre équipe est 100% bénévole, 200% motivée et 300% plus sympa que celle du club d'à côté (mais chut).
+    </p>
+  </div>
+
+  <div id="footer-placeholder"></div>
+  <script>
+    fetch("footer.html")
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("footer-placeholder").innerHTML = data;
+      });
+  </script>
+
+  <style>
+    .lightbox-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .lightbox-overlay img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+  </style>
+
+  <script>
+    document.querySelectorAll('.lightbox').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const src = link.getAttribute('href');
+        const overlay = document.createElement('div');
+        overlay.className = 'lightbox-overlay';
+        overlay.innerHTML = `<img src="${src}" alt=""><div style="position: fixed; top: 20px; right: 30px; font-size: 2em; color: white; cursor: pointer;">×</div>`;
+        document.body.appendChild(overlay);
+
+        overlay.addEventListener('click', () => overlay.remove());
+      });
+    });
+  </script>
+</body>
+</html>
