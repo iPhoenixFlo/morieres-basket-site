@@ -12,51 +12,332 @@
       margin: 0;
       padding: 0;
     }
-
-    .main-container {
-      display: flex;
-      max-width: 1400px;
-      margin: 0 auto;
+    
+    .content {
       padding: 2em;
-      gap: 2em;
+      max-width: 900px;
+      margin: auto;
     }
-
-    .main-content {
-      flex: 1.5;
-    }
-
-    .sidebar {
-      flex: 1;
-      background-color: #f9f9f9;
-      border-radius: 8px;
+    
+    footer {
+      background-color: #c8102e;
+      color: white;
+      text-align: center;
       padding: 1em;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      margin-top: 2em;
     }
 
-    .sidebar h2 {
-      font-size: 1.2em;
-      margin-bottom: 1em;
-      border-left: 4px solid #c8102e;
-      padding-left: 0.5em;
+    .hero {
+      background: #ffffff;
+      padding: 1.5em 1em;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      border-radius: 0 0 15px 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
-    .news-item {
+    .section {
+      max-width: 900px;
+      margin: 3em auto;
+      padding: 2em;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .section h2 {
+      color: #c8102e;
+      font-size: 1.8em;
+      margin-bottom: 0.5em;
+    }
+
+    .section ul {
+      font-size: 1.1em;
+      line-height: 1.7em;
+      padding-left: 1.5em;
+    }
+
+    .cta-buttons {
+      margin-top: 2em;
       display: flex;
+      justify-content: center;
       gap: 1em;
-      margin-bottom: 1em;
-      align-items: center;
+      flex-wrap: wrap;
     }
 
-    .news-item img {
-      width: 60px;
-      height: auto;
-      border-radius: 6px;
+    .cta-buttons a {
+      padding: 0.8em 1.5em;
+      background-color: #c8102e;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: background 0.2s ease;
     }
 
-    .news-item p {
-      font-size: 0.9em;
-      margin: 0;
+    .cta-buttons a:hover {
+      background-color: #a30c24;
     }
+
+    .gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+  margin-top: 1.5em;
+}
+
+.gallery-grid img {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.gallery-grid img:hover {
+  transform: scale(1.05);
+}
+
+  .quote-banner {
+  position: relative;
+  background-image: url('images/banner-basket.jpg'); /* change le chemin si besoin */
+  background-size: cover;
+  background-position: center;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  clip-path: polygon(0 10%, 100% 0%, 100% 90%, 0% 100%);
+  margin-top: 3em;
+}
+
+.quote-content {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+  padding: 2em;
+  border-radius: 10px;
+  max-width: 80%;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.quote-text {
+  font-size: 1.8em;
+  font-weight: bold;
+  margin: 0;
+}
+
+.quote-author {
+  font-size: 1.2em;
+  margin-top: 0.5em;
+  font-style: italic;
+  color: #ddd;
+}
+.recrutement-banner {
+  text-align: center;
+  margin: 2em auto 3em auto;
+  padding: 2em;
+  background: linear-gradient(90deg, #c8102e, #a30c24);
+  color: white;
+  border-radius: 12px;
+  max-width: 800px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.recrutement-text {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+
+.recrutement-button {
+  display: inline-block;
+  padding: 0.8em 1.5em;
+  background-color: white;
+  color: #c8102e;
+  font-weight: bold;
+  text-decoration: none;
+  border-radius: 50px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.recrutement-button:hover {
+  background-color: #c8102e;
+  color: white;
+}
+
+    .sponsors {
+  text-align: center;
+  padding: 4em 2em;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  margin: 3em auto;
+  max-width: 1100px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.sponsor-divider {
+  width: 80px;
+  height: 4px;
+  background-color: #c8102e;
+  margin: 0 auto 1em auto;
+  border-radius: 2px;
+}
+
+.sponsor-title {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #0c2c5f;
+  margin-bottom: 2em;
+}
+
+.sponsor-logos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2em;
+  margin-bottom: 2em;
+}
+
+.sponsor-logos img {
+  height: 60px;
+  max-width: 120px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.sponsor-logos img:hover {
+  transform: scale(1.05);
+}
+
+.sponsor-btn {
+  display: inline-block;
+  background-color: #c8102e;
+  color: white;
+  font-weight: bold;
+  font-size: 1.1em;
+  padding: 0.8em 2em;
+  border: none;
+  border-radius: 50px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.sponsor-btn:hover {
+  background-color: #a50c24;
+  transform: scale(1.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.sponsor-btn::after {
+  content: "🏀";
+  position: absolute;
+  right: 1.2em;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: right 0.3s ease;
+}
+
+.sponsor-btn:hover::after {
+  right: 0.8em;
+  animation: spin 0.8s ease-in-out;
+}
+
+@keyframes spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  50% { transform: translateY(-50%) rotate(180deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+.sponsor-carousel {
+  overflow: hidden;
+  padding: 2em 0;
+  background-color: white; /* Nouveau fond blanc */
+  border-top: 4px solid #c8102e;
+  border-bottom: 4px solid #c8102e;
+}
+
+.carousel-track {
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+}
+
+.carousel-slide {
+  display: inline-block;
+  animation: scroll-left 40s linear infinite;
+}
+
+.carousel-slide img {
+  height: 60px;
+  margin: 0 2em;
+  vertical-align: middle;
+  filter: grayscale(0%);
+  transition: filter 0.3s ease;
+}
+
+.carousel-slide img:hover {
+  filter: grayscale(100%);
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.sponsor-intro {
+  text-align: center;
+  padding: 2em 1em 1em;
+  background: linear-gradient(90deg, #fff 0%, #f8f8f8 100%);
+}
+
+.sponsor-intro h2 {
+  font-size: 2.2em;
+  font-weight: 900;
+  color: #c8102e;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+  margin: 0;
+  position: relative;
+  display: inline-block;
+}
+
+.sponsor-intro h2 span {
+  font-size: 1em;
+  vertical-align: middle;
+  animation: bounce 1.5s infinite ease-in-out;
+}   
+    
+    .page-banner {
+      background: linear-gradient(to right, #c8102e, #a30c24);
+      color: white;
+      padding: 1.2em 1em;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: 500;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      clip-path: polygon(0 0, 100% 0%, 100% 100%, 0 80%);
+    }
+    
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
   </style>
 </head>
 <body>
@@ -72,74 +353,155 @@
   </script>
 
   <div class="page-banner">
-    <h1 style="font-size: 1.6em;">Jouez avec le coeur, gagnez avec honneur</h1>
+  <h1 style="font-size: 1.6em;">Jouez avec le coeur, gagnez avec honneur</h1>
   </div>
 
-  <div class="main-container">
-    <div class="main-content">
-      <div class="section">
-        <h2>🔍 Qui sommes-nous ?</h2>
-        <p>Club familial et passionné situé à Morières-lès-Avignon, nous formons les basketteurs et basketteuses de demain, des U9 jusqu’aux loisirs adultes.<br /><br />Notre équipe est 100% bénévole, 200% motivée et 300% plus sympa que celle du club d'à côté (mais chut).</p>
-      </div>
+  <div class="section">
+    <h2>🔍 Qui sommes-nous ?</h2>
+    <p>
+      Club familial et passionné situé à Morières-lès-Avignon, nous formons les basketteurs et basketteuses de demain, des U9 jusqu’aux loisirs adultes.
+      <br /><br />
+      Notre équipe est 100% bénévole, 200% motivée et 300% plus sympa que celle du club d'à côté (mais chut).
+    </p>
+  </div>
 
-      <div class="section">
-        <h2>🗖 Prochaines rencontres</h2>
-        <p>Les prochains matchs de nos équipes, à domicile ou à l’extérieur :</p>
-        <div style="overflow-x:auto;">
-          <iframe src="https://widgets.scorenco.com/week-events/110213" style="height: 500px; width: 100%; border: none;" frameborder="0" allowfullscreen></iframe>
-        </div>
-      </div>
-
-      <div class="quote-banner">
-        <div class="quote-content">
-          <p class="quote-text">« La sueur sèche, les douleurs passent, mais les victoires restent. »</p>
-          <p class="quote-author">— Coach anonyme mais mythique</p>
-        </div>
-      </div>
-
-      <div class="recrutement-banner">
-        <p class="recrutement-text">Tu veux rejoindre l'aventure du Morières Basket Club ?</p>
-        <a href="contact.html" class="recrutement-button">🚀 Rejoins-nous</a>
-      </div>
-
-      <div class="section">
-        <h2>📸 Galerie photo</h2>
-        <p>Découvrez nos plus belles actions, nos sourires de victoire et nos claquettes dunk ratées :</p>
-        <div class="gallery-grid">
-          <a href="images/photo1.jpg" class="lightbox"><img src="images/photo1.jpg" alt="Match U13" /></a>
-          <a href="images/photo2.jpg" class="lightbox"><img src="images/photo2.jpg" alt="Tournoi seniors" /></a>
-          <a href="images/photo3.jpg" class="lightbox"><img src="images/photo3.jpg" alt="Entraînement U9" /></a>
-          <a href="images/photo4.jpg" class="lightbox"><img src="images/photo4.jpg" alt="Victoire à l’extérieur" /></a>
-        </div>
-      </div>
+  <div class="section">
+    <h2>📆 Prochaines rencontres</h2>
+    <p>Les prochains matchs de nos équipes, à domicile ou à l’extérieur :</p>
+    <div style="overflow-x:auto;">
+      <iframe src="https://widgets.scorenco.com/week-events/110213"
+              style="height: 500px; width: 100%; border: none;"
+              frameborder="0"
+              allowfullscreen></iframe>
     </div>
-
-    <aside class="sidebar">
-      <h2>Les informations du club</h2>
-      <div class="news-item">
-        <img src="images/news1.jpg" alt="Actu 1">
-        <p><strong>21 juillet 2024</strong><br>Pré-inscriptions 2024/2025</p>
-      </div>
-      <div class="news-item">
-        <img src="images/news2.jpg" alt="Actu 2">
-        <p><strong>13 juin 2024</strong><br>Assemblée Générale Ordinaire</p>
-      </div>
-      <div class="news-item">
-        <img src="images/news3.jpg" alt="Actu 3">
-        <p><strong>17 mai 2024</strong><br>1/2 Finale U20 Région Masculin</p>
-      </div>
-    </aside>
   </div>
+  
+  <div class="quote-banner">
+  <div class="quote-content">
+    <p class="quote-text">« La sueur sèche, les douleurs passent, mais les victoires restent. »</p>
+    <p class="quote-author">— Coach anonyme mais mythique</p>
+  </div>
+</div>
+  <div class="recrutement-banner">
+  <p class="recrutement-text">Tu veux rejoindre l'aventure du Morières Basket Club ?</p>
+  <a href="contact.html" class="recrutement-button">🚀 Rejoins-nous</a>
+</div>
 
+
+  <div class="section">
+  <h2>📸 Galerie photo</h2>
+  <p>Découvrez nos plus belles actions, nos sourires de victoire et nos claquettes dunk ratées :</p>
+
+  <div class="gallery-grid">
+    <a href="images/photo1.jpg" class="lightbox"><img src="images/photo1.jpg" alt="Match U13" /></a>
+    <a href="images/photo2.jpg" class="lightbox"><img src="images/photo2.jpg" alt="Tournoi seniors" /></a>
+    <a href="images/photo3.jpg" class="lightbox"><img src="images/photo3.jpg" alt="Entraînement U9" /></a>
+    <a href="images/photo4.jpg" class="lightbox"><img src="images/photo4.jpg" alt="Victoire à l’extérieur" /></a>
+    <!-- Ajoute autant de photos que tu veux -->
+  </div>
+</div>
+  
+<div class="sponsor-intro">
+  <h2>Ils font briller le maillot <span>🏀</span></h2>
+</div>
+
+  <section class="sponsor-carousel">
+  <div class="carousel-track">
+    <div class="carousel-slide">
+      <img src="sponsors/sponsors1.png" alt="RH">
+      <img src="sponsors/sponsors2.png" alt="Domaine Saint Laurent">
+      <img src="sponsors/sponsors3.png" alt="Ironbody Fit">
+      <img src="sponsors/sponsors4.png" alt="Ligue Sud">
+      <img src="sponsors/sponsors5.png" alt="Comité de Vaucluse">
+      <img src="sponsors/sponsors6.png" alt="Ville de Morières">
+      <img src="sponsors/sponsors7.png" alt="Crédit 2L">
+      <img src="sponsors/sponsors8.png" alt="SPA Negresko">
+      <img src="sponsors/sponsors9.png" alt="iPhoenix Réparation">
+      <img src="sponsors/sponsors10.png" alt="MEREU BTP">
+      <img src="sponsors/sponsors11.png" alt="La Pizza">
+      <img src="sponsors/sponsors12.png" alt="Le Gaïa">
+
+      <!-- Clone pour boucle fluide -->
+      <img src="sponsors/sponsors1.png" alt="RH">
+      <img src="sponsors/sponsors2.png" alt="Domaine Saint Laurent">
+      <img src="sponsors/sponsors3.png" alt="Ironbody Fit">
+      <img src="sponsors/sponsors4.png" alt="Ligue Sud">
+      <img src="sponsors/sponsors5.png" alt="Comité de Vaucluse">
+      <img src="sponsors/sponsors6.png" alt="Ville de Morières">
+      <img src="sponsors/sponsors7.png" alt="Crédit 2L">
+      <img src="sponsors/sponsors8.png" alt="SPA Negresko">
+      <img src="sponsors/sponsors9.png" alt="iPhoenix Réparation">
+      <img src="sponsors/sponsors10.png" alt="MEREU BTP">
+      <img src="sponsors/sponsors11.png" alt="La Pizza">
+      <img src="sponsors/sponsors12.png" alt="Le Gaïa">
+    </div>
+  </div>
+</section>
+
+
+<div style="text-align: center; margin: 2em 0;">
+  <a href="partenaires.html" class="sponsor-btn">Voir nos partenaires</a>
+</div>
+
+
+<div class="section">
+    <h2>🚀 Prochainement sur le site</h2>
+    <ul>
+      <li>✅ Pages équipes avec résultats en direct</li>
+      <li>✅ Planning des entraînements mis à jour</li>
+      <li>✅ Inscriptions et infos pratiques en ligne</li>
+    </ul>
+
+    <div class="cta-buttons">
+      <a href="planning.html">🗓 Voir le planning</a>
+      <a href="contact.html">📬 Nous contacter</a>
+      <a href="u13.html">📊 Résultats d’équipe</a>
+    </div>
+  </div>
   <div id="footer-placeholder"></div>
 
-  <script>
-    fetch("footer.html")
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById("footer-placeholder").innerHTML = data;
-      });
-  </script>
+<script>
+  fetch("footer.html")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("footer-placeholder").innerHTML = data;
+    });
+</script>
+<!-- Lightbox minimaliste -->
+<style>
+  .lightbox-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
 
+  .lightbox-overlay img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.lightbox').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const src = link.getAttribute('href');
+      const overlay = document.createElement('div');
+      overlay.className = 'lightbox-overlay';
+      overlay.innerHTML = <img src="${src}" alt=""><div style="position: fixed; top: 20px; right: 30px; font-size: 2em; color: white; cursor: pointer;">×</div>;
+      document.body.appendChild(overlay);
+
+      overlay.addEventListener('click', () => overlay.remove());
+    });
+  });
+</script>
+  
 </body>
 </html>
