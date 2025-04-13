@@ -1,86 +1,94 @@
-<!-- HEADER MORIÈRES – AVEC STICKY QUI COLLE VRAIMENT -->
-<header id="site-header" style="position: relative;">
-  <img src="logo.png" alt="Logo Morières Basket Club" class="logo" />
-</header>
-
-<nav id="site-nav">
-  <a href="index.html" class="nav-link">🏠 Accueil</a>
-  <div class="dropdown">
-    <a href="javascript:void(0);" class="nav-link">🏀 Nos équipes ▼</a>
-    <div class="dropdown-content">
-      <a href="u9.html">👶 U9</a>
-      <a href="u11-1.html">⚡ U11-1</a>
-      <a href="u11-2.html">⚡ U11-2</a>
-      <a href="u13.html">🔥 U13</a>
-      <a href="u17.html">💪 U17</a>
-      <a href="seniors.html">🏆 Séniors M</a>
-      <a href="loisirs-m.html">🎯 Loisirs M</a>
-      <a href="loisirs-f.html">🎯 Loisirs F</a>
-    </div>
+<header class="header-bar">
+  <div class="header-section left">
+    <a href="index.html" class="nav-link">🏠 Accueil</a>
+    <a href="planning.html" class="nav-link">🗓 Planning</a>
   </div>
-  <a href="planning.html" class="nav-link">📅 Planning</a>
-  <a href="contact.html" class="nav-link">📬 Contact</a>
-</nav>
+
+  <div class="logo-wrapper">
+    <a href="index.html">
+      <img src="logo.png" alt="Logo Morières Basket Club" class="center-logo" />
+    </a>
+  </div>
+
+  <div class="header-section right">
+    <div class="dropdown">
+      <a href="#" class="nav-link">🏀 Équipes ▼</a>
+      <div class="dropdown-content">
+        <a href="u9.html">👶 U9</a>
+        <a href="u11-1.html">⚡ U11-1</a>
+        <a href="u11-2.html">⚡ U11-2</a>
+        <a href="u13.html">🔥 U13</a>
+        <a href="u17.html">💪 U17</a>
+        <a href="seniors.html">🏆 Séniors M</a>
+        <a href="loisirs-m.html">🎯 Loisirs M</a>
+        <a href="loisirs-f.html">🎯 Loisirs F</a>
+      </div>
+    </div>
+    <a href="contact.html" class="nav-link">📬 Contact</a>
+  </div>
+</header>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-  body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
+  .header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #c8102e;
+    color: white;
+    height: 100px;
+    padding: 0 2em;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
   }
 
-  header#site-header {
-    background: linear-gradient(to bottom, #f26b6b 0%, #ffffff 100%);
-    text-align: center;
-    padding: 1.5em 1em;
-    transition: padding 0.3s ease;
-    z-index: 999;
+  .logo-wrapper {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 45px;
+    z-index: 1100;
+    background: white;
+    border-radius: 50%;
+    padding: 0.2em;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
   }
 
-  header#site-header.scrolled {
-    padding: 0.8em 1em;
-  }
-
-  .logo {
-    width: 120px;
+  .center-logo {
+    height: 100px;
     transition: transform 0.3s ease;
   }
 
-  .logo:hover {
+  .center-logo:hover {
     transform: scale(1.05);
   }
 
-  nav#site-nav {
-    position: sticky;
-    top: 0;
-    background-color: #fff;
-    z-index: 9999;
-    padding: 1em 0.5em;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  .header-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5em;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95em;
   }
 
   .nav-link {
-    margin: 0 1em;
-    color: #c8102e;
+    color: white;
     text-decoration: none;
-    position: relative;
-    padding: 6px 8px;
-    transition: color 0.3s ease, background 0.3s ease;
+    padding: 8px 12px;
     border-radius: 5px;
-    font-weight: 600;
-    font-size: 1.1em;
-    text-transform: uppercase;
+    transition: background 0.2s ease, color 0.2s ease;
   }
 
   .nav-link:hover {
-    color: white;
-    background-color: #c8102e;
+    background-color: white;
+    color: #c8102e;
   }
 
   .dropdown {
-    display: inline-block;
     position: relative;
   }
 
@@ -88,13 +96,13 @@
     display: none;
     position: absolute;
     background-color: white;
-    min-width: 180px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    z-index: 9999;
-    text-align: left;
-    border-radius: 8px;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    top: 100%;
+    right: 0;
+    z-index: 999;
+    border-radius: 5px;
     overflow: hidden;
-    margin-top: 10px;
   }
 
   .dropdown-content a {
@@ -102,8 +110,7 @@
     padding: 12px 16px;
     color: #c8102e;
     text-decoration: none;
-    font-size: 0.95em;
-    font-weight: 500;
+    font-size: 0.9em;
   }
 
   .dropdown-content a:hover {
@@ -115,15 +122,3 @@
     display: block;
   }
 </style>
-
-<script>
-  // Optionnel : header dynamique en scroll
-  window.addEventListener('scroll', function () {
-    const header = document.getElementById('site-header');
-    if (window.scrollY > 30) {
-      header.classList.add('scrolled');
-    } else {
-      header.classList.remove('scrolled');
-    }
-  });
-</script>
