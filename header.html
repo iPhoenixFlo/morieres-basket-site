@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
+      background-color: #fff;
     }
 
     #site-header {
@@ -19,11 +21,18 @@
 
     .nav-bar {
       background-color: #af241c;
+      padding: 2.5em 0;
+      position: relative;
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.5em 2em;
       position: relative;
+      padding: 0 2em;
     }
 
     .nav-left,
@@ -47,7 +56,7 @@
       position: absolute;
       left: 50%;
       top: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -55%);
       background-color: white;
       border-radius: 50%;
       padding: 0.2em;
@@ -55,8 +64,8 @@
     }
 
     .logo-center img {
-      width: 100px;
-      height: 100px;
+      width: 90px;
+      height: 90px;
       border-radius: 50%;
       object-fit: cover;
       display: block;
@@ -103,42 +112,43 @@
 
   <header id="site-header">
     <div class="nav-bar">
+      <div class="nav-inner">
 
-      <!-- Menu gauche -->
-      <div class="nav-left">
-        <a href="index.html" class="nav-link">Accueil</a>
-        <div class="dropdown">
-          <a href="#" class="nav-link">Équipes ▼</a>
-          <div class="dropdown-content">
-            <a href="u9.html">U9</a>
-            <a href="u11-1.html">U11-1</a>
-            <a href="u11-2.html">U11-2</a>
-            <a href="u13.html">U13</a>
-            <a href="u17.html">U17</a>
-            <a href="seniors.html">Séniors</a>
-            <a href="loisirs-m.html">Loisirs M</a>
-            <a href="loisirs-f.html">Loisirs F</a>
+        <!-- Menu gauche -->
+        <div class="nav-left">
+          <a href="index.html" class="nav-link">Accueil</a>
+          <div class="dropdown">
+            <a href="#" class="nav-link">Équipes ▼</a>
+            <div class="dropdown-content">
+              <a href="u9.html">U9</a>
+              <a href="u11-1.html">U11-1</a>
+              <a href="u11-2.html">U11-2</a>
+              <a href="u13.html">U13</a>
+              <a href="u17.html">U17</a>
+              <a href="seniors.html">Séniors</a>
+              <a href="loisirs-m.html">Loisirs M</a>
+              <a href="loisirs-f.html">Loisirs F</a>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Logo centré -->
-      <div class="logo-center">
-        <a href="index.html">
-          <img src="logo.png" alt="Logo Morières Basket Club" />
-        </a>
-      </div>
+        <!-- Logo centré -->
+        <div class="logo-center">
+          <a href="index.html">
+            <img src="logo.png" alt="Logo Morières Basket Club" />
+          </a>
+        </div>
 
-      <!-- Menu droit -->
-      <div class="nav-right">
-        <a href="planning.html" class="nav-link">Planning</a>
-        <a href="contact.html" class="nav-link">Contact</a>
-      </div>
+        <!-- Menu droit -->
+        <div class="nav-right">
+          <a href="planning.html" class="nav-link">Planning</a>
+          <a href="contact.html" class="nav-link">Contact</a>
+        </div>
 
+      </div>
     </div>
   </header>
 
-  <!-- Espace pour ne pas faire écraser le contenu -->
   <div class="content-spacer"></div>
 
 </body>
