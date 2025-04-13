@@ -97,13 +97,141 @@
       </div>
 
       <div class="section">
-        <h2>📆 Prochaines rencontres</h2>
-        <p>Les prochains matchs de nos équipes, à domicile ou à l’extérieur :</p>
-        <div style="overflow-x:auto;">
-          <iframe src="https://widgets.scorenco.com/week-events/110213" style="height: 500px; width: 100%; border: none;" frameborder="0" allowfullscreen></iframe>
-        </div>
-      </div>
+    <h2>📆 Prochaines rencontres</h2>
+    <p>Les prochains matchs de nos équipes, à domicile ou à l’extérieur :</p>
+    <div style="overflow-x:auto;">
+      <iframe src="https://widgets.scorenco.com/week-events/110213"
+              style="height: 500px; width: 100%; border: none;"
+              frameborder="0"
+              allowfullscreen></iframe>
     </div>
+  </div>
+  
+  <div class="quote-banner">
+  <div class="quote-content">
+    <p class="quote-text">« La sueur sèche, les douleurs passent, mais les victoires restent. »</p>
+    <p class="quote-author">— Coach anonyme mais mythique</p>
+  </div>
+</div>
+  <div class="recrutement-banner">
+  <p class="recrutement-text">Tu veux rejoindre l'aventure du Morières Basket Club ?</p>
+  <a href="contact.html" class="recrutement-button">🚀 Rejoins-nous</a>
+</div>
+
+
+  <div class="section">
+  <h2>📸 Galerie photo</h2>
+  <p>Découvrez nos plus belles actions, nos sourires de victoire et nos claquettes dunk ratées :</p>
+
+  <div class="gallery-grid">
+    <a href="images/photo1.jpg" class="lightbox"><img src="images/photo1.jpg" alt="Match U13" /></a>
+    <a href="images/photo2.jpg" class="lightbox"><img src="images/photo2.jpg" alt="Tournoi seniors" /></a>
+    <a href="images/photo3.jpg" class="lightbox"><img src="images/photo3.jpg" alt="Entraînement U9" /></a>
+    <a href="images/photo4.jpg" class="lightbox"><img src="images/photo4.jpg" alt="Victoire à l’extérieur" /></a>
+    <!-- Ajoute autant de photos que tu veux -->
+  </div>
+</div>
+  
+<div class="sponsor-intro">
+  <h2>Ils font briller le maillot <span>🏀</span></h2>
+</div>
+
+  <section class="sponsor-carousel">
+  <div class="carousel-track">
+    <div class="carousel-slide">
+      <img src="sponsors/sponsors1.png" alt="RH">
+      <img src="sponsors/sponsors2.png" alt="Domaine Saint Laurent">
+      <img src="sponsors/sponsors3.png" alt="Ironbody Fit">
+      <img src="sponsors/sponsors4.png" alt="Ligue Sud">
+      <img src="sponsors/sponsors5.png" alt="Comité de Vaucluse">
+      <img src="sponsors/sponsors6.png" alt="Ville de Morières">
+      <img src="sponsors/sponsors7.png" alt="Crédit 2L">
+      <img src="sponsors/sponsors8.png" alt="SPA Negresko">
+      <img src="sponsors/sponsors9.png" alt="iPhoenix Réparation">
+      <img src="sponsors/sponsors10.png" alt="MEREU BTP">
+      <img src="sponsors/sponsors11.png" alt="La Pizza">
+      <img src="sponsors/sponsors12.png" alt="Le Gaïa">
+
+      <!-- Clone pour boucle fluide -->
+      <img src="sponsors/sponsors1.png" alt="RH">
+      <img src="sponsors/sponsors2.png" alt="Domaine Saint Laurent">
+      <img src="sponsors/sponsors3.png" alt="Ironbody Fit">
+      <img src="sponsors/sponsors4.png" alt="Ligue Sud">
+      <img src="sponsors/sponsors5.png" alt="Comité de Vaucluse">
+      <img src="sponsors/sponsors6.png" alt="Ville de Morières">
+      <img src="sponsors/sponsors7.png" alt="Crédit 2L">
+      <img src="sponsors/sponsors8.png" alt="SPA Negresko">
+      <img src="sponsors/sponsors9.png" alt="iPhoenix Réparation">
+      <img src="sponsors/sponsors10.png" alt="MEREU BTP">
+      <img src="sponsors/sponsors11.png" alt="La Pizza">
+      <img src="sponsors/sponsors12.png" alt="Le Gaïa">
+    </div>
+  </div>
+</section>
+
+
+<div style="text-align: center; margin: 2em 0;">
+  <a href="partenaires.html" class="sponsor-btn">Voir nos partenaires</a>
+</div>
+
+
+<div class="section">
+    <h2>🚀 Prochainement sur le site</h2>
+    <ul>
+      <li>✅ Pages équipes avec résultats en direct</li>
+      <li>✅ Planning des entraînements mis à jour</li>
+      <li>✅ Inscriptions et infos pratiques en ligne</li>
+    </ul>
+
+    <div class="cta-buttons">
+      <a href="planning.html">🗓 Voir le planning</a>
+      <a href="contact.html">📬 Nous contacter</a>
+      <a href="u13.html">📊 Résultats d’équipe</a>
+    </div>
+  </div>
+  <div id="footer-placeholder"></div>
+
+<script>
+  fetch("footer.html")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("footer-placeholder").innerHTML = data;
+    });
+</script>
+<!-- Lightbox minimaliste -->
+<style>
+  .lightbox-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  .lightbox-overlay img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+  }
+</style>
+
+<script>
+  document.querySelectorAll('.lightbox').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const src = link.getAttribute('href');
+      const overlay = document.createElement('div');
+      overlay.className = 'lightbox-overlay';
+      overlay.innerHTML = <img src="${src}" alt=""><div style="position: fixed; top: 20px; right: 30px; font-size: 2em; color: white; cursor: pointer;">×</div>;
+      document.body.appendChild(overlay);
+
+      overlay.addEventListener('click', () => overlay.remove());
+    });
+  });
 
     <aside class="sidebar">
       <h2>Les informations du club</h2>
