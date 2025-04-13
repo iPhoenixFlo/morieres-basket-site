@@ -1,4 +1,4 @@
-<!-- HEADER MORIÈRES – STICKY & STYLÉ -->
+<!-- HEADER MORIÈRES – STICKY, CENTRÉ, SOLIDE -->
 <header id="site-header">
   <nav class="main-nav">
     <div class="nav-left">
@@ -39,33 +39,37 @@
 
   #site-header {
     position: sticky;
-    top: 0;  
-    width: 100%;
+    top: 0;
     z-index: 1000;
     background-color: #c8102e;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
 
   .main-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1em 2em;
+    position: relative;
     max-width: 1400px;
     margin: 0 auto;
+    padding: 1em 2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .nav-left, .nav-right {
     display: flex;
     gap: 1.5em;
     align-items: center;
+    flex: 1;
   }
 
   .logo-container {
-    flex: 0 0 auto;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    z-index: 999;
   }
 
   .logo {
