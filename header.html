@@ -38,21 +38,24 @@
   }
 
   #site-header {
+  background-color: #c8102e;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+  .main-nav {
     position: sticky;
     top: 0;
     background-color: #c8102e;
-    z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
-
-  .main-nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1em 2em;
     max-width: 1400px;
     margin: 0 auto;
+    z-index: 9999;
   }
+
 
   .nav-left, .nav-right {
     display: flex;
