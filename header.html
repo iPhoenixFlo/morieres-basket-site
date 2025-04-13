@@ -2,22 +2,22 @@
   <div class="nav-left">
     <a href="index.html" class="nav-link">🏠 Accueil</a>
     <div class="dropdown">
-      <a href="javascript:void(0);" class="nav-link">🏀 Nos équipes ▼</a>
+      <a href="#" class="nav-link">🏀 Nos équipes ▼</a>
       <div class="dropdown-content">
-        <a href="u9.html">👶 U9</a>
-        <a href="u11-1.html">⚡ U11-1</a>
-        <a href="u11-2.html">⚡ U11-2</a>
-        <a href="u13.html">🔥 U13</a>
-        <a href="u17.html">💪 U17</a>
-        <a href="seniors.html">🏆 Séniors M</a>
-        <a href="loisirs-m.html">🎯 Loisirs M</a>
-        <a href="loisirs-f.html">🎯 Loisirs F</a>
+        <a href="u9.html">U9</a>
+        <a href="u11-1.html">U11-1</a>
+        <a href="u11-2.html">U11-2</a>
+        <a href="u13.html">U13</a>
+        <a href="u17.html">U17</a>
+        <a href="seniors.html">Séniors M</a>
+        <a href="loisirs-m.html">Loisirs M</a>
+        <a href="loisirs-f.html">Loisirs F</a>
       </div>
     </div>
   </div>
 
-  <div class="logo-center">
-    <img src="logo.png" alt="Logo Morières" class="logo-nav" />
+  <div class="nav-center">
+    <img src="logo.png" alt="Logo Morières" class="logo" />
   </div>
 
   <div class="nav-right">
@@ -34,56 +34,51 @@
     font-family: 'Poppins', sans-serif;
   }
 
-  nav#site-nav {
+  #site-nav {
     position: sticky;
     top: 0;
     z-index: 1000;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: space-between;
+    background: #fff;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     padding: 1em 2em;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   }
 
-  .nav-left,
-  .nav-right {
+  .nav-left, .nav-right {
     display: flex;
     align-items: center;
     gap: 1em;
-    flex: 1;
   }
 
-  .logo-center {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 8px;
-    z-index: 1001;
+  .nav-center {
+    display: flex;
+    justify-content: center;
   }
 
-  .logo-nav {
-    width: 80px;
+  .logo {
+    height: 65px;
     transition: transform 0.3s ease;
   }
 
-  .logo-nav:hover {
-    transform: scale(1.1);
+  .logo:hover {
+    transform: scale(1.05);
   }
 
   .nav-link {
     color: #c8102e;
     text-decoration: none;
     font-weight: 600;
-    font-size: 1.05em;
+    font-size: 1em;
     padding: 6px 10px;
     border-radius: 5px;
     text-transform: uppercase;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: 0.3s;
   }
 
   .nav-link:hover {
-    background-color: #c8102e;
+    background: #c8102e;
     color: #fff;
   }
 
@@ -95,12 +90,11 @@
     display: none;
     position: absolute;
     background-color: white;
-    min-width: 180px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    z-index: 9999;
-    border-radius: 8px;
-    margin-top: 10px;
-    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    top: 100%;
+    left: 0;
+    min-width: 160px;
+    z-index: 1002;
   }
 
   .dropdown:hover .dropdown-content {
@@ -109,15 +103,12 @@
 
   .dropdown-content a {
     display: block;
-    padding: 12px 16px;
+    padding: 10px;
     color: #c8102e;
     text-decoration: none;
-    font-size: 0.95em;
-    font-weight: 500;
   }
 
   .dropdown-content a:hover {
     background-color: #f9f9f9;
-    color: #8b0c1e;
   }
 </style>
