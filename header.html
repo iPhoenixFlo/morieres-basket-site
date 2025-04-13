@@ -1,32 +1,37 @@
-<!-- HEADER MORIÈRES - VERSION INSPIRE CHOLET STYLE -->
-<header id="site-header" class="header-cholet">
-  <div class="nav-container">
-    <div class="nav-left">
-      <!-- Placeholder for future menu icon -->
-    </div>
-    <div class="logo-container">
-      <img src="logo.png" alt="Logo Morières Basket Club" class="logo-centered" />
-    </div>
-    <nav id="site-nav" class="nav-right">
-      <a href="index.html" class="nav-link">🏠 Accueil</a>
-      <div class="dropdown">
-        <a href="javascript:void(0);" class="nav-link">🏀 Nos équipes ▼</a>
-        <div class="dropdown-content">
-          <a href="u9.html">👶 U9</a>
-          <a href="u11-1.html">⚡ U11-1</a>
-          <a href="u11-2.html">⚡ U11-2</a>
-          <a href="u13.html">🔥 U13</a>
-          <a href="u17.html">💪 U17</a>
-          <a href="seniors.html">🏆 Séniors M</a>
-          <a href="loisirs-m.html">🎯 Loisirs M</a>
-          <a href="loisirs-f.html">🎯 Loisirs F</a>
-        </div>
-      </div>
-      <a href="planning.html" class="nav-link">📅 Planning</a>
-      <a href="contact.html" class="nav-link">📬 Contact</a>
-    </nav>
+<!-- HEADER MORIÈRES – VERSION CENTERED NAV STICKY CHOLET STYLE -->
+<header id="site-header">
+  <div class="logo-container">
+    <img src="logo.png" alt="Logo Morières Basket Club" class="logo" />
   </div>
 </header>
+
+<nav id="site-nav">
+  <div class="nav-left">
+    <a href="index.html" class="nav-link">🏠 Accueil</a>
+    <div class="dropdown">
+      <a href="javascript:void(0);" class="nav-link">🏀 Nos équipes ▼</a>
+      <div class="dropdown-content">
+        <a href="u9.html">👶 U9</a>
+        <a href="u11-1.html">⚡ U11-1</a>
+        <a href="u11-2.html">⚡ U11-2</a>
+        <a href="u13.html">🔥 U13</a>
+        <a href="u17.html">💪 U17</a>
+        <a href="seniors.html">🏆 Séniors M</a>
+        <a href="loisirs-m.html">🎯 Loisirs M</a>
+        <a href="loisirs-f.html">🎯 Loisirs F</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="logo-center">
+    <img src="logo.png" alt="Logo Morières Basket Club" class="logo logo-nav" />
+  </div>
+
+  <div class="nav-right">
+    <a href="planning.html" class="nav-link">📅 Planning</a>
+    <a href="contact.html" class="nav-link">📬 Contact</a>
+  </div>
+</nav>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -36,68 +41,65 @@
     font-family: 'Poppins', sans-serif;
   }
 
-  .header-cholet {
-    position: sticky;
-    top: 0;
-    background-color: #d5102d;
-    z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 0.5em 0;
-  }
-
-  .nav-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1em;
-    position: relative;
-  }
-
-  .nav-left {
-    flex: 1;
+  header#site-header {
+    background: linear-gradient(to bottom, #f26b6b 0%, #ffffff 100%);
+    text-align: center;
+    padding: 1.5em 0 0.5em;
   }
 
   .logo-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    border-radius: 50%;
-    padding: 0.5em;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    display: none; /* Le vrai logo est centré dans nav */
   }
 
-  .logo-centered {
-    width: 80px;
-    height: auto;
-    display: block;
+  nav#site-nav {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 9999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em 2em;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    flex-wrap: wrap;
   }
 
-  .nav-right {
+  .nav-left, .nav-right {
     display: flex;
     align-items: center;
     gap: 1em;
-    flex: 1;
-    justify-content: flex-end;
+  }
+
+  .logo-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0.5em;
+  }
+
+  .logo-nav {
+    width: 80px;
+    transition: transform 0.3s ease;
+  }
+
+  .logo-nav:hover {
+    transform: scale(1.1);
   }
 
   .nav-link {
-    color: white;
+    color: #c8102e;
     text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 5px;
     font-weight: 600;
-    font-size: 1em;
+    font-size: 1.05em;
     text-transform: uppercase;
-    padding: 0.5em;
-    transition: color 0.2s ease, background-color 0.2s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   .nav-link:hover {
-    background-color: white;
-    color: #c8102e;
-    border-radius: 4px;
+    background-color: #c8102e;
+    color: white;
   }
 
   .dropdown {
@@ -107,28 +109,30 @@
   .dropdown-content {
     display: none;
     position: absolute;
-    top: 100%;
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
     min-width: 180px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    border-radius: 8px;
+    margin-top: 10px;
     overflow: hidden;
-    z-index: 999;
-  }
-
-  .dropdown-content a {
-    display: block;
-    padding: 10px 16px;
-    text-decoration: none;
-    color: #c8102e;
-    font-weight: 500;
-  }
-
-  .dropdown-content a:hover {
-    background-color: #f5f5f5;
   }
 
   .dropdown:hover .dropdown-content {
     display: block;
+  }
+
+  .dropdown-content a {
+    display: block;
+    padding: 12px 16px;
+    color: #c8102e;
+    text-decoration: none;
+    font-size: 0.95em;
+    font-weight: 500;
+  }
+
+  .dropdown-content a:hover {
+    background-color: #f9f9f9;
+    color: #8b0c1e;
   }
 </style>
