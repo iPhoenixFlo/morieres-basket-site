@@ -322,7 +322,7 @@
 
 }
 
-.full-width-image img {
+.full-width-image img:first-child {
   width: 100%;
   height: auto;
   display: block;
@@ -344,6 +344,15 @@
   letter-spacing: 0.5px;
   clip-path: polygon(0 0, 100% 0%, 100% 100%, 0 80%);
   }
+    
+  .overlay-center-img {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   max-width: 300px;
+   z-index: 1;
+   pointer-events: none;
     
 @keyframes bounce {
   0%, 100% {
@@ -374,6 +383,7 @@
 
   <div class="full-width-image">
   <img src="images/banner-basket.jpg" alt="Photo d'équipe" />
+  <img src="images/morieres-bc.png" alt="Logo Morières" class="overlay-center-img" />
 </div>
 
 
