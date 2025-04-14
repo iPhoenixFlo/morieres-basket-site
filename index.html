@@ -315,10 +315,11 @@
   animation: bounce 1.5s infinite ease-in-out;
 }   
     .full-width-image {
-  width: 100%;
   position: relative;
-  margin-bottom: -60px; /* Fait remonter la bannière par-dessus */
+  top: -40px;
   z-index: 0;
+  overflow: hidden;
+
 }
 
 .full-width-image img {
@@ -330,21 +331,20 @@
 
 .page-banner {
   position: relative;
-  z-index: 1; /* S’assure que la bannière est au-dessus de l’image */
-}
-    .page-banner {
-      background: #bf000a;
-      color: white;
-      padding: 1.2em 1em;
-      text-align: center;
-      font-size: 1.2em;
-      font-weight: 500;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      margin-bottom: 2em;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      clip-path: polygon(0 0, 100% 0%, 100% 100%, 0 80%);
-    }
+  z-index: 2; /* S’assure que la bannière est au-dessus de l’image */
+  margin-top: -20px;
+  background: #bf000a;
+  color: white;
+  padding: 1.2em 1em;
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  clip-path: polygon(0 0, 100% 0%, 100% 100%, 0 80%);
+  }
     
 @keyframes bounce {
   0%, 100% {
