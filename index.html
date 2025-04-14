@@ -332,7 +332,7 @@
 .page-banner {
   position: relative;
   z-index: 2; /* S’assure que la bannière est au-dessus de l’image */
-  background: #bf000a;
+  background: linear-gradient(to bottom, #c8102e, rgba(200,16,46,0.8), transparent);
   color: white;
   padding: 1.2em 1em;
   text-align: center;
@@ -347,13 +347,16 @@
     
   .overlay-center-img {
    position: absolute;
-   top: 50%;
+   top: 55%;
    left: 50%;
    transform: translate(-50%, -50%);
-   width: 400%
-   max-width: none;
-   z-index: 1;
+   max-width: 1000px;
+   z-index: 2;
    pointer-events: none;
+   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+   opacity: 0.95;
+   transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+ }
     
 @keyframes bounce {
   0%, 100% {
