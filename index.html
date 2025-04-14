@@ -314,7 +314,24 @@
   vertical-align: middle;
   animation: bounce 1.5s infinite ease-in-out;
 }   
-    
+    .full-width-image {
+  width: 100%;
+  position: relative;
+  margin-bottom: -60px; /* Fait remonter la bannière par-dessus */
+  z-index: 0;
+}
+
+.full-width-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.page-banner {
+  position: relative;
+  z-index: 1; /* S’assure que la bannière est au-dessus de l’image */
+}
     .page-banner {
       background: #bf000a;
       color: white;
@@ -355,6 +372,11 @@
   <div class="page-banner">
   <h1 style="font-size: 1.6em;">Jouez avec le coeur, gagnez avec honneur</h1>
   </div>
+
+  <div class="full-width-image">
+  <img src="images/banner-basket.jpg" alt="Photo d'équipe" />
+</div>
+
 
   <div class="section">
     <h2>🔍 Qui sommes-nous ?</h2>
