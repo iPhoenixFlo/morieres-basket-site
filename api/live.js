@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const live    = !!(data.items && data.items.length > 0);
     const videoId = live ? data.items[0].id.videoId : null;
 
-    res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate');
+    res.setHeader('Cache-Control', 's-maxage=120, stale-while-revalidate');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.status(200).json({ live, videoId });
 
