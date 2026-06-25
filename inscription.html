@@ -436,63 +436,122 @@ function valide(d){
 function genererPDF(d){
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF({unit:"mm",format:"a4"});
-  const W=210,M=18; let y=20; const rouge=[186,42,47];
+  const W=210, M=16; const rouge=[186,42,47], gris=[110,110,110], fonce=[30,30,30];
 
-  doc.setFillColor(...rouge);doc.circle(M+6,y,6,"F");
-  doc.setTextColor(255);doc.setFont("helvetica","bold");doc.setFontSize(9);
-  doc.text("MBC",M+6,y+1.2,{align:"center"});
-  doc.setTextColor(26);doc.setFontSize(16);doc.text("MORIÈRES BASKET CLUB",M+16,y-1);
-  doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(110);
-  doc.text("Association loi 1901 - N°W22840269251 - morieres.bc@gmail.com",M+16,y+4);
-  y+=11;doc.setDrawColor(...rouge);doc.setLineWidth(1);doc.line(M,y,W-M,y);y+=10;
+  // --- Bandeau d'en-tete rouge plein ---
+  doc.setFillColor(...rouge);
+  doc.rect(0,0,W,34,"F");
+  // badge MBC blanc
+  doc.setFillColor(255,255,255);
+  doc.circle(M+8,17,7.5,"F");
+  doc.setTextColor(...rouge);doc.setFont("helvetica","bold");doc.setFontSize(10);
+  doc.text("MBC",M+8,18.2,{align:"center"});
+  // identite club
+  doc.setTextColor(255,255,255);doc.setFont("helvetica","bold");doc.setFontSize(18);
+  doc.text("MORIÈRES BASKET CLUB",M+21,15);
+  doc.setFont("helvetica","normal");doc.setFontSize(9);
+  doc.text("Association loi 1901 - N°W22840269251",M+21,21.5);
+  doc.text("morieres.bc@gmail.com",M+21,26.5);
 
-  doc.setTextColor(26);doc.setFont("helvetica","bold");doc.setFontSize(17);
+  let y=46;
+  // --- Titre du document ---
+  doc.setTextColor(...fonce);doc.setFont("helvetica","bold");doc.setFontSize(16);
   doc.text("FICHE DE RENSEIGNEMENTS",M,y);
-  doc.setFontSize(11);doc.setTextColor(110);
-  doc.text("Pré-inscription - Saison 2026-2027",M,y+6);y+=15;
+  doc.setFont("helvetica","normal");doc.setFontSize(10.5);doc.setTextColor(...gris);
+  doc.text("Pré-inscription  |  Saison 2026-2027",M,y+6);
+  y+=16;
 
-  const ligne=(label,valeur)=>{
-    doc.setFont("helvetica","bold");doc.setFontSize(9.8);doc.setTextColor(60);
-    doc.text(label,M,y);const lw=doc.getTextWidth(label);
-    doc.setFont("helvetica","normal");doc.setTextColor(26);
-    doc.text(valeur||"-",M+lw+2,y);y+=6.4;
+  // --- Helpers ---
+  const titre=(txt)=>{
+    doc.setFont("helvetica","bold");doc.setFontSize(11);doc.setTextColor(...rouge);
+    doc.text(txt.toUpperCase(),M,y);
+    doc.setDrawColor(...rouge);doc.setLineWidth(.6);
+    doc.line(M,y+1.6,M+doc.getTextWidth(txt.toUpperCase()),y+1.6);
+    y+=7;
+  };
+  const panel=(rows)=>{
+    const rowH=6.6,padT=6,padB=4.5;
+    const h=padT+rows.length*rowH+padB-rowH+4;
+    doc.setFillColor(247,245,242);doc.setDrawColor(228,224,219);doc.setLineWidth(.3);
+    doc.roundedRect(M,y,W-2*M,h,2.5,2.5,"FD");
+    let yy=y+padT+2.5;
+    rows.forEach(([label,val])=>{
+      doc.setFont("helvetica","bold");doc.setFontSize(9);doc.setTextColor(...gris);
+      doc.text(label,M+5,yy);
+      doc.setFont("helvetica","normal");doc.setFontSize(10);doc.setTextColor(...fonce);
+      doc.text(String(val||"-"),M+48,yy);
+      yy+=rowH;
+    });
+    y+=h+8;
   };
 
-  ligne("Licencié : ",d.nom.toUpperCase()+" "+d.prenom);
-  ligne("Date de naissance : ",d.naissance.split("-").reverse().join("/")+(d.pratique!=="Bénévolat"?"   (Catégorie : "+(d.categorie||"-")+")":""));
-  if(d.mineur) ligne("Responsable légal : ",d.respNom.toUpperCase()+" "+d.respPrenom);
-  ligne("Adresse : ",d.adresse+", "+d.cp+" "+d.ville);
-  ligne("E-mail : ",d.email);
-  ligne("Téléphone : ",d.tel);
-  ligne("Type d'inscription : ",d.type+(d.type==="Mutation"?" (club précédent : "+d.clubPrecedent+")":""));
-  let prat=d.pratique;
-  if(d.pratique==="Loisir") prat+=" - équipe "+d.equipeMF;
-  ligne("Pratique : ",prat);
-  ligne("Droit à l'image : ",d.image);
+  // --- Section 1 : licencié + coordonnées ---
+  titre("Le licencié");
+  const rowsA=[
+    ["Licencié",d.nom.toUpperCase()+" "+d.prenom],
+    ["Naissance",d.naissance.split("-").reverse().join("/")+(d.pratique!=="Bénévolat"?"     Catégorie : "+(d.categorie||"-"):"")]
+  ];
+  if(d.mineur) rowsA.push(["Responsable",d.respNom.toUpperCase()+" "+d.respPrenom]);
+  rowsA.push(["Adresse",d.adresse+", "+d.cp+" "+d.ville]);
+  rowsA.push(["E-mail",d.email]);
+  rowsA.push(["Téléphone",d.tel]);
+  panel(rowsA);
 
+  // --- Section 2 : inscription ---
+  titre("Inscription et pratique");
+  let prat=d.pratique;
+  if(d.pratique==="Loisir") prat+=" (équipe "+d.equipeMF+")";
+  const rowsB=[
+    ["Type",d.type+(d.type==="Mutation"?"  -  club précédent : "+d.clubPrecedent:"")],
+    ["Pratique",prat],
+    ["Droit image",d.image]
+  ];
+  panel(rowsB);
+
+  // Bénévolat (ligne souple sur toute la largeur si renseigné)
   const mis=Object.entries(d.benevolat);
   if(mis.length){
-    ligne("Bénévolat : ",mis.map(([k,v])=>k+" ("+v+")").join(", "));
+    doc.setFont("helvetica","bold");doc.setFontSize(9);doc.setTextColor(...gris);
+    doc.text("Souhaits bénévolat",M,y);
+    doc.setFont("helvetica","normal");doc.setFontSize(9.5);doc.setTextColor(...fonce);
+    const txt=mis.map(([k,v])=>k+" ("+v+")").join("   -   ");
+    const lignes=doc.splitTextToSize(txt,W-2*M);
+    doc.text(lignes,M,y+5);
+    y+=5+lignes.length*4.5+5;
   }
 
-  y+=2;doc.setDrawColor(220);doc.setLineWidth(.3);doc.line(M,y,W-M,y);y+=8;
-
-  doc.setFont("helvetica","bold");doc.setFontSize(10.5);doc.setTextColor(...rouge);
-  doc.text("Consentements acceptés",M,y);y+=7;
-  doc.setFontSize(9.5);
+  // --- Section 3 : consentements ---
+  titre("Consentements");
+  doc.setFontSize(10);
   [["Consentement RGPD",d.rgpd],["Charte du joueur",d.charte],["Décharge de responsabilité",d.decharge]].forEach(([t,ok])=>{
     doc.setFont("helvetica","bold");doc.setTextColor(...rouge);doc.text(ok?"[x]":"[ ]",M,y);
-    doc.setFont("helvetica","normal");doc.setTextColor(40);doc.text(t+" - lu et approuvé",M+8,y);y+=6;
+    doc.setFont("helvetica","normal");doc.setTextColor(...fonce);doc.text(t+" - lu et approuvé",M+9,y);
+    y+=6.2;
   });
-  y+=4;doc.setFontSize(8.5);doc.setTextColor(110);
+  y+=2;
+  doc.setFontSize(8.5);doc.setTextColor(...gris);doc.setFont("helvetica","italic");
   doc.text(doc.splitTextToSize("Je confirme avoir lu et accepté les mentions ci-dessus. Aucune demande de licence ne sera considérée sans ce document signé.",W-2*M),M,y);
-  y+=12;
+  doc.setFont("helvetica","normal");
+  y+=11;
 
-  doc.setTextColor(26);doc.setFont("helvetica","bold");doc.setFontSize(9.5);
+  // --- Bloc signature encadré ---
   const dateStr=new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric"});
-  doc.text("Fait à "+VILLE+", le "+dateStr,M,y);
-  doc.text("Signature :",W-M-45,y);
-  doc.addImage(signaturePad.toDataURL("image/png"),"PNG",W-M-45,y+2,45,22);
+  const frameH=46;
+  doc.setDrawColor(...rouge);doc.setLineWidth(.5);
+  doc.roundedRect(M,y,W-2*M,frameH,2.5,2.5,"S");
+  doc.setTextColor(...fonce);doc.setFont("helvetica","bold");doc.setFontSize(10);
+  doc.text("Fait à "+VILLE,M+6,y+11);
+  doc.setFont("helvetica","normal");doc.setFontSize(9.5);doc.setTextColor(...gris);
+  doc.text("le "+dateStr,M+6,y+17.5);
+  doc.text("Signature du licencié",M+6,y+30);
+  doc.text("ou du responsable légal",M+6,y+35);
+
+  // signature agrandie, ratio préservé
+  const sw=canvas.width,sh=canvas.height;
+  let sigW=82, sigH=sigW*sh/sw, maxH=frameH-12;
+  if(sigH>maxH){sigH=maxH;sigW=sigH*sw/sh;}
+  doc.addImage(signaturePad.toDataURL("image/png"),"PNG",W-M-sigW-5,y+(frameH-sigH)/2,sigW,sigH);
+
   return doc;
 }
 
