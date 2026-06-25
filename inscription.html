@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Fiche de renseignements - Morières Basket Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/4.1.7/signature_pad.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --rouge:#BA2A2F;--rouge-fonce:#8f1f23;--noir:#1a1a1a;--gris:#6b6b6b;
+    --gris-clair:#e6e6e6;--fond:#f5f3f0;--blanc:#ffffff;--ok:#2e7d32;--alerte:#b26a00;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:'Barlow',system-ui,sans-serif;background:var(--fond);color:var(--noir);line-height:1.5;padding:0 0 60px}
+  .wrap{max-width:680px;margin:0 auto;padding:0 16px}
+
+  header{background:var(--blanc);border-bottom:4px solid var(--rouge);padding:22px 0 18px;margin-bottom:22px}
+  .header-inner{max-width:680px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:16px}
+  .badge{width:52px;height:52px;border-radius:50%;background:var(--rouge);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:900;font-size:20px;letter-spacing:.5px;flex-shrink:0}
+  .header-text .club{font-family:'Barlow Condensed';font-weight:900;font-size:26px;line-height:1;text-transform:uppercase;letter-spacing:.5px}
+  .header-text .sub{font-size:13px;color:var(--gris);margin-top:3px}
+
+  h1{font-family:'Barlow Condensed';font-weight:900;font-size:30px;line-height:1.05;text-transform:uppercase;color:var(--noir);margin-bottom:6px;letter-spacing:.5px}
+  .intro{font-size:14.5px;color:var(--gris);margin-bottom:18px}
+
+  .avis{display:flex;gap:11px;align-items:flex-start;background:#fff8ec;border:1px solid #f0d9a8;border-radius:10px;padding:13px 15px;margin-bottom:22px;font-size:13.5px;color:#6b5320}
+  .avis b{color:#8a6a1f}
+  .avis .ic{font-size:17px;line-height:1.2}
+
+  .card{background:var(--blanc);border:1px solid var(--gris-clair);border-radius:10px;padding:18px 18px 20px;margin-bottom:16px}
+  .card.hidden{display:none}
+  .card-title{font-family:'Barlow Condensed';font-weight:700;font-size:19px;text-transform:uppercase;letter-spacing:.4px;color:var(--rouge);margin-bottom:14px;display:flex;align-items:center;gap:9px}
+  .card-title .num{width:24px;height:24px;border-radius:6px;background:var(--rouge);color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid3{display:grid;grid-template-columns:1.4fr .8fr 1fr;gap:14px}
+  @media(max-width:520px){.grid2,.grid3{grid-template-columns:1fr}}
+
+  .field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+  .field:last-child{margin-bottom:0}
+  label{font-size:13px;font-weight:600;color:var(--noir)}
+  label .req{color:var(--rouge)}
+  .hint{font-size:12px;color:var(--gris);font-weight:400}
+  .note-inline{font-size:12.5px;color:var(--alerte);display:flex;gap:6px;align-items:flex-start;margin-top:2px}
+  input[type=text],input[type=email],input[type=tel],input[type=date],input[type=number],select{
+    font-family:'Barlow',sans-serif;font-size:15.5px;padding:11px 12px;border:1px solid var(--gris-clair);
+    border-radius:8px;background:var(--blanc);color:var(--noir);width:100%;transition:border-color .15s}
+  input:focus,select:focus{outline:none;border-color:var(--rouge);box-shadow:0 0 0 3px rgba(186,42,47,.12)}
+
+  .cat-box{background:#fbeceb;border:1px dashed var(--rouge);border-radius:8px;padding:11px 13px;font-size:14px;color:var(--rouge-fonce);font-weight:600;display:none}
+  .cat-box.show{display:block}
+
+  .choix{display:flex;gap:10px;flex-wrap:wrap}
+  .choix.col{flex-direction:column}
+  .choix label{flex:1;min-width:120px;cursor:pointer;border:1px solid var(--gris-clair);border-radius:8px;padding:11px 13px;font-weight:600;font-size:14.5px;transition:all .15s;background:var(--blanc);display:flex;align-items:center;gap:9px}
+  .choix.col label{min-width:0}
+  .choix input{position:absolute;opacity:0;pointer-events:none}
+  .choix label:has(input:checked){background:var(--rouge);border-color:var(--rouge);color:#fff}
+  .choix label .sub{font-weight:400;font-size:12.5px;opacity:.85}
+
+  /* Grille benevolat -> pastilles empilees */
+  .mission{border-top:1px solid var(--gris-clair);padding:13px 0}
+  .mission:first-of-type{border-top:none;padding-top:2px}
+  .mission .nom{font-weight:600;font-size:14.5px;margin-bottom:9px}
+  .pastilles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  @media(max-width:440px){.pastilles{grid-template-columns:1fr}}
+  .pastilles label{cursor:pointer;border:1px solid var(--gris-clair);border-radius:7px;padding:9px 6px;text-align:center;font-size:13px;font-weight:600;background:var(--blanc);transition:all .15s}
+  .pastilles input{position:absolute;opacity:0;pointer-events:none}
+  .pastilles label:has(input:checked){background:var(--rouge);border-color:var(--rouge);color:#fff}
+
+  .doc-link{display:inline-block;font-size:13px;font-weight:600;color:var(--rouge);text-decoration:underline;margin:4px 0 10px}
+
+  .engagement{display:flex;gap:11px;align-items:flex-start;padding:14px 0;border-top:1px solid var(--gris-clair)}
+  .engagement:first-of-type{border-top:none;padding-top:2px}
+  .engagement input[type=checkbox]{width:21px;height:21px;margin-top:2px;flex-shrink:0;accent-color:var(--rouge);cursor:pointer}
+  .engagement .txt strong{display:block;font-size:14.5px;margin-bottom:3px}
+  .engagement .txt .det{color:var(--gris);font-size:12.8px;display:block;margin-bottom:4px}
+
+  .info-note{background:#fbeceb;border-radius:8px;padding:13px 15px;font-size:13.5px;color:var(--rouge-fonce);margin-top:4px}
+
+  .sig-zone{position:relative;background:var(--blanc);border:2px dashed var(--rouge);border-radius:10px;overflow:hidden}
+  canvas#sig{display:block;width:100%;height:190px;touch-action:none;cursor:crosshair}
+  .sig-baseline{position:absolute;left:18px;right:18px;bottom:42px;border-bottom:1px solid var(--gris-clair);pointer-events:none}
+  .sig-hint{position:absolute;left:0;right:0;bottom:14px;text-align:center;font-size:12.5px;color:var(--gris);pointer-events:none}
+  .sig-clear{margin-top:10px;background:none;border:1px solid var(--gris-clair);border-radius:7px;padding:8px 14px;font-family:'Barlow';font-size:13.5px;font-weight:600;color:var(--gris);cursor:pointer}
+  .sig-clear:hover{border-color:var(--rouge);color:var(--rouge)}
+  .meta-line{font-size:13.5px;color:var(--gris);margin:14px 0 4px}
+  .meta-line strong{color:var(--noir)}
+
+  .submit{width:100%;background:var(--rouge);color:#fff;border:none;border-radius:10px;padding:16px;font-family:'Barlow Condensed';font-weight:900;font-size:19px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;margin-top:8px;transition:background .15s}
+  .submit:hover{background:var(--rouge-fonce)}
+  .submit:disabled{background:#c9a3a4;cursor:not-allowed}
+
+  .error-box{display:none;background:#fdf2f2;border:1px solid var(--rouge);border-radius:8px;padding:12px 14px;font-size:13.5px;color:var(--rouge-fonce);margin-top:14px}
+  .error-box.show{display:block}
+  .success-box{display:none;background:#edf7ed;border:1px solid var(--ok);border-radius:10px;padding:18px;text-align:center;margin-top:16px}
+  .success-box.show{display:block}
+  .success-box .ttl{font-family:'Barlow Condensed';font-weight:900;font-size:22px;color:var(--ok);text-transform:uppercase}
+  .footer-note{text-align:center;font-size:12px;color:var(--gris);margin-top:26px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="badge">MBC</div>
+    <div class="header-text">
+      <div class="club">Morières Basket Club</div>
+      <div class="sub">Association loi 1901 - N°W22840269251</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Fiche de renseignements</h1>
+  <p class="intro">Saison 2026-2027. Cette fiche remplace le formulaire papier. Une fois remplie et signée, elle génère un PDF transmis au club. Aucune demande de licence ne sera traitée sans ce document signé.</p>
+
+  <div class="avis">
+    <span class="ic">⚠️</span>
+    <div>Merci de remplir <b>une fiche par personne</b>. Exemple : une fiche pour l'enfant joueur, et une autre fiche distincte pour le parent bénévole.</div>
+  </div>
+
+  <!-- 1. Le licencié -->
+  <div class="card">
+    <div class="card-title"><span class="num">1</span>Le licencié</div>
+    <div class="grid2">
+      <div class="field"><label>Nom <span class="req">*</span></label><input type="text" id="nom" autocomplete="family-name"></div>
+      <div class="field"><label>Prénom <span class="req">*</span></label><input type="text" id="prenom" autocomplete="given-name"></div>
+    </div>
+    <div class="field">
+      <label>Date de naissance <span class="req">*</span></label>
+      <input type="date" id="naissance" max="2025-12-31">
+      <div class="cat-box" id="catBox"></div>
+    </div>
+  </div>
+
+  <!-- 2. Responsable légal (conditionnel mineur) -->
+  <div class="card hidden" id="cardResp">
+    <div class="card-title"><span class="num">2</span>Responsable légal</div>
+    <p class="hint" style="margin-bottom:14px">Le licencié étant mineur, ces informations sont obligatoires.</p>
+    <div class="grid2">
+      <div class="field"><label>Nom du responsable <span class="req">*</span></label><input type="text" id="respNom"></div>
+      <div class="field"><label>Prénom du responsable <span class="req">*</span></label><input type="text" id="respPrenom"></div>
+    </div>
+  </div>
+
+  <!-- 3. Coordonnées -->
+  <div class="card">
+    <div class="card-title"><span class="num nC">3</span>Coordonnées</div>
+    <div class="field"><label>Adresse (rue, lotissement...) <span class="req">*</span></label><input type="text" id="adresse" autocomplete="street-address"></div>
+    <div class="grid2">
+      <div class="field"><label>Code postal <span class="req">*</span></label><input type="tel" id="cp" inputmode="numeric" autocomplete="postal-code"></div>
+      <div class="field"><label>Ville <span class="req">*</span></label><input type="text" id="ville" autocomplete="address-level2"></div>
+    </div>
+    <div class="grid2">
+      <div class="field">
+        <label>Adresse e-mail <span class="req">*</span></label>
+        <input type="email" id="email" autocomplete="email">
+        <span class="note-inline">⚠️ Vérifiez bien votre e-mail, il sert à la réception de votre document.</span>
+      </div>
+      <div class="field"><label>Téléphone <span class="req">*</span></label><input type="tel" id="tel" autocomplete="tel"></div>
+    </div>
+  </div>
+
+  <!-- 4. Type d'inscription -->
+  <div class="card">
+    <div class="card-title"><span class="num nC">4</span>Type d'inscription</div>
+    <div class="choix col">
+      <label><input type="radio" name="type" value="Première inscription"><span>Première inscription <span class="sub">(dans un club de basket)</span></span></label>
+      <label><input type="radio" name="type" value="Réinscription"><span>Réinscription <span class="sub">(au MBC ou après une période de pause)</span></span></label>
+      <label><input type="radio" name="type" value="Mutation"><span>Mutation <span class="sub">(d'un autre club que le MBC)</span></span></label>
+    </div>
+    <div class="field" id="fieldMutation" style="display:none;margin-top:14px">
+      <label>Club précédent <span class="req">*</span></label>
+      <input type="text" id="clubPrecedent" placeholder="Nom du club que vous quittez">
+    </div>
+  </div>
+
+  <!-- 5. Pratique -->
+  <div class="card">
+    <div class="card-title"><span class="num nC">5</span>Pratique souhaitée</div>
+    <label style="margin-bottom:10px;display:block">Souhaitez-vous vous inscrire en compétition, en loisir, ou comme bénévole ? <span class="req">*</span></label>
+    <div class="choix col">
+      <label><input type="radio" name="pratique" value="Compétition"><span>Compétition <span class="sub">(championnat)</span></span></label>
+      <label><input type="radio" name="pratique" value="Loisir"><span>Loisir <span class="sub">(+18 ans, basket plaisir)</span></span></label>
+      <label><input type="radio" name="pratique" value="Bénévolat"><span>Bénévolat <span class="sub">(sans pratiquer)</span></span></label>
+    </div>
+    <div id="fieldLoisir" style="display:none;margin-top:16px">
+      <label style="margin-bottom:9px;display:block">Équipe masculine ou féminine ? <span class="req">*</span></label>
+      <div class="choix">
+        <label><input type="radio" name="equipeMF" value="Féminine"><span>Féminine</span></label>
+        <label><input type="radio" name="equipeMF" value="Masculine"><span>Masculine</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Bénévolat -->
+  <div class="card">
+    <div class="card-title"><span class="num nC">6</span>S'impliquer au club</div>
+    <p class="hint" style="margin-bottom:6px">Le club fonctionne grâce à l'engagement des bénévoles. Chronométrage, e-marque, arbitrage, buvette, organisation : chaque coup de main compte. Pas besoin d'être un expert, on vous accompagne et on vous forme si besoin.</p>
+    <div class="info-note" style="margin-bottom:16px">👉 À noter : les bénévoles réguliers, engagés dans les missions du club, peuvent bénéficier de la prise en charge de leur licence par le MBC. Une façon de remercier celles et ceux qui font battre le coeur du club.</div>
+
+    <label style="margin-bottom:4px;display:block">Comment aimeriez-vous participer cette saison ? <span class="hint">(facultatif)</span></label>
+
+    <div class="mission" data-mission="Buvette">
+      <div class="nom">Tenir la buvette</div>
+      <div class="pastilles">
+        <label><input type="radio" name="m_Buvette" value="Volontaire"><span>Je suis volontaire</span></label>
+        <label><input type="radio" name="m_Buvette" value="À former"><span>À former</span></label>
+        <label><input type="radio" name="m_Buvette" value="Non merci"><span>Non merci</span></label>
+      </div>
+    </div>
+    <div class="mission" data-mission="Table de marque">
+      <div class="nom">Tenir la table de marque</div>
+      <div class="pastilles">
+        <label><input type="radio" name="m_Table" value="Volontaire"><span>Je suis volontaire</span></label>
+        <label><input type="radio" name="m_Table" value="À former"><span>À former</span></label>
+        <label><input type="radio" name="m_Table" value="Non merci"><span>Non merci</span></label>
+      </div>
+    </div>
+    <div class="mission" data-mission="Arbitrage">
+      <div class="nom">Arbitrage</div>
+      <div class="pastilles">
+        <label><input type="radio" name="m_Arbitrage" value="Volontaire"><span>Je suis volontaire</span></label>
+        <label><input type="radio" name="m_Arbitrage" value="À former"><span>À former</span></label>
+        <label><input type="radio" name="m_Arbitrage" value="Non merci"><span>Non merci</span></label>
+      </div>
+    </div>
+    <div class="mission" data-mission="Organisation d'événements">
+      <div class="nom">Organisation d'événements</div>
+      <div class="pastilles">
+        <label><input type="radio" name="m_Evenements" value="Volontaire"><span>Je suis volontaire</span></label>
+        <label><input type="radio" name="m_Evenements" value="À former"><span>À former</span></label>
+        <label><input type="radio" name="m_Evenements" value="Non merci"><span>Non merci</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Consentements -->
+  <div class="card">
+    <div class="card-title"><span class="num nC">7</span>Consentements obligatoires</div>
+
+    <p style="font-size:13.5px;font-weight:600;margin-bottom:6px">Acceptez-vous d'être pris(e) en photo, ou votre enfant ? <span class="req">*</span></p>
+    <p class="hint" style="margin-bottom:11px">Les photos peuvent paraître sur le site du club, les réseaux sociaux (Facebook, Instagram) et les parutions presse et magazines municipaux.</p>
+    <div class="choix" style="margin-bottom:6px">
+      <label><input type="radio" name="image" value="Oui"><span>Oui, j'accepte</span></label>
+      <label><input type="radio" name="image" value="Non"><span>Non, je refuse</span></label>
+    </div>
+
+    <div style="margin-top:10px">
+      <div class="engagement">
+        <input type="checkbox" id="rgpd">
+        <div class="txt">
+          <strong>Consentement RGPD</strong>
+          <span class="det">J'ai lu et compris ce formulaire et j'accepte le traitement de mes données personnelles par l'association Morières Basket Club, conformément aux informations fournies.</span>
+          <a class="doc-link" href="LIEN_RGPD" target="_blank" rel="noopener">Cliquez pour lire le document</a>
+        </div>
+      </div>
+      <div class="engagement">
+        <input type="checkbox" id="charte">
+        <div class="txt">
+          <strong>Charte du joueur</strong>
+          <span class="det">Je reconnais avoir pris connaissance de la Charte du joueur du MBC, j'en comprends les engagements sportifs et comportementaux, et je m'engage à les respecter toute la saison.</span>
+          <a class="doc-link" href="LIEN_CHARTE" target="_blank" rel="noopener">Cliquez pour lire le document</a>
+        </div>
+      </div>
+      <div class="engagement">
+        <input type="checkbox" id="decharge">
+        <div class="txt">
+          <strong>Décharge de responsabilité</strong>
+          <span class="det">Je certifie avoir lu la décharge de responsabilité, j'en accepte les termes en mon nom ou au nom du mineur dont je suis le représentant légal, et je m'engage à les respecter.</span>
+          <a class="doc-link" href="LIEN_DECHARGE" target="_blank" rel="noopener">Cliquez pour lire le document</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Signature -->
+  <div class="card">
+    <div class="card-title"><span class="num nC">8</span>Signature</div>
+    <p class="hint" style="margin-bottom:12px">Signez dans le cadre avec le doigt sur téléphone, ou à la souris sur ordinateur.</p>
+    <div class="sig-zone">
+      <canvas id="sig"></canvas>
+      <div class="sig-baseline"></div>
+      <div class="sig-hint">Signez ici</div>
+    </div>
+    <button type="button" class="sig-clear" id="clearSig">Effacer la signature</button>
+    <div class="meta-line">Fait à <strong id="villeAffiche"></strong>, le <strong id="dateAffiche"></strong></div>
+  </div>
+
+  <div class="error-box" id="errorBox"></div>
+  <button class="submit" id="btnSubmit">Valider et générer la fiche</button>
+
+  <div class="success-box" id="successBox">
+    <div class="ttl">Fiche enregistrée</div>
+    <p style="font-size:14px;margin-top:8px;color:var(--noir)">Merci ! La fiche a été générée et transmise au club. Vous pouvez fermer cette page.</p>
+  </div>
+
+  <p class="footer-note">
+    Morières Basket Club - morieres.bc@gmail.com<br>
+    Cette fiche sert exclusivement à la pré-inscription. Données conservées de façon sécurisée et restreinte au bureau, conformément au RGPD.
+  </p>
+</div>
+
+<script>
+// ============================================================
+//  CONFIG - a renseigner au branchement du backend
+// ============================================================
+const GAS_ENDPOINT = "";          // vide = mode prototype (telechargement local)
+const VILLE = "Morières-lès-Avignon";
+
+// Catégories FFBB saison 2026-2027 (par année de naissance). La FFBB fait foi, a verifier.
+function categoriePourAnnee(a){
+  if(a >= 2022) return "Babybasket";
+  const map={2021:"U7",2020:"U7",2019:"U9",2018:"U9",2017:"U11",2016:"U11",2015:"U13",2014:"U13",2013:"U15",2012:"U15",2011:"U18",2010:"U18",2009:"U18"};
+  if(map[a]) return map[a];
+  if(a <= 2008) return "Séniors";
+  return "";
+}
+
+const $ = id => document.getElementById(id);
+const naissance=$("naissance"), catBox=$("catBox"), cardResp=$("cardResp");
+const maintenant=new Date();
+$("dateAffiche").textContent=maintenant.toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric"});
+$("villeAffiche").textContent=VILLE;
+
+let categorieCalc="", estMineur=false, pratiqueVal="";
+
+function majCategorie(){
+  const val=naissance.value;
+  if(!val){catBox.classList.remove("show");cardResp.classList.add("hidden");renum();return;}
+  const d=new Date(val), annee=d.getFullYear();
+  categorieCalc=categoriePourAnnee(annee);
+  if(pratiqueVal==="Bénévolat"){
+    catBox.classList.remove("show");
+  } else {
+    catBox.textContent="Catégorie 2026-2027 : "+(categorieCalc||"à confirmer avec le club");
+    catBox.classList.add("show");
+  }
+  let age=maintenant.getFullYear()-annee;
+  const m=maintenant.getMonth()-d.getMonth();
+  if(m<0||(m===0&&maintenant.getDate()<d.getDate())) age--;
+  estMineur=age<18;
+  cardResp.classList.toggle("hidden",!estMineur);
+  renum();
+}
+naissance.addEventListener("change",majCategorie);
+
+function renum(){
+  const base=cardResp.classList.contains("hidden")?2:3;
+  document.querySelectorAll(".nC").forEach((el,i)=>el.textContent=base+i);
+}
+renum();
+
+// Branche Mutation
+document.querySelectorAll('input[name=type]').forEach(r=>r.addEventListener("change",()=>{
+  $("fieldMutation").style.display = (r.value==="Mutation"&&r.checked)?"flex":"none";
+}));
+
+// Branche Pratique
+document.querySelectorAll('input[name=pratique]').forEach(r=>r.addEventListener("change",()=>{
+  if(!r.checked) return;
+  pratiqueVal=r.value;
+  $("fieldLoisir").style.display = (r.value==="Loisir")?"block":"none";
+  majCategorie();
+}));
+
+// Signature pad
+const canvas=$("sig"); let signaturePad;
+function resizeCanvas(){
+  const ratio=Math.max(window.devicePixelRatio||1,1);
+  const data=signaturePad?signaturePad.toData():null;
+  canvas.width=canvas.offsetWidth*ratio;
+  canvas.height=canvas.offsetHeight*ratio;
+  canvas.getContext("2d").scale(ratio,ratio);
+  if(!signaturePad){signaturePad=new SignaturePad(canvas,{penColor:"#1a2b6b",minWidth:1,maxWidth:2.4});}
+  else{signaturePad.clear();if(data)signaturePad.fromData(data);}
+}
+window.addEventListener("resize",resizeCanvas);
+window.addEventListener("load",resizeCanvas);
+resizeCanvas();
+$("clearSig").addEventListener("click",()=>signaturePad.clear());
+
+// Récolte
+function val(name){const e=document.querySelector('input[name='+name+']:checked');return e?e.value:"";}
+function recolte(){
+  const benevolat={};
+  document.querySelectorAll(".mission").forEach(m=>{
+    const nom=m.dataset.mission;
+    const champ=m.querySelector("input:checked");
+    if(champ) benevolat[nom]=champ.value;
+  });
+  return {
+    nom:$("nom").value.trim(),prenom:$("prenom").value.trim(),naissance:naissance.value,
+    categorie:categorieCalc,mineur:estMineur,
+    respNom:$("respNom").value.trim(),respPrenom:$("respPrenom").value.trim(),
+    adresse:$("adresse").value.trim(),cp:$("cp").value.trim(),ville:$("ville").value.trim(),
+    email:$("email").value.trim(),tel:$("tel").value.trim(),
+    type:val("type"),clubPrecedent:$("clubPrecedent").value.trim(),
+    pratique:val("pratique"),equipeMF:val("equipeMF"),
+    image:val("image"),rgpd:$("rgpd").checked,charte:$("charte").checked,decharge:$("decharge").checked,
+    benevolat
+  };
+}
+
+function valide(d){
+  const e=[];
+  if(!d.nom)e.push("le nom");
+  if(!d.prenom)e.push("le prénom");
+  if(!d.naissance)e.push("la date de naissance");
+  if(d.mineur&&!d.respNom)e.push("le nom du responsable légal");
+  if(d.mineur&&!d.respPrenom)e.push("le prénom du responsable légal");
+  if(!d.adresse)e.push("l'adresse");
+  if(!d.cp)e.push("le code postal");
+  if(!d.ville)e.push("la ville");
+  if(!d.email||!/^[^@]+@[^@]+\.[^@]+$/.test(d.email))e.push("un e-mail valide");
+  if(!d.tel)e.push("le téléphone");
+  if(!d.type)e.push("le type d'inscription");
+  if(d.type==="Mutation"&&!d.clubPrecedent)e.push("le club précédent");
+  if(!d.pratique)e.push("la pratique souhaitée");
+  if(d.pratique==="Loisir"&&!d.equipeMF)e.push("équipe masculine ou féminine");
+  if(!d.image)e.push("le choix sur le droit à l'image");
+  if(!d.rgpd||!d.charte||!d.decharge)e.push("la validation des 3 consentements obligatoires");
+  if(signaturePad.isEmpty())e.push("la signature");
+  return e;
+}
+
+// PDF
+function genererPDF(d){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:"mm",format:"a4"});
+  const W=210,M=18; let y=20; const rouge=[186,42,47];
+
+  doc.setFillColor(...rouge);doc.circle(M+6,y,6,"F");
+  doc.setTextColor(255);doc.setFont("helvetica","bold");doc.setFontSize(9);
+  doc.text("MBC",M+6,y+1.2,{align:"center"});
+  doc.setTextColor(26);doc.setFontSize(16);doc.text("MORIÈRES BASKET CLUB",M+16,y-1);
+  doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(110);
+  doc.text("Association loi 1901 - N°W22840269251 - morieres.bc@gmail.com",M+16,y+4);
+  y+=11;doc.setDrawColor(...rouge);doc.setLineWidth(1);doc.line(M,y,W-M,y);y+=10;
+
+  doc.setTextColor(26);doc.setFont("helvetica","bold");doc.setFontSize(17);
+  doc.text("FICHE DE RENSEIGNEMENTS",M,y);
+  doc.setFontSize(11);doc.setTextColor(110);
+  doc.text("Pré-inscription - Saison 2026-2027",M,y+6);y+=15;
+
+  const ligne=(label,valeur)=>{
+    doc.setFont("helvetica","bold");doc.setFontSize(9.8);doc.setTextColor(60);
+    doc.text(label,M,y);const lw=doc.getTextWidth(label);
+    doc.setFont("helvetica","normal");doc.setTextColor(26);
+    doc.text(valeur||"-",M+lw+2,y);y+=6.4;
+  };
+
+  ligne("Licencié : ",d.nom.toUpperCase()+" "+d.prenom);
+  ligne("Date de naissance : ",new Date(d.naissance).toLocaleDateString("fr-FR")+(d.pratique!=="Bénévolat"?"   (Catégorie : "+(d.categorie||"-")+")":""));
+  if(d.mineur) ligne("Responsable légal : ",d.respNom.toUpperCase()+" "+d.respPrenom);
+  ligne("Adresse : ",d.adresse+", "+d.cp+" "+d.ville);
+  ligne("E-mail : ",d.email);
+  ligne("Téléphone : ",d.tel);
+  ligne("Type d'inscription : ",d.type+(d.type==="Mutation"?" (club précédent : "+d.clubPrecedent+")":""));
+  let prat=d.pratique;
+  if(d.pratique==="Loisir") prat+=" - équipe "+d.equipeMF;
+  ligne("Pratique : ",prat);
+  ligne("Droit à l'image : ",d.image);
+
+  const mis=Object.entries(d.benevolat);
+  if(mis.length){
+    ligne("Bénévolat : ",mis.map(([k,v])=>k+" ("+v+")").join(", "));
+  }
+
+  y+=2;doc.setDrawColor(220);doc.setLineWidth(.3);doc.line(M,y,W-M,y);y+=8;
+
+  doc.setFont("helvetica","bold");doc.setFontSize(10.5);doc.setTextColor(...rouge);
+  doc.text("Consentements acceptés",M,y);y+=7;
+  doc.setFontSize(9.5);
+  [["Consentement RGPD",d.rgpd],["Charte du joueur",d.charte],["Décharge de responsabilité",d.decharge]].forEach(([t,ok])=>{
+    doc.setFont("helvetica","bold");doc.setTextColor(...rouge);doc.text(ok?"[x]":"[ ]",M,y);
+    doc.setFont("helvetica","normal");doc.setTextColor(40);doc.text(t+" - lu et approuvé",M+8,y);y+=6;
+  });
+  y+=4;doc.setFontSize(8.5);doc.setTextColor(110);
+  doc.text(doc.splitTextToSize("Je confirme avoir lu et accepté les mentions ci-dessus. Aucune demande de licence ne sera considérée sans ce document signé.",W-2*M),M,y);
+  y+=12;
+
+  doc.setTextColor(26);doc.setFont("helvetica","bold");doc.setFontSize(9.5);
+  const dateStr=new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"long",year:"numeric"});
+  doc.text("Fait à "+VILLE+", le "+dateStr,M,y);
+  doc.text("Signature :",W-M-45,y);
+  doc.addImage(signaturePad.toDataURL("image/png"),"PNG",W-M-45,y+2,45,22);
+  return doc;
+}
+
+$("btnSubmit").addEventListener("click",async()=>{
+  const errorBox=$("errorBox"); const d=recolte(); const erreurs=valide(d);
+  if(erreurs.length){
+    errorBox.innerHTML="Merci de compléter : "+erreurs.join(", ")+".";
+    errorBox.classList.add("show");errorBox.scrollIntoView({behavior:"smooth",block:"center"});return;
+  }
+  errorBox.classList.remove("show");
+  const btn=$("btnSubmit");btn.disabled=true;btn.textContent="Génération en cours...";
+  try{
+    const doc=genererPDF(d);
+    const nomFichier="Fiche_"+d.nom.toUpperCase()+"_"+d.prenom+".pdf";
+    if(GAS_ENDPOINT){
+      const pdfBase64=doc.output("datauristring").split(",")[1];
+      await fetch(GAS_ENDPOINT,{
+        method:"POST",
+        mode:"no-cors",
+        headers:{"Content-Type":"text/plain;charset=utf-8"},
+        body:JSON.stringify({fichier:nomFichier,pdf:pdfBase64,donnees:d})
+      });
+    } else {
+      doc.save(nomFichier);
+    }
+    $("successBox").classList.add("show");$("successBox").scrollIntoView({behavior:"smooth",block:"center"});
+    btn.style.display="none";
+  }catch(err){
+    console.error(err);
+    errorBox.innerHTML="Une erreur est survenue pendant la génération. Réessayez, ou contactez le club.";
+    errorBox.classList.add("show");btn.disabled=false;btn.textContent="Valider et générer la fiche";
+  }
+});
+</script>
+</body>
+</html>
