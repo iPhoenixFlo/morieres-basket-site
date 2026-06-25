@@ -334,7 +334,9 @@ let categorieCalc="", estMineur=false, pratiqueVal="";
 function majCategorie(){
   const val=naissance.value;
   if(!val){catBox.classList.remove("show");cardResp.classList.add("hidden");renum();return;}
-  const d=new Date(val), annee=d.getFullYear();
+  // La date arrive au format AAAA-MM-JJ : on lit directement les chiffres
+  const p=val.split("-");
+  const annee=parseInt(p[0],10), mois=parseInt(p[1],10), jour=parseInt(p[2],10);
   categorieCalc=categoriePourAnnee(annee);
   if(pratiqueVal==="Bénévolat"){
     catBox.classList.remove("show");
@@ -343,8 +345,8 @@ function majCategorie(){
     catBox.classList.add("show");
   }
   let age=maintenant.getFullYear()-annee;
-  const m=maintenant.getMonth()-d.getMonth();
-  if(m<0||(m===0&&maintenant.getDate()<d.getDate())) age--;
+  const m=(maintenant.getMonth()+1)-mois;
+  if(m<0||(m===0&&maintenant.getDate()<jour)) age--;
   estMineur=age<18;
   cardResp.classList.toggle("hidden",!estMineur);
   renum();
@@ -457,7 +459,7 @@ function genererPDF(d){
   };
 
   ligne("Licencié : ",d.nom.toUpperCase()+" "+d.prenom);
-  ligne("Date de naissance : ",new Date(d.naissance).toLocaleDateString("fr-FR")+(d.pratique!=="Bénévolat"?"   (Catégorie : "+(d.categorie||"-")+")":""));
+  ligne("Date de naissance : ",d.naissance.split("-").reverse().join("/")+(d.pratique!=="Bénévolat"?"   (Catégorie : "+(d.categorie||"-")+")":""));
   if(d.mineur) ligne("Responsable légal : ",d.respNom.toUpperCase()+" "+d.respPrenom);
   ligne("Adresse : ",d.adresse+", "+d.cp+" "+d.ville);
   ligne("E-mail : ",d.email);
