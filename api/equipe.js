@@ -357,6 +357,18 @@ function transformer(engagement, poule) {
 
   const nousAuClassement = classement.find((c) => c.nous) || null;
 
+  // Avant la première journée, le classement est vide.
+  // On compte alors les équipes distinctes présentes dans les rencontres
+  // de la poule, sinon la carte "Équipes" resterait vide toute la pré-saison.
+  const equipesPoule = new Set();
+  for (const r of rencontres) {
+    const c1 = r?.idEngagementEquipe1?.idOrganisme?.code;
+    const c2 = r?.idEngagementEquipe2?.idOrganisme?.code;
+    if (c1) equipesPoule.add(c1);
+    if (c2) equipesPoule.add(c2);
+  }
+  const nbEquipes = classement.length || equipesPoule.size || null;
+
   // État de la saison, c'est lui qui pilote l'affichage de la page
   let etat = "avant-saison";
   if (joues.length > 0 && aVenir.length > 0) etat = "en-cours";
@@ -390,8 +402,9 @@ function transformer(engagement, poule) {
       journees: matchs.length,
       joues: joues.length,
       aDomicile: matchs.filter((m) => m.domicile).length,
-      equipesDansLaPoule: classement.length || null,
-      premierMatch: matchs[0]?.date || null,
+      equipesDansLaPoule: nbEquipes,
+      premierMatch: (aVenir[0] || matchs[0])?.date || null,
+      prochaineReception: receptions[0] || null,
       position: nousAuClassement?.position ?? null,
       bilan: nousAuClassement
         ? { v: nousAuClassement.gagnes, d: nousAuClassement.perdus }
