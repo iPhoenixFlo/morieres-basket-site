@@ -63,37 +63,59 @@ async function getJeton() {
 }
 
 /**
- * Parcourt l'objet de configuration à la recherche d'une chaîne
- * qui ressemble à un JWT. Les noms de champs FFBB ne sont pas
- * documentés et peuvent changer, donc on cherche par forme
- * plutôt que par nom.
+ * Cherche un jeton dans l'objet de configuration.
+ * Les noms de champs FFBB ne sont pas documentés, donc on procède
+ * en deux passes :
+ *   1. les clés qui contiennent token / key / bearer / auth / secret,
+ *      en écartant ce qui touche à Meilisearch (autre service) ;
+ *   2. à défaut, toute chaîne qui ressemble à un JWT.
+ * Directus accepte aussi bien des jetons statiques (chaîne aléatoire)
+ * que des JWT, d'où la première passe volontairement large.
  */
-function trouverJeton(noeud, profondeur = 0) {
-  if (profondeur > 6 || noeud == null) return null;
+function listerCandidats(config) {
+  const candidats = [];
 
-  if (typeof noeud === "string") {
-    return /^ey[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\./.test(noeud) ? noeud : null;
-  }
-  if (Array.isArray(noeud)) {
-    for (const v of noeud) {
-      const trouve = trouverJeton(v, profondeur + 1);
-      if (trouve) return trouve;
+  (function parcourir(noeud, chemin, profondeur) {
+    if (profondeur > 8 || noeud == null) return;
+
+    if (typeof noeud === "string") {
+      const cle = chemin[chemin.length - 1] || "";
+      const cheminTexte = chemin.join(".");
+      const meili = /meili/i.test(cheminTexte);
+      const nomParlant = /token|key|bearer|auth|secret/i.test(cle);
+      const jwt = /^ey[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}\./.test(noeud);
+      const longueurOk = noeud.length >= 16 && noeud.length <= 3000;
+      const pasUneUrl = !/^https?:\/\//i.test(noeud);
+      const pasUneDate = !/^\d{4}-\d{2}-\d{2}T/.test(noeud);
+
+      if (longueurOk && pasUneUrl && pasUneDate && (jwt || nomParlant)) {
+        candidats.push({
+          chemin: cheminTexte,
+          valeur: noeud,
+          // plus le score est bas, meilleur est le candidat
+          score: (jwt ? 0 : 2) + (nomParlant ? 0 : 1) + (meili ? 4 : 0),
+        });
+      }
+      return;
     }
-    return null;
-  }
-  if (typeof noeud === "object") {
-    // on regarde d'abord les clés qui sentent le jeton
-    const cles = Object.keys(noeud).sort((a, b) => {
-      const score = (k) => (/token|jwt|bearer|api|key/i.test(k) ? 0 : 1);
-      return score(a) - score(b);
-    });
-    for (const k of cles) {
-      if (/meili/i.test(k)) continue; // le jeton Meilisearch ne sert pas ici
-      const trouve = trouverJeton(noeud[k], profondeur + 1);
-      if (trouve) return trouve;
+    if (Array.isArray(noeud)) {
+      noeud.forEach((v, i) => parcourir(v, [...chemin, String(i)], profondeur + 1));
+      return;
     }
-  }
-  return null;
+    if (typeof noeud === "object") {
+      for (const [k, v] of Object.entries(noeud)) {
+        parcourir(v, [...chemin, k], profondeur + 1);
+      }
+    }
+  })(config, [], 0);
+
+  candidats.sort((a, b) => a.score - b.score);
+  return candidats;
+}
+
+function trouverJeton(config) {
+  const c = listerCandidats(config);
+  return c.length ? c[0].valeur : null;
 }
 
 /* ---------------------------------------------------------------
@@ -385,6 +407,22 @@ function transformer(engagement, poule) {
   };
 }
 
+/**
+ * Décrit la forme d'un objet sans révéler les valeurs.
+ * Utilisé uniquement par le mode diagnostic.
+ */
+function squelette(noeud, profondeur = 0) {
+  if (profondeur > 4 || noeud == null) return typeof noeud;
+  if (typeof noeud === "string") return `string(${noeud.length})`;
+  if (typeof noeud !== "object") return typeof noeud;
+  if (Array.isArray(noeud)) {
+    return noeud.length ? [squelette(noeud[0], profondeur + 1), `... ${noeud.length} éléments`] : [];
+  }
+  const o = {};
+  for (const [k, v] of Object.entries(noeud)) o[k] = squelette(v, profondeur + 1);
+  return o;
+}
+
 /* ---------------------------------------------------------------
    Handler
    --------------------------------------------------------------- */
@@ -393,6 +431,50 @@ export default async function handler(req, res) {
   const debug = req.query?.debug === "1";
 
   res.setHeader("Access-Control-Allow-Origin", "*");
+
+  // Mode diagnostic : /api/equipe?config=1
+  // Renvoie la structure de /items/configuration et les candidats jetons
+  // détectés, avec les valeurs masquées. Sert à régler l'authentification
+  // sans jamais exposer un secret en clair.
+  if (req.query?.config === "1") {
+    try {
+      const r = await fetch(`${FFBB_API}/items/configuration`, {
+        headers: { Accept: "application/json" },
+      });
+      const texte = await r.text();
+      let config = null;
+      try { config = JSON.parse(texte); } catch { /* pas du JSON */ }
+
+      if (!config) {
+        res.status(200).json({
+          http: r.status,
+          typeContenu: r.headers.get("content-type"),
+          apercu: texte.slice(0, 600),
+        });
+        return;
+      }
+
+      const candidats = listerCandidats(config).map((c) => ({
+        chemin: c.chemin,
+        score: c.score,
+        longueur: c.valeur.length,
+        debut: c.valeur.slice(0, 6),
+        fin: c.valeur.slice(-4),
+      }));
+
+      res.setHeader("Cache-Control", "no-store");
+      res.status(200).json({
+        http: r.status,
+        clesRacine: Object.keys(config?.data ?? config ?? {}),
+        candidats,
+        // structure sans les valeurs, pour repérer où se cache le jeton
+        squelette: squelette(config?.data ?? config),
+      });
+    } catch (e) {
+      res.status(200).json({ erreur: e.message });
+    }
+    return;
+  }
 
   if (!id || !/^\d+$/.test(id)) {
     res.status(400).json({ erreur: "Paramètre id manquant ou invalide" });
