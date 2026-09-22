@@ -22,7 +22,7 @@ export const STAGES = [
     precision: "Repas tiré du sac",
     lieu: "Gymnase Pierre Perdiguier",
     jours: ["2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23"],
-    capaciteParJour: 24,          // À CONFIRMER
+    capaciteParJour: 20,          // 15 à 20 stagiaires, 20 au maximum
     prixJour: 20,
     prixSemaine: 90,
     paiement3xDes: 90,
@@ -39,7 +39,7 @@ export const STAGES = [
     precision: "Niveau avancé : joueurs de région ou départementaux confirmés",
     lieu: "Gymnase Pierre Perdiguier",
     jours: ["2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23"],
-    capaciteParJour: 20,          // À CONFIRMER
+    capaciteParJour: 25,          // 20 à 25 stagiaires, 25 au maximum
     prixJour: 20,
     prixSemaine: 90,
     paiement3xDes: 90,
