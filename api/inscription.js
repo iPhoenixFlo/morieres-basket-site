@@ -24,6 +24,19 @@ const libelleJour = (iso) => { const d = new Date(iso + "T12:00:00Z");
   return `${JOURS[d.getUTCDay()]} ${d.getUTCDate()} ${MOIS[d.getUTCMonth()]}`; };
 
 const nettoyer = (v, max = 120) => String(v ?? "").replace(/[<>]/g, "").trim().slice(0, max);
+
+/* Mise en forme des noms, appliquée côté serveur pour que la base
+   reste propre quoi que tape le parent :
+   nom de famille en majuscules, prénom avec une capitale par partie
+   (Jean-Pierre, D'Angelo, Marie Claire). */
+const espaces = (v) => nettoyer(v).replace(/\s+/g, " ");
+const majuscules = (v) => espaces(v).toLocaleUpperCase("fr-FR");
+
+const capitaliser = (v) =>
+  espaces(v)
+    .toLocaleLowerCase("fr-FR")
+    .replace(/(^|[\s\-'’])([\p{L}])/gu, (m, avant, lettre) => avant + lettre.toLocaleUpperCase("fr-FR"));
+
 const email = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
 const tel = (v) => /^[0-9 +().-]{8,20}$/.test(v);
 
@@ -105,9 +118,9 @@ export default async function handler(req, res) {
   const inscription = {
     id, stageId: stage.id, jours: v.jours, statut: "attente",
     montant: v.montant, paiement: v.nombre === 3 ? "3x" : "1x",
-    enfant: { prenom: nettoyer(b.enfant.prenom), nom: nettoyer(b.enfant.nom), naissance: b.enfant.naissance },
-    parent: { prenom: nettoyer(b.parent.prenom), nom: nettoyer(b.parent.nom),
-              email: nettoyer(b.parent.email), tel: nettoyer(b.parent.tel, 20) },
+    enfant: { prenom: capitaliser(b.enfant.prenom), nom: majuscules(b.enfant.nom), naissance: b.enfant.naissance },
+    parent: { prenom: capitaliser(b.parent.prenom), nom: majuscules(b.parent.nom),
+              email: nettoyer(b.parent.email).toLowerCase(), tel: nettoyer(b.parent.tel, 20) },
     autorisations: { photo: !!b.autorisations?.photo, sortie: !!b.autorisations?.sortie },
     sante: b.sante?.consentement && nettoyer(b.sante.allergies, 500)
       ? { allergies: nettoyer(b.sante.allergies, 500) } : null,
