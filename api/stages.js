@@ -102,6 +102,7 @@ export default async function handler(req, res) {
 
       const { anneesNaissance, ...publicStage } = s;
       publicStage.anneeSurclassement = anneeSurclassement(s);
+      publicStage.anneesAcceptees = s.anneesNaissance;
       data.push({ ...publicStage, jours, inscrits, prenoms, complet: jours.every((j) => j.restantes === 0) });
     }
     // Les places bougent en permanence pendant les inscriptions :
