@@ -10,7 +10,7 @@
  *     Si le paiement est acquis, confirme l'inscription au passage.
  * ---------------------------------------------------------------
  */
-import { trouverStage, calculerPrix } from "./_config-stages.js";
+import { trouverStage, calculerPrix, anneeSurclassement } from "./_config-stages.js";
 import { reserver, libererPlaces, creerInscription, modifierInscription, supprimerInscription, lireInscription } from "./_db.js";
 import { creerPaiement, lirePaiement } from "./_helloasso.js";
 import { confirmerInscription } from "./_confirmation.js";
@@ -53,9 +53,23 @@ function valider(b, stage) {
   if (!nettoyer(en.prenom)) e.push("Le prénom du stagiaire est obligatoire.");
   if (!nettoyer(en.nom)) e.push("Le nom du stagiaire est obligatoire.");
   const annee = Number(String(en.naissance || "").slice(0, 4));
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(en.naissance || "")) e.push("La date de naissance est invalide.");
-  else if (!stage.anneesNaissance.includes(annee))
-    e.push(`Ce stage est réservé aux enfants nés de ${Math.min(...stage.anneesNaissance)} à ${Math.max(...stage.anneesNaissance)}.`);
+  const surclasse = !!b.surclassement;
+  const anneeSur = anneeSurclassement(stage);
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(en.naissance || "")) {
+    e.push("La date de naissance est invalide.");
+  } else if (!stage.anneesNaissance.includes(annee)) {
+    /* Le surclassement ouvre UNE seule année supplémentaire, et
+       seulement sur les stages qui l'autorisent. */
+    if (surclasse && anneeSur === annee) {
+      if (!nettoyer(en.licence)) e.push("Le numéro de licence est obligatoire pour un enfant surclassé.");
+    } else if (anneeSur && annee === anneeSur) {
+      e.push("Pour inscrire un enfant né en " + anneeSur + ", coche la case surclassement et indique son numéro de licence.");
+    } else {
+      e.push(`Ce stage est réservé aux enfants nés de ${Math.min(...stage.anneesNaissance)} à ${Math.max(...stage.anneesNaissance)}` +
+        (anneeSur ? `, ou en ${anneeSur} s'ils sont surclassés sur leur licence.` : "."));
+    }
+  }
 
   if (!nettoyer(pa.prenom) || !nettoyer(pa.nom)) e.push("Le nom du responsable légal est obligatoire.");
   if (!email(pa.email || "")) e.push("L'adresse e-mail est invalide.");
@@ -69,7 +83,8 @@ function valider(b, stage) {
   if (nombre === 3 && montant < stage.paiement3xDes)
     e.push(`Le paiement en 3 fois est disponible à partir de ${stage.paiement3xDes} €.`);
 
-  return { erreurs: e, jours: jours.sort(), nombre, montant };
+  return { erreurs: e, jours: jours.sort(), nombre, montant,
+            surclasse: surclasse && anneeSur === annee };
 }
 
 export default async function handler(req, res) {
@@ -118,7 +133,10 @@ export default async function handler(req, res) {
   const inscription = {
     id, stageId: stage.id, jours: v.jours, statut: "attente",
     montant: v.montant, paiement: v.nombre === 3 ? "3x" : "1x",
-    enfant: { prenom: capitaliser(b.enfant.prenom), nom: majuscules(b.enfant.nom), naissance: b.enfant.naissance },
+    enfant: {
+      prenom: capitaliser(b.enfant.prenom), nom: majuscules(b.enfant.nom), naissance: b.enfant.naissance,
+      ...(v.surclasse ? { surclasse: true, licence: majuscules(b.enfant.licence).replace(/\s/g, "") } : {}),
+    },
     parent: { prenom: capitaliser(b.parent.prenom), nom: majuscules(b.parent.nom),
               email: nettoyer(b.parent.email).toLowerCase(), tel: nettoyer(b.parent.tel, 20) },
     autorisations: { photo: !!b.autorisations?.photo, sortie: !!b.autorisations?.sortie },
