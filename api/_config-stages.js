@@ -18,6 +18,10 @@ export const STAGES = [
     public: "U11, U13 et U15, nés de 2012 à 2017",
     anneesNaissance: [2012, 2013, 2014, 2015, 2016, 2017],
     niveau: "Tous niveaux",
+    /* Un enfant né UN an après la plus jeune année acceptée peut
+       s'inscrire s'il est surclassé sur sa licence FFBB. Une seule
+       année d'écart, jamais deux. */
+    surclassement: true,
     encadrant: "Marjorie Barré",
     horaires: "9h à 16h",
     precision: "Repas tiré du sac. Ouvert à tous les niveaux, du débutant au confirmé.",
@@ -57,6 +61,12 @@ export function trouverStage(id) {
 /* Un U15 né en 2012 ou 2013 remplit la condition d'âge des DEUX stages.
    Le choix se fait alors sur le niveau, pas sur l'année de naissance. */
 export const DEUX_STAGES = [2012, 2013];
+
+/** Année acceptée en surclassement, ou null si le stage ne l'autorise pas. */
+export function anneeSurclassement(stage) {
+  if (!stage?.surclassement) return null;
+  return Math.max(...stage.anneesNaissance) + 1;
+}
 
 export function calculerPrix(stage, jours) {
   const n = jours.length;
