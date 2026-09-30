@@ -14,7 +14,7 @@
  *        après 7 jours sans activité). Protégée par CRON_SECRET.
  * ---------------------------------------------------------------
  */
-import { STAGES, trouverStage } from "./_config-stages.js";
+import { STAGES, trouverStage, anneeSurclassement } from "./_config-stages.js";
 import { placesPrises, listerPayees, purger } from "./_db.js";
 
 const JOURS = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
@@ -54,10 +54,11 @@ export default async function handler(req, res) {
     if (!stage) { res.status(404).json({ erreur: "Stage inconnu" }); return; }
 
     const inscrits = await listerPayees(stage.id);
-    const lignes = [["Prénom", "Nom", "Naissance", "Jours", "Parent", "Téléphone", "E-mail",
-                     "Allergies", "Photo", "Sortie seul", "Montant", "Paiement"]];
+    const lignes = [["Prénom", "Nom", "Naissance", "Surclassé", "Licence", "Jours", "Parent",
+                     "Téléphone", "E-mail", "Allergies", "Photo", "Sortie seul", "Montant", "Paiement"]];
     for (const i of inscrits) {
       lignes.push([i.enfant.prenom, i.enfant.nom, i.enfant.naissance,
+        i.enfant.surclasse ? "OUI" : "", i.enfant.licence || "",
         i.jours.map(libelleJour).join(", "), `${i.parent.prenom} ${i.parent.nom}`,
         i.parent.tel, i.parent.email, i.sante?.allergies || "",
         i.autorisations?.photo ? "oui" : "non", i.autorisations?.sortie ? "oui" : "non",
@@ -100,6 +101,7 @@ export default async function handler(req, res) {
       } catch (e) { inscrits = 0; prenoms = []; }
 
       const { anneesNaissance, ...publicStage } = s;
+      publicStage.anneeSurclassement = anneeSurclassement(s);
       data.push({ ...publicStage, jours, inscrits, prenoms, complet: jours.every((j) => j.restantes === 0) });
     }
     // Les places bougent en permanence pendant les inscriptions :
