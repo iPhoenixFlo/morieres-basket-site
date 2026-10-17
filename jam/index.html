@@ -993,10 +993,7 @@ function txt(s, x, y, size, color, align = 'center', weight = '900', stroke = 0,
 
 /* ---------- sprites des joueurs, dessinés pixel par pixel ---------- */
 const SPR_W = 60, SPR_H = 64, SPR_OX = 30, SPR_OY = 60, K = .72;
-const sprCv = document.createElement('canvas'); sprCv.width = SPR_W; sprCv.height = SPR_H;
-const sprCtx = sprCv.getContext('2d');
-const sprImg = sprCtx.createImageData(SPR_W, SPR_H);
-const sprBuf = new Uint32Array(sprImg.data.buffer);
+const sprBuf = new Uint32Array(SPR_W * SPR_H);
 const colCache = {};
 function c32(hex) {
   if (colCache[hex]) return colCache[hex];
@@ -1054,7 +1051,7 @@ function outline(col = OUT) {
   for (const i of list) b[i] = col;
 }
 
-// Dessine le joueur et renvoie son canevas. b = position écran (pour orienter le bras vers le ballon).
+// Dessine le joueur dans sprBuf. b = position écran (pour orienter le bras vers le ballon).
 function renderSprite(p, b) {
   sprBuf.fill(0);
   const tm = G.teams[p.team], f = p.face;
@@ -1110,10 +1107,26 @@ function renderSprite(p, b) {
   arm(f * 6, hf);
   // contour noir, puis un second contour aux couleurs de l'équipe : les joueurs restent distincts quand ils se touchent
   outline(); outline(p.team === 0 ? c32('#ffffff') : c32(tm.clair));
-  // Un canevas par joueur : Safari diffère les copies, un canevas partagé afficherait 4 fois le même joueur.
-  if (!p._cv) { p._cv = document.createElement('canvas'); p._cv.width = SPR_W; p._cv.height = SPR_H; }
-  p._cv.getContext('2d').putImageData(sprImg, 0, 0);
-  return p._cv;
+}
+// Peint le sprite directement, ligne par ligne, sans canevas intermédiaire :
+// Safari sur iPhone affichait sinon quatre fois le même joueur.
+const strCache = {};
+function colStr(c) {
+  return strCache[c] || (strCache[c] = `rgb(${c & 255},${(c >> 8) & 255},${(c >> 16) & 255})`);
+}
+function blitSprite(g, dx, dy, sx0 = 0, sy0 = 0, sw = SPR_W, sh = SPR_H, k = 1) {
+  for (let y = sy0; y < sy0 + sh; y++) {
+    let x = sx0;
+    while (x < sx0 + sw) {
+      const c = sprBuf[y * SPR_W + x];
+      if (!c) { x++; continue; }
+      let e = x + 1;
+      while (e < sx0 + sw && sprBuf[y * SPR_W + e] === c) e++;
+      g.fillStyle = colStr(c);
+      g.fillRect(dx + (x - sx0) * k, dy + (y - sy0) * k, (e - x) * k, k);
+      x = e;
+    }
+  }
 }
 
 /* ---------- décor ---------- */
@@ -1223,9 +1236,9 @@ function drawPlayer(p) {
   }
   if (p.human && !G.demo) { ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(g.x, g.y, 20 * s, 6 * s, 0, 0, 7); ctx.stroke(); }
   if (p.fire) { ctx.fillStyle = 'rgba(255,120,0,.3)'; ctx.beginPath(); ctx.ellipse(g.x, g.y, 24 * s, 7 * s, 0, 0, 7); ctx.fill(); }
-  const spr = renderSprite(p, b);
+  renderSprite(p, b);
   loPixel();
-  loCtx.drawImage(spr, Math.round(b.x / LS) - SPR_OX, Math.round(b.y / LS) - SPR_OY);
+  blitSprite(loCtx, Math.round(b.x / LS) - SPR_OX, Math.round(b.y / LS) - SPR_OY);
   loVector();
   G.tags.push({ p, x: b.x + shk.x * LS, y: b.y + shk.y * LS - 92 });
 }
@@ -1388,6 +1401,7 @@ function drawTitle() {
   txt('2 CONTRE 2 · TURBO · DUNKS · EN FEU', 480, 280, 18, '#ffd23f', 'center', '700');
   txt('< DIFFICULTÉ : ' + DIFF[G.diff].nom + ' >', 480, 370, 14, '#fff', 'center', 'pix', 5);
   if (G.frame % 60 < 40) txt(G.touch ? "TOUCHE L'ÉCRAN POUR JOUER" : 'APPUIE SUR ESPACE POUR JOUER', 480, 430, 16, '#fff', 'center', 'pix', 6);
+  txt('v6', 940, 528, 8, '#666', 'right', 'pix');
   txt(G.touch ? 'Joystick à gauche (à fond = turbo) · TIR près du panier = dunk' : 'Flèches/ZQSD · Tir : Espace (près du panier = dunk) · Passe/Vol : K · Turbo : Maj · Pousser : Maj+K · M : son', 480, 500, 15, '#bbb', 'center', '700');
 }
 
@@ -1396,7 +1410,6 @@ function drawStatBar(x, y, label, v, w) {
   const n = Math.round(v), seg = (w - 9) / 10;
   for (let i = 0; i < 10; i++) { ctx.fillStyle = i < n ? CONFIG.club.couleur : '#333'; ctx.fillRect(Math.round(x + 38 + i * (seg + 1)), y - 4, Math.max(1, Math.floor(seg)), 8); }
 }
-const CARD_CV = [];
 function drawSelect() {
   ctx.fillStyle = '#120708'; ctx.fillRect(0, 0, VW, VH);
   drawLogo(36, 22);
@@ -1413,11 +1426,11 @@ function drawSelect() {
     const step = (c.h - 50) / 5;
     if (step > 9) rows.forEach((r, k) => drawStatBar(c.x + 10, c.y + 46 + k * step, r[0], r[1], c.w - 120));
     // aperçu du joueur en pixel art (il court quand il est choisi)
-    const fake = { def: j, team: 0, face: 1, state: 'run', z: 0, vx: si >= 0 ? 1 : 0, vy: 0, anim: G.frame * .2, reach: 0, _cv: CARD_CV[i] };
-    CARD_CV[i] = renderSprite(fake, null);
+    const fake = { def: j, team: 0, face: 1, state: 'run', z: 0, vx: si >= 0 ? 1 : 0, vy: 0, anim: G.frame * .2, reach: 0 };
+    renderSprite(fake, null);
     const sh = Math.min(2, (c.h - 34) / 52);
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(CARD_CV[i], 16, 10, 28, 52, c.x + c.w - 14 - 28 * sh, c.y + c.h - 4 - 52 * sh, 28 * sh, 52 * sh);
+    blitSprite(ctx, c.x + c.w - 14 - 28 * sh, c.y + c.h - 4 - 52 * sh, 16, 10, 28, 52, sh);
     if (si >= 0) {
       const bw = si === 0 ? 40 : 100, bx = c.x + c.w - 10 - bw;
       ctx.fillStyle = si === 0 ? '#ffd23f' : '#fff'; ctx.fillRect(bx, c.y + 32, bw, 16);
