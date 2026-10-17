@@ -577,7 +577,7 @@ function aiControl(p) {
     const mine = carrier === man || (carrier && dxy(carrier, defHoop) < 220 && dxy(p, carrier) < dxy(mate, carrier));
     const tgt = mine ? carrier : man;
     const gd = Math.max(1, dxy(tgt, defHoop));
-    const off = mine ? 40 : 50;
+    const off = mine ? 46 : 54;
     tx = tgt.x + (defHoop.x - tgt.x) / gd * off; ty = tgt.y + (defHoop.y - tgt.y) / gd * off;
     turbo = dxy(p, { x: tx, y: ty }) > 110;
     if (holder && mine) {
@@ -832,7 +832,7 @@ function updatePlay() {
     const a = G.players[i], b = G.players[j];
     if (a.state === 'dunk' || b.state === 'dunk' || a.state === 'down' || b.state === 'down') continue;
     const d = dxy(a, b);
-    if (d < 30 && d > .01) { const k = (30 - d) / d * .3; a.x -= (b.x - a.x) * k; a.y -= (b.y - a.y) * k; b.x += (b.x - a.x) * k; b.y += (b.y - a.y) * k; }
+    if (d < 36 && d > .01) { const k = (36 - d) / d * .3; a.x -= (b.x - a.x) * k; a.y -= (b.y - a.y) * k; b.x += (b.x - a.x) * k; b.y += (b.y - a.y) * k; }
   }
   updateBall();
   if (!G.pending && G.shotClock <= 0 && ball.mode !== 'shot') {
@@ -992,7 +992,7 @@ function txt(s, x, y, size, color, align = 'center', weight = '900', stroke = 0,
 }
 
 /* ---------- sprites des joueurs, dessinés pixel par pixel ---------- */
-const SPR_W = 60, SPR_H = 64, SPR_OX = 30, SPR_OY = 60, K = .72;
+const SPR_W = 72, SPR_H = 84, SPR_OX = 36, SPR_OY = 79, K = .86;
 const sprBuf = new Uint32Array(SPR_W * SPR_H);
 const colCache = {};
 function c32(hex) {
@@ -1051,16 +1051,35 @@ function outline(col = OUT) {
   for (const i of list) b[i] = col;
 }
 
-// Dessine le joueur dans sprBuf. b = position écran (pour orienter le bras vers le ballon).
+// Ombrage automatique en 3 tons : bords tournés vers la lumière (haut, avant) éclaircis, bords opposés assombris.
+const shadeCache = new Map();
+function shade32(c, k) {
+  const key = c * 8 + (k > 0 ? 1 : 2), hit = shadeCache.get(key); if (hit) return hit;
+  const f = v => Math.round(k > 0 ? v + (255 - v) * k : v * (1 + k));
+  const r = f(c & 255), g = f((c >> 8) & 255), b = f((c >> 16) & 255);
+  const out = ((255 << 24) | (b << 16) | (g << 8) | r) >>> 0;
+  shadeCache.set(key, out); return out;
+}
+function autoShade(f, keep) {
+  const b = sprBuf, w = SPR_W, h = SPR_H, src = b.slice();
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = y * w + x, c = src[i]; if (!c || keep.has(c)) continue;
+    const up = y > 0 ? src[i - w] : 0, dn = y < h - 1 ? src[i + w] : 0;
+    const fr = (x + f >= 0 && x + f < w) ? src[i + f] : 0, bk = (x - f >= 0 && x - f < w) ? src[i - f] : 0;
+    if (!up || !fr) b[i] = shade32(c, .28);
+    else if (!dn || !bk || (bk !== c && !keep.has(bk))) b[i] = shade32(c, -.3);
+  }
+}
+
+// Dessine le joueur (ou reprend sa pose déjà dessinée) et renvoie son canevas. b = position écran (pour orienter le bras vers le ballon).
 function renderSprite(p, b) {
-  sprBuf.fill(0);
-  const tm = G.teams[p.team], f = p.face;
+  const tm = G.teams[p.team], f = p.face, peau = p.def.peau || '#e0ac69';
   const C = {
-    skin: c32(p.def.peau || '#e0ac69'), hair: c32(p.def.cheveux || '#222'), jer: c32(tm.couleur), jerD: c32(tm.fonce),
-    trim: c32(tm.clair), sock: c32('#fff'), shoe: c32('#1c1c1c'), eye: c32('#140c0c'),
+    skin: c32(peau), skinD: c32(shadeHex(peau, -.35)), hair: c32(p.def.cheveux || '#222'), jer: c32(tm.couleur), jerD: c32(tm.fonce),
+    trim: c32(tm.clair), white: c32('#f4f4f4'), sole: c32('#2a2a2a'), eye: c32('#140c0c'), mouth: c32('#6b2020'),
   };
   const down = p.state === 'down';
-  rotC = down ? Math.cos(-f * 1.45) : 1; rotS = down ? Math.sin(-f * 1.45) : 0; dropY = down ? -4 : 0;
+  rotC = down ? Math.cos(-f * 1.45) : 1; rotS = down ? Math.sin(-f * 1.45) : 0; dropY = down ? -5 : 0;
   const moving = Math.hypot(p.vx, p.vy) > .5 && p.z === 0 && p.state === 'run';
   const sw = moving ? Math.sin(p.anim) : 0;
   const air = p.z > 0 || p.state === 'dunk' || p.state === 'hang';
@@ -1068,67 +1087,80 @@ function renderSprite(p, b) {
 
   let hb, hf;
   const up = p.state === 'jumpshot' || p.state === 'dunk' || p.state === 'hang' || (air && hasBall);
-  if (up) { hb = [f * 1, -66]; hf = [f * 6, -65]; if (p.state === 'hang') { hb = [f * 7, -64]; hf = [f * 9, -64]; } }
-  else if (air) { hb = [-6, -67]; hf = [6, -68]; }
-  else if (p.reach > 0) { hb = [-f * 4 - sw * 4, -25]; hf = [f * 22, -36]; }
+  if (up) { hb = [f * 1, -68]; hf = [f * 7, -67]; if (p.state === 'hang') { hb = [f * 7, -66]; hf = [f * 10, -66]; } }
+  else if (air) { hb = [-7, -69]; hf = [7, -70]; }
+  else if (p.reach > 0) { hb = [-f * 4 - sw * 4, -25]; hf = [f * 23, -37]; }
   else if (hasBall && p.state === 'run' && b) {
     const bp = P(ball.x, ball.y, ball.z);
-    hb = [-f * 3 - sw * 5, -25]; hf = [(bp.x - b.x) / LS / K, (bp.y - b.y) / LS / K - 3];
-  } else { hb = [-f * 2 - sw * 6, -24]; hf = [f * 2 + sw * 6, -24]; }
+    hb = [-f * 3 - sw * 5, -26]; hf = [(bp.x - b.x) / LS / K, (bp.y - b.y) / LS / K - 3];
+  } else { hb = [-f * 2 - sw * 7, -25]; hf = [f * 2 + sw * 7, -25]; }
+  hb = hb.map(Math.round); hf = hf.map(Math.round);
+  const swq = Math.round(sw * 4) / 4;
+
+  // Chaque pose n'est dessinée qu'une fois, puis réutilisée (le téléphone économise son processeur).
+  // Le canevas d'une pose n'est jamais redessiné : Safari ne peut donc pas les confondre.
+  if (!p.def._id) p.def._id = ++spriteIds;
+  const key = [p.def._id, p.team, f, down ? 1 : 0, air ? 1 : 0, p.state === 'hang' ? 1 : 0, swq, hb, hf].join();
+  const hit = spriteCache.get(key); if (hit) return hit;
+  sprBuf.fill(0);
 
   const arm = (sx, h) => {
-    const ex = (sx + h[0]) / 2 - f * 2, ey = (-43 + h[1]) / 2 + (h[1] < -50 ? 0 : 2);
-    pLine(sx, -43, ex, ey, 2, C.skin); pLine(ex, ey, h[0], h[1], 2, C.skin);
-    pLine(sx, -44, sx + (ex - sx) * .35, -44 + (ey + 43) * .35, 3, C.jer);
-    pDisc(h[0], h[1], 1.6, C.skin);
+    const ex = (sx + h[0]) / 2 - f * 2.5, ey = (-44 + h[1]) / 2 + (h[1] < -50 ? 0 : 2);
+    pDisc(sx, -44, 2.6, C.skin);                       // épaule
+    pLine(sx, -44, ex, ey, 3, C.skin);                 // bras
+    pLine(ex, ey, h[0], h[1], 3, C.skin);              // avant-bras
+    const wx = ex + (h[0] - ex) * .72, wy = ey + (h[1] - ey) * .72;
+    pLine(wx, wy, ex + (h[0] - ex) * .86, ey + (h[1] - ey) * .86, 3, C.trim); // poignet
+    pDisc(h[0], h[1], 2, C.skin);                      // main
   };
   const leg = (hx, fx, fy) => {
-    const kx = (hx + fx) / 2 + f * 1.5, ky = (-18 + fy) / 2;
-    pLine(hx, -18, kx, ky, 3, C.skin); pLine(kx, ky, fx, fy - 4, 3, C.skin);
-    pLine(fx, fy - 8, fx, fy - 4, 3, C.sock);
-    pLine(fx - f * 2, fy - 1.5, fx + f * 4, fy - 1.5, 3, C.shoe);
+    const kx = (hx + fx) / 2 + f * 2, ky = (-14 + fy) / 2;
+    pLine(hx, -14, kx, ky, 4, C.skin); pLine(kx, ky, fx, fy - 5, 3, C.skin);
+    pLine(fx, fy - 11, fx, fy - 4, 3, C.white);        // chaussette haute
+    pLine(fx - 1, fy - 10, fx + 1, fy - 10, 2, C.jer); // rayure
+    pLine(fx - f * 2.5, fy - 2.5, fx + f * 4.5, fy - 2.5, 3, C.white); // basket
+    pLine(fx - f * 2.5, fy - .5, fx + f * 5, fy - .5, 1, C.sole);
+    pLine(fx, fy - 3, fx + f * 2.5, fy - 2.5, 1, C.jer);
   };
-  arm(-f * 6, hb);
-  if (air) { leg(-3, -3 - f * 3, -5); leg(3, 4 + f * 3, -10); } else { leg(-3, -3 + sw * 7, 0); leg(3, 3 - sw * 7, 0); }
-  // short
-  pPoly([[-8.5, -27], [8.5, -27], [9.5, -14], [1, -14], [0, -17], [-1, -14], [-9.5, -14]], C.jer);
-  pLine(-8.5, -26, -9, -16, 1, C.trim); pLine(8.5, -26, 9, -16, 1, C.trim);
-  // maillot, avec le dos dans l'ombre
-  pPoly([[-7.5, -46], [-3, -46], [0, -42], [3, -46], [7.5, -46], [8.2, -25], [-8.2, -25]], C.jer);
-  pPoly([[-f * 7.5, -46], [-f * 4, -46], [-f * 4.5, -25], [-f * 8.2, -25]], C.jerD);
-  pLine(-3, -46, 0, -42.5, 1, C.trim); pLine(0, -42.5, 3, -46, 1, C.trim);
-  pLine(-8.2, -26, 8.2, -26, 1, C.jerD);
-  if (!down) pNumber(p.def.numero, f * 1, -35, C.trim);
-  // tête
-  pLine(0, -49, 0, -45, 3, C.skin);
-  pDisc(f * .5, -54, 6.3, C.skin);
-  pDisc(f * .5 - f * 1.3, -56.3, 5.6, C.hair);
-  pDisc(f * 4.3, -54, .5, C.eye);
-  arm(f * 6, hf);
-  // contour noir, puis un second contour aux couleurs de l'équipe : les joueurs restent distincts quand ils se touchent
+  arm(-f * 7, hb);
+  if (air) { leg(-3, -3 - f * 4, -5); leg(3, 4 + f * 3, -11); } else { leg(-3.5, -3.5 + swq * 8, 0); leg(3.5, 3.5 - swq * 8, 0); }
+  // short ample
+  pPoly([[-9.5, -28], [9.5, -28], [11, -11], [1.5, -11], [0, -16], [-1.5, -11], [-11, -11]], C.jer);
+  pLine(-9.6, -27, -11, -12, 2, C.trim); pLine(9.6, -27, 11, -12, 2, C.trim);
+  pLine(-9.5, -27.5, 9.5, -27.5, 2, C.jerD);
+  // maillot sans manches
+  pPoly([[-8, -48], [-4.5, -48], [0, -43], [4.5, -48], [8, -48], [8.8, -27], [-8.8, -27]], C.jer);
+  pLine(-4.5, -48, 0, -43.5, 1, C.trim); pLine(0, -43.5, 4.5, -48, 1, C.trim);
+  pLine(-8, -47, -8.6, -28, 1, C.trim); pLine(8, -47, 8.6, -28, 1, C.trim);
+  if (!down) pNumber(p.def.numero, f * 1, -36, C.trim);
+  // tête, un peu grosse comme dans les jeux d'arcade
+  pLine(0, -50, 0, -46, 4, C.skin);
+  pDisc(f * .5, -56, 7.4, C.skin);
+  pDisc(f * .5 - f * 2.4, -59.6, 5.6, C.hair);
+  pLine(-f * 6, -57, f * 3.5, -62.4, 2, C.hair);
+  pDisc(-f * 1.2, -55.5, 1.3, C.skinD);                 // oreille
+  if (p.def.numero % 2) pLine(-f * 6.5, -59.5, f * 7.6, -59.5, 2, C.trim); // bandeau
+  { const [ex, ey] = tx(f * 4, -56.8), X = Math.round(ex), Y = Math.round(ey);
+    plot(X, Y, C.white); plot(X + f, Y, C.eye);                         // œil
+    plot(X, Y - 2, C.hair); plot(X + f, Y - 2, C.hair);                 // sourcil
+    const [mx, my] = tx(f * 5.2, -52.6); plot(Math.round(mx), Math.round(my), C.mouth); }
+  arm(f * 7, hf);
+  autoShade(f, new Set([C.white, C.eye, C.mouth, C.trim, C.sole]));
+  // contour noir, puis un liseré aux couleurs de l'équipe : les joueurs restent distincts quand ils se touchent
   outline(); outline(p.team === 0 ? c32('#ffffff') : c32(tm.clair));
+  const cv2 = document.createElement('canvas'); cv2.width = SPR_W; cv2.height = SPR_H;
+  cv2.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(sprBuf.buffer.slice(0)), SPR_W, SPR_H), 0, 0);
+  if (spriteCache.size > 800) spriteCache.clear();
+  spriteCache.set(key, cv2);
+  return cv2;
 }
-// Peint le sprite directement, ligne par ligne, sans canevas intermédiaire :
-// Safari sur iPhone affichait sinon quatre fois le même joueur.
-const strCache = {};
-function colStr(c) {
-  return strCache[c] || (strCache[c] = `rgb(${c & 255},${(c >> 8) & 255},${(c >> 16) & 255})`);
+const spriteCache = new Map();
+let spriteIds = 0;
+function shadeHex(hex, k) {
+  let h = hex.replace('#', ''); if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  const n = parseInt(h, 16), f = v => Math.round(k > 0 ? v + (255 - v) * k : v * (1 + k));
+  return '#' + [n >> 16 & 255, n >> 8 & 255, n & 255].map(v => f(v).toString(16).padStart(2, '0')).join('');
 }
-function blitSprite(g, dx, dy, sx0 = 0, sy0 = 0, sw = SPR_W, sh = SPR_H, k = 1) {
-  for (let y = sy0; y < sy0 + sh; y++) {
-    let x = sx0;
-    while (x < sx0 + sw) {
-      const c = sprBuf[y * SPR_W + x];
-      if (!c) { x++; continue; }
-      let e = x + 1;
-      while (e < sx0 + sw && sprBuf[y * SPR_W + e] === c) e++;
-      g.fillStyle = colStr(c);
-      g.fillRect(dx + (x - sx0) * k, dy + (y - sy0) * k, (e - x) * k, k);
-      x = e;
-    }
-  }
-}
-
 /* ---------- décor ---------- */
 const CROWD = [];
 (function () {
@@ -1138,13 +1170,30 @@ const CROWD = [];
     CROWD.push({ x: x + rnd(-5, 5) + (r % 2) * 9, r, c: Math.random() < .45 ? CONFIG.club.couleur : pick(shirts), sk: pick(skins), ph: rnd(0, 6) });
 })();
 const snap = v => Math.round(v / LS) * LS;
+let crowdStrip = null;
+function buildCrowd(s0) {
+  const w = Math.ceil((2100 * s0 * .92 + 40) / LS), c = document.createElement('canvas');
+  c.width = w; c.height = Math.ceil(130 / LS);
+  const g = c.getContext('2d');
+  for (const p of CROWD) {
+    const sx = Math.round(((p.x + 480) * s0 * .92 + 20) / LS), sy = Math.round((66 + p.r * 15 + Math.sin(p.ph) * .8 - 40) / LS);
+    g.fillStyle = p.c; g.fillRect(sx - 3, sy, 6, 5);
+    g.fillStyle = p.sk; g.fillRect(sx - 2, sy - 4, 4, 4);
+  }
+  return c;
+}
 
 function drawArena() {
   ctx.fillStyle = '#0b0b0b'; ctx.fillRect(-10, -10, VW + 20, 60);
   const bands = ['#0f0909', '#160b0c', '#1d0d0e', '#250f11'];
   bands.forEach((c, i) => { ctx.fillStyle = c; ctx.fillRect(-10, 50 + i * 26, VW + 20, 26); });
   const s0 = sc(0);
-  for (const c of CROWD) {
+  if (G.hype <= .05) {
+    // foule calme : une bande dessinée une seule fois, simplement décalée
+    if (!crowdStrip) crowdStrip = buildCrowd(s0);
+    const ox = snap(VW / 2 + (-480 - G.camX) * s0 * .92 - 20);
+    ctx.drawImage(crowdStrip, ox, 40, crowdStrip.width * LS, crowdStrip.height * LS);
+  } else for (const c of CROWD) {
     const sx = snap(VW / 2 + (c.x - G.camX) * s0 * .92);
     if (sx < -10 || sx > VW + 10) continue;
     const bob = (G.hype > .05 ? Math.abs(Math.sin(G.frame * .25 + c.ph)) * 6 * G.hype : 0) + Math.sin(G.frame * .03 + c.ph) * .8;
@@ -1172,9 +1221,14 @@ function drawCourt() {
   path3([[-200, -25], [W + 200, -25], [W + 200, D + 70], [-200, D + 70]], true);
   ctx.fillStyle = '#6e1a1d'; ctx.fill();
   path3([[0, 0], [W, 0], [W, D], [0, D]], true);
-  ctx.fillStyle = '#c99158'; ctx.fill();
+  ctx.fillStyle = '#d69a5c'; ctx.fill();
   ctx.lineWidth = 2;
-  for (let y = 0; y < D; y += 25) { path3([[0, y], [W, y]]); ctx.strokeStyle = (y / 25) % 2 ? '#b98048' : '#d39d64'; ctx.stroke(); }
+  for (let y = 0, r = 0; y < D; y += 25, r++) {
+    if (r % 2) { path3([[0, y], [W, y], [W, y + 25], [0, y + 25]], true); ctx.fillStyle = '#cc8f51'; ctx.fill(); }
+    path3([[0, y], [W, y]]); ctx.strokeStyle = '#a8703c'; ctx.stroke();
+    ctx.strokeStyle = '#b37a44';
+    for (let x = (r * 137) % 220; x < W; x += 220) { path3([[x, y], [x, y + 25]]); ctx.stroke(); }
+  }
   ctx.fillStyle = CONFIG.club.couleur;
   path3([[0, 170], [190, 170], [190, 330], [0, 330]], true); ctx.fill();
   path3([[W, 170], [W - 190, 170], [W - 190, 330], [W, 330]], true); ctx.fill();
@@ -1236,11 +1290,11 @@ function drawPlayer(p) {
   }
   if (p.human && !G.demo) { ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(g.x, g.y, 20 * s, 6 * s, 0, 0, 7); ctx.stroke(); }
   if (p.fire) { ctx.fillStyle = 'rgba(255,120,0,.3)'; ctx.beginPath(); ctx.ellipse(g.x, g.y, 24 * s, 7 * s, 0, 0, 7); ctx.fill(); }
-  renderSprite(p, b);
+  const spr = renderSprite(p, b);
   loPixel();
-  blitSprite(loCtx, Math.round(b.x / LS) - SPR_OX, Math.round(b.y / LS) - SPR_OY);
+  loCtx.drawImage(spr, Math.round(b.x / LS) - SPR_OX, Math.round(b.y / LS) - SPR_OY);
   loVector();
-  G.tags.push({ p, x: b.x + shk.x * LS, y: b.y + shk.y * LS - 92 });
+  G.tags.push({ p, x: b.x + shk.x * LS, y: b.y + shk.y * LS - 116 });
 }
 
 function drawBall() {
@@ -1276,10 +1330,18 @@ function drawParts() {
 }
 
 function drawTags() {
-  for (const t of G.tags) {
+  const placed = [];
+  for (const t of [...G.tags].sort((a, b) => b.y - a.y)) {
     const p = t.p, human = p.human && !G.demo, label = noAcc(p.def.prenom.toUpperCase());
     ctx.font = `10px ${PIX}`;
-    const w = Math.ceil(ctx.measureText(label).width) + 8, x = Math.round(t.x - w / 2), y = Math.round(t.y - 14);
+    const w = Math.ceil(ctx.measureText(label).width) + 8, x = Math.round(t.x - w / 2);
+    let y = Math.round(t.y - 14);
+    // étiquettes décalées vers le haut si elles se chevauchent
+    for (let k = 0; k < 4; k++) {
+      const hit = placed.find(r => x < r.x + r.w + 4 && r.x < x + w + 4 && Math.abs(r.y - y) < 20);
+      if (!hit) break; y = hit.y - 20;
+    }
+    placed.push({ x, y, w });
     ctx.fillStyle = '#000'; ctx.fillRect(x - 2, y - 2, w + 4, 18);
     ctx.fillStyle = human ? '#ffd23f' : (p.fire ? '#ff6a00' : G.teams[p.team].couleur); ctx.fillRect(x, y, w, 14);
     txt(label, t.x, y + 8, 10, human ? '#111' : '#fff', 'center', 'pix');
@@ -1287,6 +1349,7 @@ function drawTags() {
   }
 }
 
+let scanPat = null;
 function drawWorld() {
   ctx = loCtx;
   shk.x = G.shake > 1 ? Math.round(rnd(-G.shake, G.shake) / LS) : 0;
@@ -1304,6 +1367,8 @@ function drawWorld() {
   ctx = mainCtx;
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(lo, 0, 0, VW, VH);
+  if (!scanPat) { const c = document.createElement('canvas'); c.width = 1; c.height = 4; const g = c.getContext('2d'); g.fillStyle = 'rgba(0,0,0,.28)'; g.fillRect(0, 3, 1, 1); scanPat = ctx.createPattern(c, 'repeat'); }
+  ctx.fillStyle = scanPat; ctx.fillRect(0, 0, VW, VH);
   drawTags();
   const me = G.players.find(p => p.human && !G.demo);
   if (me) {
@@ -1326,11 +1391,12 @@ function drawHUD() {
   ctx.fillStyle = '#000'; ctx.fillRect(0, 0, VW, 46);
   for (let t = 0; t < 2; t++) {
     const tm = G.teams[t], x = t ? VW - 330 : 20;
-    ctx.fillStyle = tm.fonce; ctx.fillRect(x, 6, 310, 34);
-    ctx.fillStyle = tm.couleur; ctx.fillRect(x + 3, 9, 304, 28);
-    txt(tm.nom, t ? x + 300 : x + 10, 24, 20, '#fff', t ? 'right' : 'left', '900');
-    ctx.fillStyle = '#000'; ctx.fillRect(t ? x + 6 : x + 226, 10, 78, 26);
-    txt(String(G.score[t]), t ? x + 45 : x + 265, 24, 18, t ? tm.clair : '#fff', 'center', 'pix');
+    ctx.fillStyle = '#fff'; ctx.fillRect(x, 5, 310, 36);
+    ctx.fillStyle = tm.fonce; ctx.fillRect(x + 2, 7, 306, 32);
+    ctx.fillStyle = tm.couleur; ctx.fillRect(x + 4, 9, 302, 26);
+    txt(tm.court, t ? x + 296 : x + 14, 23, 18, '#fff', t ? 'right' : 'left', 'pix', 5);
+    ctx.fillStyle = '#000'; ctx.fillRect(t ? x + 8 : x + 214, 9, 88, 28);
+    txt(String(G.score[t]).padStart(2, '0'), t ? x + 52 : x + 258, 24, 22, '#ffd23f', 'center', 'pix');
   }
   txt(G.quarter > 4 ? 'PROL.' : 'QT ' + G.quarter, 480, 12, 9, '#aaa', 'center', 'pix');
   txt(fmtClock(G.clock), 480, 32, 16, G.clock < 10 ? '#ff5252' : '#fff', 'center', 'pix');
@@ -1357,7 +1423,9 @@ function drawAnnounce() {
     const k = a.t / a.life, pop = a.t < 6 ? .5 + a.t / 6 * .6 : (a.t < 10 ? 1.1 - (a.t - 6) / 4 * .1 : 1);
     ctx.globalAlpha = k > .8 ? (1 - k) / .2 : 1;
     ctx.save(); ctx.translate(480, 170 + i * 56 - (G.ann.length - 1) * 28); ctx.scale(pop, pop); ctx.rotate(-.03);
-    txt(a.txt, 0, 0, Math.round(a.size * .5), a.color, 'center', 'pix', 9);
+    const sz = Math.round(a.size * .52);
+    txt(a.txt, 4, 6, sz, '#000', 'center', 'pix');
+    txt(a.txt, 0, 0, sz, a.color, 'center', 'pix', 9);
     ctx.restore();
   });
   ctx.globalAlpha = 1;
@@ -1401,7 +1469,8 @@ function drawTitle() {
   txt('2 CONTRE 2 · TURBO · DUNKS · EN FEU', 480, 280, 18, '#ffd23f', 'center', '700');
   txt('< DIFFICULTÉ : ' + DIFF[G.diff].nom + ' >', 480, 370, 14, '#fff', 'center', 'pix', 5);
   if (G.frame % 60 < 40) txt(G.touch ? "TOUCHE L'ÉCRAN POUR JOUER" : 'APPUIE SUR ESPACE POUR JOUER', 480, 430, 16, '#fff', 'center', 'pix', 6);
-  txt('v6', 940, 528, 8, '#666', 'right', 'pix');
+  txt('CREDIT 01', 20, 528, 9, '#ffd23f', 'left', 'pix');
+  txt('v7b', 940, 528, 8, '#666', 'right', 'pix');
   txt(G.touch ? 'Joystick à gauche (à fond = turbo) · TIR près du panier = dunk' : 'Flèches/ZQSD · Tir : Espace (près du panier = dunk) · Passe/Vol : K · Turbo : Maj · Pousser : Maj+K · M : son', 480, 500, 15, '#bbb', 'center', '700');
 }
 
@@ -1427,10 +1496,11 @@ function drawSelect() {
     if (step > 9) rows.forEach((r, k) => drawStatBar(c.x + 10, c.y + 46 + k * step, r[0], r[1], c.w - 120));
     // aperçu du joueur en pixel art (il court quand il est choisi)
     const fake = { def: j, team: 0, face: 1, state: 'run', z: 0, vx: si >= 0 ? 1 : 0, vy: 0, anim: G.frame * .2, reach: 0 };
-    renderSprite(fake, null);
-    const sh = Math.min(2, (c.h - 34) / 52);
+    const spr = renderSprite(fake, null);
+    const sh = Math.min(2, (c.h - 34) / 66);
     ctx.imageSmoothingEnabled = false;
-    blitSprite(ctx, c.x + c.w - 14 - 28 * sh, c.y + c.h - 4 - 52 * sh, 16, 10, 28, 52, sh);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(spr, 19, 14, 34, 66, c.x + c.w - 14 - 34 * sh, c.y + c.h - 4 - 66 * sh, 34 * sh, 66 * sh);
     if (si >= 0) {
       const bw = si === 0 ? 40 : 100, bx = c.x + c.w - 10 - bw;
       ctx.fillStyle = si === 0 ? '#ffd23f' : '#fff'; ctx.fillRect(bx, c.y + 32, bw, 16);
