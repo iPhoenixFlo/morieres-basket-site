@@ -1008,6 +1008,8 @@ const ANCH = {
   jambe: { a: [.5, .08], b: [.45, .88] },
   chaussure: { a: [.32, .22] },
 };
+// Les bras de la planche sont trop longs pour le torse : on les ramène à des proportions humaines.
+const ARM_K = .76;
 const ART = { ready: false, rows: [], ball: null, unit: 4, len: {}, torsos: new Map() };
 function artCut(img, k) {
   const [x, y, w, h] = ART_POS[k], c = document.createElement('canvas'); c.width = w; c.height = h;
@@ -1053,6 +1055,7 @@ function buildArt(img) {
   L.upper = d('bras', 'a', 'b'); L.fore = d('avantbras', 'a', 'b');
   ART.unit = (L.ankle + L.shin + L.thigh + L.hipWaist + L.torso + ANCH.tete.neck[1] * H('tete')) / 72;
   for (const k in L) L[k] /= ART.unit;
+  L.upper *= ARM_K; L.fore *= ARM_K;
 }
 (function () {
   const img = new Image();
@@ -1080,16 +1083,17 @@ function artTorso(p, row, mirror) {
   g.strokeText(String(p.def.numero), 0, 0); g.fillText(String(p.def.numero), 0, 0);
   g.restore(); ART.torsos.set(key, c); return c;
 }
-function artPlace(g, cv, an, at, ang = 0) {
-  const w = cv.width / ART.unit, h = cv.height / ART.unit;
+function artPlace(g, cv, an, at, ang = 0, k = 1) {
+  const w = cv.width / ART.unit * k, h = cv.height / ART.unit * k;
   g.save(); g.translate(at[0], at[1]); if (ang) g.rotate(ang);
   g.drawImage(cv, -an[0] * w, -an[1] * h, w, h); g.restore();
 }
 // aligne une pièce entre deux articulations
 function artLimb(g, cv, k, from, to) {
-  const A = ANCH[k].a, B = ANCH[k].b, w = cv.width / ART.unit, h = cv.height / ART.unit;
+  const sk = (k === 'bras' || k === 'avantbras') ? ARM_K : 1;
+  const A = ANCH[k].a, B = ANCH[k].b, w = cv.width / ART.unit * sk, h = cv.height / ART.unit * sk;
   const ang = Math.atan2(to[1] - from[1], to[0] - from[0]) - Math.atan2((B[1] - A[1]) * h, (B[0] - A[0]) * w);
-  artPlace(g, cv, A, from, ang);
+  artPlace(g, cv, A, from, ang, sk);
 }
 // Dessine le joueur à partir des pièces. Tout est calculé vers la droite puis retourné si besoin.
 function drawArt(g, p, o) {
@@ -1165,7 +1169,7 @@ function renderSprite(p, b) {
   let hb, hf;
   if (up) { hb = [f * 2, -84]; hf = [f * 7, -83]; if (hang) { hb = [f * 8, -82]; hf = [f * 11, -82]; } }
   else if (air) { hb = [-8, -84]; hf = [8, -85]; }
-  else if (p.reach > 0) { hb = [-f * 5 - sw * 5, -36]; hf = [f * 26, -48]; }
+  else if (p.reach > 0) { hb = [-f * 5 - sw * 5, -36]; hf = [f * (ART.ready ? 19 : 26), -48]; }
   else if (hasBall && p.state === 'run' && b) {
     const bp = P(ball.x, ball.y, ball.z), k = sc(p.y) / 1.4;
     hb = [-f * 4 - sw * 6, -35]; hf = [(bp.x - b.x) / SU / k, (bp.y - b.y) / SU / k - 1.5];
@@ -1588,7 +1592,7 @@ function drawTitle() {
   txt('< DIFFICULTÉ : ' + DIFF[G.diff].nom + ' >', 480, 370, 14, '#fff', 'center', 'pix', 5);
   if (G.frame % 60 < 40) txt(G.touch ? "TOUCHE L'ÉCRAN POUR JOUER" : 'APPUIE SUR ESPACE POUR JOUER', 480, 430, 16, '#fff', 'center', 'pix', 6);
   txt('CREDIT 01', 20, 528, 9, '#ffd23f', 'left', 'pix');
-  txt('v9', 940, 528, 8, '#666', 'right', 'pix');
+  txt('v9b', 940, 528, 8, '#666', 'right', 'pix');
   txt(G.touch ? 'Joystick à gauche (à fond = turbo) · TIR près du panier = dunk' : 'Flèches/ZQSD · Tir : Espace (près du panier = dunk) · Passe/Vol : K · Turbo : Maj · Pousser : Maj+K · M : son', 480, 500, 15, '#bbb', 'center', '700');
 }
 
