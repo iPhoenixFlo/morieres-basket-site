@@ -1147,7 +1147,7 @@ function renderSprite(p, b) {
   arm(f * 7, hf);
   autoShade(f, new Set([C.white, C.eye, C.mouth, C.trim, C.sole]));
   // contour noir, puis un liseré aux couleurs de l'équipe : les joueurs restent distincts quand ils se touchent
-  outline(); outline(p.team === 0 ? c32('#ffffff') : c32(tm.clair));
+  outline();
   const cv2 = document.createElement('canvas'); cv2.width = SPR_W; cv2.height = SPR_H;
   cv2.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(sprBuf.buffer.slice(0)), SPR_W, SPR_H), 0, 0);
   if (spriteCache.size > 800) spriteCache.clear();
@@ -1224,10 +1224,7 @@ function drawCourt() {
   ctx.fillStyle = '#d69a5c'; ctx.fill();
   ctx.lineWidth = 2;
   for (let y = 0, r = 0; y < D; y += 25, r++) {
-    if (r % 2) { path3([[0, y], [W, y], [W, y + 25], [0, y + 25]], true); ctx.fillStyle = '#cc8f51'; ctx.fill(); }
-    path3([[0, y], [W, y]]); ctx.strokeStyle = '#a8703c'; ctx.stroke();
-    ctx.strokeStyle = '#b37a44';
-    for (let x = (r * 137) % 220; x < W; x += 220) { path3([[x, y], [x, y + 25]]); ctx.stroke(); }
+    if (r % 2) { path3([[0, y], [W, y], [W, y + 25], [0, y + 25]], true); ctx.fillStyle = '#d29655'; ctx.fill(); }
   }
   ctx.fillStyle = CONFIG.club.couleur;
   path3([[0, 170], [190, 170], [190, 330], [0, 330]], true); ctx.fill();
@@ -1288,6 +1285,8 @@ function drawPlayer(p) {
     ctx.strokeStyle = G.inRange.steal ? '#ff3b3b' : '#ff8a3d'; ctx.lineWidth = 4;
     ctx.beginPath(); ctx.ellipse(g.x, g.y, 23 * s, 7 * s, 0, 0, 7); ctx.stroke();
   }
+  ctx.strokeStyle = G.teams[p.team].couleur; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.ellipse(g.x, g.y, 16 * s, 5 * s, 0, 0, 7); ctx.stroke();
   if (p.human && !G.demo) { ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(g.x, g.y, 20 * s, 6 * s, 0, 0, 7); ctx.stroke(); }
   if (p.fire) { ctx.fillStyle = 'rgba(255,120,0,.3)'; ctx.beginPath(); ctx.ellipse(g.x, g.y, 24 * s, 7 * s, 0, 0, 7); ctx.fill(); }
   const spr = renderSprite(p, b);
@@ -1349,7 +1348,6 @@ function drawTags() {
   }
 }
 
-let scanPat = null;
 function drawWorld() {
   ctx = loCtx;
   shk.x = G.shake > 1 ? Math.round(rnd(-G.shake, G.shake) / LS) : 0;
@@ -1367,8 +1365,6 @@ function drawWorld() {
   ctx = mainCtx;
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(lo, 0, 0, VW, VH);
-  if (!scanPat) { const c = document.createElement('canvas'); c.width = 1; c.height = 4; const g = c.getContext('2d'); g.fillStyle = 'rgba(0,0,0,.28)'; g.fillRect(0, 3, 1, 1); scanPat = ctx.createPattern(c, 'repeat'); }
-  ctx.fillStyle = scanPat; ctx.fillRect(0, 0, VW, VH);
   drawTags();
   const me = G.players.find(p => p.human && !G.demo);
   if (me) {
@@ -1470,7 +1466,7 @@ function drawTitle() {
   txt('< DIFFICULTÉ : ' + DIFF[G.diff].nom + ' >', 480, 370, 14, '#fff', 'center', 'pix', 5);
   if (G.frame % 60 < 40) txt(G.touch ? "TOUCHE L'ÉCRAN POUR JOUER" : 'APPUIE SUR ESPACE POUR JOUER', 480, 430, 16, '#fff', 'center', 'pix', 6);
   txt('CREDIT 01', 20, 528, 9, '#ffd23f', 'left', 'pix');
-  txt('v7b', 940, 528, 8, '#666', 'right', 'pix');
+  txt('v7c', 940, 528, 8, '#666', 'right', 'pix');
   txt(G.touch ? 'Joystick à gauche (à fond = turbo) · TIR près du panier = dunk' : 'Flèches/ZQSD · Tir : Espace (près du panier = dunk) · Passe/Vol : K · Turbo : Maj · Pousser : Maj+K · M : son', 480, 500, 15, '#bbb', 'center', '700');
 }
 
