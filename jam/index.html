@@ -123,9 +123,20 @@ const AU = {
         this.crowdG = a.createGain(); this.crowdG.gain.value = 0;
         src.connect(f1).connect(f2).connect(this.crowdG).connect(this.out); src.start();
       } catch (e) { this.ctx = null; }
-      VOICE.prime();
     }
-    if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+    if (!this.ctx) return;
+    // iPhone : jouer comme un média, pour ne pas être coupé par le bouton silencieux
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { }
+    if (!this.media) {
+      try {
+        this.media = new Audio(silentWav()); this.media.loop = true; this.media.volume = .01;
+        this.media.play().catch(() => { this.media = null; });
+      } catch (e) { this.media = null; }
+    }
+    if (this.ctx.state !== 'running') this.ctx.resume().catch(() => { });
+    // un son vide joué pendant le geste débloque l'audio sur les vieux iPhone
+    try { const b = this.ctx.createBufferSource(); b.buffer = this.ctx.createBuffer(1, 1, 22050); b.connect(this.ctx.destination); b.start(0); } catch (e) { }
+    VOICE.prime();
   },
   live() { return this.ctx && !G.muted && !G.demo; },
   tone(f, dur, type = 'square', vol = .1, slide = 0, delay = 0) {
@@ -169,6 +180,18 @@ const AU = {
   beep() { this.tone(1320, .08, 'square', .06); },
   blip() { this.tone(880, .05, 'square', .05); },
 };
+
+// Petit fichier WAV silencieux (0,5 s), généré à la volée.
+function silentWav() {
+  const n = 4000, buf = new Uint8Array(44 + n), v = new DataView(buf.buffer);
+  const str = (o, t) => { for (let i = 0; i < t.length; i++) buf[o + i] = t.charCodeAt(i); };
+  str(0, 'RIFF'); v.setUint32(4, 36 + n, true); str(8, 'WAVE'); str(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, 8000, true);
+  v.setUint32(28, 8000, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true); str(36, 'data'); v.setUint32(40, n, true);
+  buf.fill(128, 44);
+  let bin = ''; for (const c of buf) bin += String.fromCharCode(c);
+  return 'data:audio/wav;base64,' + btoa(bin);
+}
 
 // Annonceur : voix de synthèse française du navigateur.
 const VOICE = {
@@ -265,7 +288,10 @@ function endPointer(e) {
   if (e.pointerId === touch.joyId) { touch.joyId = null; touch.jx = touch.jy = 0; touch.full = false; }
   for (const k in touch.btn) if (touch.btn[k] === e.pointerId) touch.btn[k] = null;
 }
-cv.addEventListener('pointerup', endPointer);
+cv.addEventListener('pointerup', e => { endPointer(e); AU.init(); });
+// Sur téléphone, le son ne peut démarrer qu'au moment où le doigt se relève.
+addEventListener('touchend', () => AU.init(), { passive: true });
+addEventListener('click', () => AU.init());
 cv.addEventListener('pointercancel', endPointer);
 cv.addEventListener('contextmenu', e => e.preventDefault());
 
@@ -551,7 +577,7 @@ function aiControl(p) {
     const mine = carrier === man || (carrier && dxy(carrier, defHoop) < 220 && dxy(p, carrier) < dxy(mate, carrier));
     const tgt = mine ? carrier : man;
     const gd = Math.max(1, dxy(tgt, defHoop));
-    const off = mine ? 30 : 45;
+    const off = mine ? 40 : 50;
     tx = tgt.x + (defHoop.x - tgt.x) / gd * off; ty = tgt.y + (defHoop.y - tgt.y) / gd * off;
     turbo = dxy(p, { x: tx, y: ty }) > 110;
     if (holder && mine) {
@@ -806,7 +832,7 @@ function updatePlay() {
     const a = G.players[i], b = G.players[j];
     if (a.state === 'dunk' || b.state === 'dunk' || a.state === 'down' || b.state === 'down') continue;
     const d = dxy(a, b);
-    if (d < 22 && d > .01) { const k = (22 - d) / d * .25; a.x -= (b.x - a.x) * k; a.y -= (b.y - a.y) * k; b.x += (b.x - a.x) * k; b.y += (b.y - a.y) * k; }
+    if (d < 30 && d > .01) { const k = (30 - d) / d * .3; a.x -= (b.x - a.x) * k; a.y -= (b.y - a.y) * k; b.x += (b.x - a.x) * k; b.y += (b.y - a.y) * k; }
   }
   updateBall();
   if (!G.pending && G.shotClock <= 0 && ball.mode !== 'shot') {
@@ -1019,13 +1045,13 @@ function pNumber(n, x, y, c) {
     X += 4;
   }
 }
-function outline() {
+function outline(col = OUT) {
   const b = sprBuf, w = SPR_W, h = SPR_H, list = [];
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const i = y * w + x; if (b[i]) continue;
     if ((x > 0 && b[i - 1]) || (x < w - 1 && b[i + 1]) || (y > 0 && b[i - w]) || (y < h - 1 && b[i + w])) list.push(i);
   }
-  for (const i of list) b[i] = OUT;
+  for (const i of list) b[i] = col;
 }
 
 // Dessine le joueur dans sprCv. b = position écran (pour orienter le bras vers le ballon).
@@ -1082,7 +1108,8 @@ function renderSprite(p, b) {
   pDisc(f * .5 - f * 1.3, -56.3, 5.6, C.hair);
   pDisc(f * 4.3, -54, .5, C.eye);
   arm(f * 6, hf);
-  outline();
+  // contour noir, puis un second contour aux couleurs de l'équipe : les joueurs restent distincts quand ils se touchent
+  outline(); outline(p.team === 0 ? c32('#ffffff') : c32(tm.clair));
   sprCtx.putImageData(sprImg, 0, 0);
 }
 
