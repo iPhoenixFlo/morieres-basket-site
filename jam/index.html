@@ -69,11 +69,11 @@ const HOOPS = [{ x: 60, y: 250, bx: 45 }, { x: 1040, y: 250, bx: 1055 }];
 const FONT = '"Barlow Condensed", Impact, "Arial Narrow", sans-serif';
 
 const DIFF = [
-  { nom: "FACILE",    steal: .003, shove: .0006, block: .25, agg: .7,  shot: -.08, inter: .6 },
-  { nom: "NORMAL",    steal: .006, shove: .0014, block: .45, agg: 1,   shot: 0,    inter: 1 },
+  { nom: "FACILE",    steal: .0015, shove: .0003, block: .2,  agg: .7,  shot: -.08, inter: .5 },
+  { nom: "NORMAL",    steal: .0035, shove: .0008, block: .4,  agg: 1,   shot: 0,    inter: .85 },
   { nom: "DIFFICILE", steal: .010, shove: .0026, block: .65, agg: 1.25, shot: .05, inter: 1.3 },
 ];
-const MATE = { steal: .006, shove: .0012, block: .45, agg: 1, shot: 0, inter: 1 };
+const MATE = { steal: .005, shove: .001, block: .45, agg: 1, shot: 0, inter: 1 };
 
 const rnd = (a, b) => a + Math.random() * (b - a);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
@@ -145,10 +145,19 @@ const AU = {
    ================================================================= */
 const keys = {};
 const hits = new Set(); // touches appuyées depuis la dernière lecture, même si déjà relâchées
-const prev = { shoot: false, pass: false, l: false, r: false, u: false, d: false, ok: false, back: false };
+const prev = { shoot: false, pass: false, shove: false, l: false, r: false, u: false, d: false, ok: false, back: false };
 let I = {};
-const touch = { joyId: null, jx0: 0, jy0: 0, jx: 0, jy: 0, btn: { tir: null, passe: null, turbo: null } };
-const BTN = { tir: { x: 872, y: 438, r: 52, label: 'TIR' }, passe: { x: 762, y: 478, r: 38, label: 'PASSE' }, turbo: { x: 772, y: 368, r: 38, label: 'TURBO' } };
+const touch = { joyId: null, jx0: 0, jy0: 0, jx: 0, jy: 0, full: false, btn: { tir: null, passe: null, pousser: null }, hit: new Set() };
+const BTN = {
+  tir: { x: 872, y: 432, r: 56, att: 'TIR', def: 'CONTRE' },
+  passe: { x: 752, y: 476, r: 42, att: 'PASSE', def: 'VOL' },
+  pousser: { x: 768, y: 356, r: 38, att: null, def: 'POUSSER' },
+};
+// Vrai quand l'équipe du joueur humain a le ballon : les boutons tactiles changent de rôle.
+function humanAttacking() {
+  const t = ball.mode === 'held' ? ball.owner.team : ball.mode === 'pass' ? ball.pass.from.team : -1;
+  return t === 0;
+}
 let taps = [];
 
 addEventListener('keydown', e => {
@@ -175,7 +184,10 @@ cv.addEventListener('pointerdown', e => {
   const p = toLogical(e);
   if (e.pointerType !== 'mouse') G.touch = true;
   if (G.scene === 'play' && !G.paused && e.pointerType !== 'mouse') {
-    for (const k in BTN) { const b = BTN[k]; if (Math.hypot(p.x - b.x, p.y - b.y) < b.r + 14) { touch.btn[k] = e.pointerId; cv.setPointerCapture(e.pointerId); return; } }
+    for (const k in BTN) {
+      const b = BTN[k]; if (!(humanAttacking() ? b.att : b.def)) continue;
+      if (Math.hypot(p.x - b.x, p.y - b.y) < b.r + 14) { touch.btn[k] = e.pointerId; touch.hit.add(k); cv.setPointerCapture(e.pointerId); return; }
+    }
     if (p.x < VW * 0.55 && p.y > 60 && touch.joyId === null) {
       touch.joyId = e.pointerId; touch.jx0 = p.x; touch.jy0 = p.y; touch.jx = 0; touch.jy = 0;
       cv.setPointerCapture(e.pointerId); return;
@@ -186,12 +198,13 @@ cv.addEventListener('pointerdown', e => {
 cv.addEventListener('pointermove', e => {
   if (e.pointerId !== touch.joyId) return;
   const p = toLogical(e);
-  let dx = (p.x - touch.jx0) / 50, dy = (p.y - touch.jy0) / 50;
-  const l = Math.hypot(dx, dy); if (l > 1) { dx /= l; dy /= l; }
-  touch.jx = dx; touch.jy = dy;
+  let dx = (p.x - touch.jx0) / 55, dy = (p.y - touch.jy0) / 55;
+  const l = Math.hypot(dx, dy);
+  if (l < .15) { dx = dy = 0; } else if (l > 1) { dx /= l; dy /= l; }
+  touch.jx = dx; touch.jy = dy; touch.full = l >= .95;
 });
 function endPointer(e) {
-  if (e.pointerId === touch.joyId) { touch.joyId = null; touch.jx = touch.jy = 0; }
+  if (e.pointerId === touch.joyId) { touch.joyId = null; touch.jx = touch.jy = 0; touch.full = false; }
   for (const k in touch.btn) if (touch.btn[k] === e.pointerId) touch.btn[k] = null;
 }
 cv.addEventListener('pointerup', endPointer);
@@ -222,18 +235,21 @@ function readInput() {
     if (B(8)) back = true;
   }
   if (touch.joyId !== null) { mx += touch.jx; my += touch.jy; }
-  if (touch.btn.tir !== null) shoot = true;
-  if (touch.btn.passe !== null) pass = true;
-  if (touch.btn.turbo !== null) turbo = true;
+  // touch.hit garde un appui bref même si le doigt est déjà relevé
+  if (touch.btn.tir !== null || touch.hit.has('tir')) shoot = true;
+  if (touch.btn.passe !== null || touch.hit.has('passe')) pass = true;
+  if (touch.joyId !== null && touch.full) turbo = true;
+  const shove = touch.btn.pousser !== null || touch.hit.has('pousser') || (pass && turbo && touch.btn.passe === null && !touch.hit.has('passe'));
+  touch.hit.clear();
   mx = clamp(mx, -1, 1); my = clamp(my, -1, 1);
   const l = mx < -.5, r = mx > .5, u = my < -.5, d = my > .5;
   I = {
     mx, my, shoot, pass, turbo,
-    shootPressed: shoot && !prev.shoot, shootReleased: !shoot && prev.shoot, passPressed: pass && !prev.pass,
+    shootPressed: shoot && !prev.shoot, shootReleased: !shoot && prev.shoot, passPressed: pass && !prev.pass, shovePressed: shove && !prev.shove,
     left: l && !prev.l, right: r && !prev.r, up: u && !prev.u, down: d && !prev.d,
     ok: ok && !prev.ok, back: back && !prev.back, taps,
   };
-  Object.assign(prev, { shoot, pass, l, r, u, d, ok, back });
+  Object.assign(prev, { shoot, pass, shove, l, r, u, d, ok, back });
   taps = [];
 }
 
@@ -245,7 +261,7 @@ function mkPlayer(def, team, idx, human) {
     def, team, idx, human, x: 550, y: 250, z: 0, vx: 0, vy: 0, vz: 0, face: tdir(team),
     state: 'run', anim: 0, turbo: 100, usingTurbo: false, streak: 0, fire: false, fireCount: 0,
     stealCd: 0, noPick: 0, reach: 0, downT: 0, hangT: 0, aiT: 0, aiTurbo: false, relAt: 0, shotId: 0, lastBlockTry: -1,
-    dk: null, speed: 3.3 + def.vitesse * 0.2, plan: 'drive', spotA: 0,
+    dk: null, speed: 2.9 + def.vitesse * 0.18, plan: 'drive', spotA: 0,
     stats: { pts: 0, trois: 0, dunks: 0, inter: 0, contres: 0 },
   };
 }
@@ -262,7 +278,7 @@ function move(p, mx, my, turbo) {
   if (p.state !== 'run') return;
   const len = Math.hypot(mx, my); if (len > 1) { mx /= len; my /= len; }
   const useT = turbo && (p.turbo > 0 || p.fire) && len > .1;
-  let sp = p.speed * (useT ? 1.55 : 1);
+  let sp = p.speed * (useT ? 1.5 : 1);
   if (ball.owner === p) sp *= .93;
   p.vx = lerp(p.vx, mx * sp, .3);
   p.vy = lerp(p.vy, my * sp * .82, .3);
@@ -277,7 +293,7 @@ function startJump(p) {
 function startJumpShot(p) {
   if (p.state !== 'run' || ball.owner !== p) return;
   p.state = 'jumpshot'; p.vz = 7.2; p.vx *= .3; p.vy *= .3;
-  p.face = tdir(p.team); p.relAt = rnd(-1.2, 1); p.shotId = G.nextShotId++;
+  p.face = tdir(p.team); p.relAt = rnd(-1.2, 1); p.shotId = G.nextShotId++; p.wantRelease = false;
 }
 function canDunk(p) { return p.state === 'run' && dxy(p, attHoop(p.team)) < 260; }
 function startDunk(p) {
@@ -371,7 +387,7 @@ function tryShove(p) {
 }
 function knockDown(q, nx, ny) {
   if (ball.owner === q) { looseBall(nx * 3 + rnd(-1, 1), ny * 3 + rnd(-1, 1), 4); }
-  q.state = 'down'; q.downT = 70; q.vx = nx * 7; q.vy = ny * 5; q.z = 0; q.vz = 0; q.noPick = 60;
+  q.state = 'down'; q.downT = q.human && !G.demo ? 45 : 70; q.vx = nx * 7; q.vy = ny * 5; q.z = 0; q.vz = 0; q.noPick = 60;
   AU.shove(); G.shake = 6;
 }
 
@@ -380,13 +396,15 @@ function humanControl(p) {
   const mate = mateOf(p);
   move(p, I.mx, I.my, I.turbo);
   if (p.state === 'jumpshot') {
-    if (I.shootReleased || p.vz < -5.5) releaseShot(p);
+    // Relâché avant le sommet : le tir part au sommet. Trop tard : il part quand même, moins précis.
+    if (!I.shoot) p.wantRelease = true;
+    if ((p.wantRelease && p.vz <= .6) || p.vz < -5.5) releaseShot(p);
     return;
   }
   if (p.state !== 'run') return;
   const held = ball.mode === 'held';
   if (held && ball.owner === p) {
-    if (I.shootPressed) { if (I.turbo && canDunk(p)) startDunk(p); else startJumpShot(p); }
+    if (I.shootPressed) { if (canDunk(p) && (I.turbo || dxy(p, attHoop(p.team)) < 150)) startDunk(p); else startJumpShot(p); }
     else if (I.passPressed) passBall(p, mate);
   } else if (held && ball.owner === mate) {
     if (I.passPressed) passBall(mate, p);
@@ -395,7 +413,8 @@ function humanControl(p) {
     }
   } else {
     if (I.shootPressed) startJump(p);
-    if (I.passPressed) { if (I.turbo) tryShove(p); else trySteal(p); }
+    if (I.shovePressed) tryShove(p);
+    else if (I.passPressed) trySteal(p);
   }
 }
 
@@ -720,7 +739,14 @@ function updatePlay() {
     endQuarter();
   }
   const tgt = ball.owner ? ball.x + tdir(ball.owner.team) * 70 : ball.x;
-  G.camX += (clamp(tgt, 317, 783) - G.camX) * .08;
+  let cx = tgt;
+  const me = G.players.find(p => p.human && !G.demo);
+  if (me) {
+    // garde le joueur humain entre x=110 et le bord des boutons tactiles (ou 850 au clavier)
+    const s = sc(me.y), hi = G.touch ? 680 : 850;
+    cx = clamp(cx, me.x - (hi - 480) / s, me.x + 370 / s);
+  }
+  G.camX += (clamp(cx, 317, 783) - G.camX) * .08;
   G.hype *= .985;
 }
 
@@ -803,7 +829,7 @@ function updateSelect() {
 
 /* ---------- annonces & particules ---------- */
 function announce(txt, color = '#fff', size = 60) {
-  G.ann.push({ txt, color, size, t: 0, life: 90 });
+  G.ann.push({ txt, color, size, t: 0, life: 70 });
   if (G.ann.length > 2) G.ann.shift();
 }
 function spawn(x, y, z, vx, vy, vz, life, color, size) {
@@ -947,6 +973,7 @@ function drawPlayer(p) {
   const tm = G.teams[p.team], f = p.face, skin = p.def.peau || '#e0ac69', hair = p.def.cheveux || '#222';
   ctx.fillStyle = 'rgba(0,0,0,.3)';
   ctx.beginPath(); ctx.ellipse(g.x, g.y, 15 * s * (1 - Math.min(p.z, 150) / 300), 4.5 * s, 0, 0, 7); ctx.fill();
+  if (p.human && !G.demo) { ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(g.x, g.y, 21 * s, 6.5 * s, 0, 0, 7); ctx.stroke(); }
   if (p.fire) { ctx.fillStyle = 'rgba(255,120,0,.25)'; ctx.beginPath(); ctx.ellipse(g.x, g.y, 24 * s, 7 * s, 0, 0, 7); ctx.fill(); }
 
   ctx.save(); ctx.translate(b.x, b.y);
@@ -1107,15 +1134,18 @@ function drawTouch() {
   if (!G.touch || G.scene !== 'play' || G.paused) return;
   ctx.globalAlpha = .55;
   if (touch.joyId !== null) {
-    ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(touch.jx0, touch.jy0, 50, 0, 7); ctx.stroke();
-    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(touch.jx0 + touch.jx * 50, touch.jy0 + touch.jy * 50, 22, 0, 7); ctx.fill();
-  } else txt('◀ glisse ici pour bouger ▶', 200, 470, 18, '#fff', 'center', '700', 4);
+    ctx.strokeStyle = touch.full ? '#ff8a3d' : '#fff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(touch.jx0, touch.jy0, 55, 0, 7); ctx.stroke();
+    ctx.fillStyle = touch.full ? '#ff8a3d' : '#fff'; ctx.beginPath(); ctx.arc(touch.jx0 + touch.jx * 55, touch.jy0 + touch.jy * 55, 24, 0, 7); ctx.fill();
+    if (touch.full) txt('TURBO', touch.jx0, touch.jy0 - 72, 18, '#ff8a3d', 'center', '900', 4);
+  } else txt('◀ glisse ici · à fond = turbo ▶', 210, 470, 18, '#fff', 'center', '700', 4);
+  const att = humanAttacking();
   for (const k in BTN) {
-    const b = BTN[k], on = touch.btn[k] !== null;
-    ctx.fillStyle = on ? '#fff' : (k === 'tir' ? CONFIG.club.couleur : '#222');
+    const b = BTN[k], label = att ? b.att : b.def, on = touch.btn[k] !== null;
+    if (!label) continue;
+    ctx.fillStyle = on ? '#fff' : (k === 'tir' ? CONFIG.club.couleur : (att ? '#222' : '#1f3d8f'));
     ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 7); ctx.fill();
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
-    txt(b.label, b.x, b.y + 1, k === 'tir' ? 24 : 16, on ? '#000' : '#fff');
+    txt(label, b.x, b.y + 1, k === 'tir' ? 24 : 16, on ? '#000' : '#fff');
   }
   ctx.globalAlpha = 1;
 }
@@ -1135,7 +1165,7 @@ function drawTitle() {
   txt('2 CONTRE 2 · TURBO · DUNKS · EN FEU', 480, 280, 18, '#ffd23f', 'center', '700');
   txt('◀  DIFFICULTÉ : ' + DIFF[G.diff].nom + '  ▶', 480, 370, 24, '#fff', 'center', '900', 4);
   if (G.frame % 60 < 40) txt(G.touch ? 'TOUCHE L\'ÉCRAN POUR JOUER' : 'APPUIE SUR ESPACE POUR JOUER', 480, 430, 30, '#fff', 'center', '900', 6, true);
-  txt(G.touch ? 'Joystick à gauche · TIR / PASSE / TURBO à droite' : 'Bouger : flèches ou ZQSD · Tir : Espace (relâche en haut du saut) · Passe : K · Turbo : Maj   —   M : son', 480, 500, 15, '#bbb', 'center', '700');
+  txt(G.touch ? 'Joystick à gauche (à fond = turbo) · TIR près du panier = dunk' : 'Flèches/ZQSD · Tir : Espace (près du panier = dunk) · Passe/Vol : K · Turbo : Maj · Pousser : Maj+K · M : son', 480, 500, 15, '#bbb', 'center', '700');
 }
 
 function drawStatBar(x, y, label, v, w) {
