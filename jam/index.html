@@ -959,7 +959,7 @@ function updateParts() {
    puis agrandi sans lissage : de vrais gros pixels.
    ================================================================= */
 const PIX = '"Press Start 2P", "Courier New", monospace';
-const LS = 2;
+const LS = 1; // le monde est dessiné en pleine résolution
 const lo = document.createElement('canvas'); lo.width = VW / LS; lo.height = VH / LS;
 const loCtx = lo.getContext('2d');
 const shk = { x: 0, y: 0 };
@@ -991,169 +991,10 @@ function txt(s, x, y, size, color, align = 'center', weight = '900', stroke = 0,
   ctx.fillStyle = color; ctx.fillText(s, x, y);
 }
 
-/* ---------- sprites des joueurs, dessinés pixel par pixel ---------- */
-const SPR_W = 72, SPR_H = 84, SPR_OX = 36, SPR_OY = 79, K = .86;
-const sprBuf = new Uint32Array(SPR_W * SPR_H);
-const colCache = {};
-function c32(hex) {
-  if (colCache[hex]) return colCache[hex];
-  let h = hex.replace('#', ''); if (h.length === 3) h = h.split('').map(c => c + c).join('');
-  const n = parseInt(h, 16);
-  return colCache[hex] = ((255 << 24) | ((n & 255) << 16) | (((n >> 8) & 255) << 8) | ((n >> 16) & 255)) >>> 0;
-}
-const OUT = c32('#160d0d');
-let rotC = 1, rotS = 0, dropY = 0;
-function tx(x, y) { return [SPR_OX + (x * rotC - y * rotS) * K, SPR_OY + dropY + (x * rotS + y * rotC) * K]; }
-function plot(x, y, c) { if (x >= 0 && y >= 0 && x < SPR_W && y < SPR_H) sprBuf[y * SPR_W + x] = c; }
-function pDisc(x, y, r, c) {
-  const [cx, cy] = tx(x, y), R = r * K, X = Math.round(cx), Y = Math.round(cy), n = Math.ceil(R);
-  for (let j = -n; j <= n; j++) for (let i = -n; i <= n; i++) if (i * i + j * j <= R * R + .5) plot(X + i, Y + j, c);
-}
-function pLine(x0, y0, x1, y1, w, c) {
-  const [a, b] = tx(x0, y0), [d, e] = tx(x1, y1);
-  const n = Math.max(1, Math.ceil(Math.max(Math.abs(d - a), Math.abs(e - b)))), o = Math.floor(w / 2);
-  for (let k = 0; k <= n; k++) {
-    const x = Math.round(a + (d - a) * k / n) - o, y = Math.round(b + (e - b) * k / n) - o;
-    for (let j = 0; j < w; j++) for (let i = 0; i < w; i++) plot(x + i, y + j, c);
-  }
-}
-function pPoly(pts, c) {
-  const q = pts.map(p => tx(p[0], p[1]));
-  let y0 = Infinity, y1 = -Infinity;
-  for (const p of q) { y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }
-  for (let y = Math.floor(y0); y <= Math.ceil(y1); y++) {
-    const yc = y + .5, xs = [];
-    for (let i = 0; i < q.length; i++) {
-      const A = q[i], B = q[(i + 1) % q.length];
-      if ((A[1] <= yc && B[1] > yc) || (B[1] <= yc && A[1] > yc)) xs.push(A[0] + (yc - A[1]) / (B[1] - A[1]) * (B[0] - A[0]));
-    }
-    xs.sort((a, b) => a - b);
-    for (let k = 0; k + 1 < xs.length; k += 2) for (let x = Math.round(xs[k]); x < Math.round(xs[k + 1]); x++) plot(x, y, c);
-  }
-}
-const DIG = ['111101101101111', '010110010010111', '111001111100111', '111001111001111', '101101111001001',
-  '111100111001111', '111100111101111', '111001001010010', '111101111101111', '111101111001111'];
-function pNumber(n, x, y, c) {
-  const s = String(n), w = s.length * 4 - 1, [cx, cy] = tx(x, y);
-  let X = Math.round(cx - w / 2); const Y = Math.round(cy - 2);
-  for (const ch of s) {
-    const g = DIG[+ch] || DIG[0];
-    for (let r = 0; r < 5; r++) for (let k = 0; k < 3; k++) if (g[r * 3 + k] === '1') plot(X + k, Y + r, c);
-    X += 4;
-  }
-}
-function outline(col = OUT) {
-  const b = sprBuf, w = SPR_W, h = SPR_H, list = [];
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    const i = y * w + x; if (b[i]) continue;
-    if ((x > 0 && b[i - 1]) || (x < w - 1 && b[i + 1]) || (y > 0 && b[i - w]) || (y < h - 1 && b[i + w])) list.push(i);
-  }
-  for (const i of list) b[i] = col;
-}
-
-// Ombrage automatique en 3 tons : bords tournés vers la lumière (haut, avant) éclaircis, bords opposés assombris.
-const shadeCache = new Map();
-function shade32(c, k) {
-  const key = c * 8 + (k > 0 ? 1 : 2), hit = shadeCache.get(key); if (hit) return hit;
-  const f = v => Math.round(k > 0 ? v + (255 - v) * k : v * (1 + k));
-  const r = f(c & 255), g = f((c >> 8) & 255), b = f((c >> 16) & 255);
-  const out = ((255 << 24) | (b << 16) | (g << 8) | r) >>> 0;
-  shadeCache.set(key, out); return out;
-}
-function autoShade(f, keep) {
-  const b = sprBuf, w = SPR_W, h = SPR_H, src = b.slice();
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    const i = y * w + x, c = src[i]; if (!c || keep.has(c)) continue;
-    const up = y > 0 ? src[i - w] : 0, dn = y < h - 1 ? src[i + w] : 0;
-    const fr = (x + f >= 0 && x + f < w) ? src[i + f] : 0, bk = (x - f >= 0 && x - f < w) ? src[i - f] : 0;
-    if (!up || !fr) b[i] = shade32(c, .28);
-    else if (!dn || !bk || (bk !== c && !keep.has(bk))) b[i] = shade32(c, -.3);
-  }
-}
-
-// Dessine le joueur (ou reprend sa pose déjà dessinée) et renvoie son canevas. b = position écran (pour orienter le bras vers le ballon).
-function renderSprite(p, b) {
-  const tm = G.teams[p.team], f = p.face, peau = p.def.peau || '#e0ac69';
-  const C = {
-    skin: c32(peau), skinD: c32(shadeHex(peau, -.35)), hair: c32(p.def.cheveux || '#222'), jer: c32(tm.couleur), jerD: c32(tm.fonce),
-    trim: c32(tm.clair), white: c32('#f4f4f4'), sole: c32('#2a2a2a'), eye: c32('#140c0c'), mouth: c32('#6b2020'),
-  };
-  const down = p.state === 'down';
-  rotC = down ? Math.cos(-f * 1.45) : 1; rotS = down ? Math.sin(-f * 1.45) : 0; dropY = down ? -5 : 0;
-  const moving = Math.hypot(p.vx, p.vy) > .5 && p.z === 0 && p.state === 'run';
-  const sw = moving ? Math.sin(p.anim) : 0;
-  const air = p.z > 0 || p.state === 'dunk' || p.state === 'hang';
-  const hasBall = ball.mode === 'held' && ball.owner === p;
-
-  let hb, hf;
-  const up = p.state === 'jumpshot' || p.state === 'dunk' || p.state === 'hang' || (air && hasBall);
-  if (up) { hb = [f * 1, -68]; hf = [f * 7, -67]; if (p.state === 'hang') { hb = [f * 7, -66]; hf = [f * 10, -66]; } }
-  else if (air) { hb = [-7, -69]; hf = [7, -70]; }
-  else if (p.reach > 0) { hb = [-f * 4 - sw * 4, -25]; hf = [f * 23, -37]; }
-  else if (hasBall && p.state === 'run' && b) {
-    const bp = P(ball.x, ball.y, ball.z);
-    hb = [-f * 3 - sw * 5, -26]; hf = [(bp.x - b.x) / LS / K, (bp.y - b.y) / LS / K - 3];
-  } else { hb = [-f * 2 - sw * 7, -25]; hf = [f * 2 + sw * 7, -25]; }
-  hb = hb.map(Math.round); hf = hf.map(Math.round);
-  const swq = Math.round(sw * 4) / 4;
-
-  // Chaque pose n'est dessinée qu'une fois, puis réutilisée (le téléphone économise son processeur).
-  // Le canevas d'une pose n'est jamais redessiné : Safari ne peut donc pas les confondre.
-  if (!p.def._id) p.def._id = ++spriteIds;
-  const key = [p.def._id, p.team, f, down ? 1 : 0, air ? 1 : 0, p.state === 'hang' ? 1 : 0, swq, hb, hf].join();
-  const hit = spriteCache.get(key); if (hit) return hit;
-  sprBuf.fill(0);
-
-  const arm = (sx, h) => {
-    const ex = (sx + h[0]) / 2 - f * 2.5, ey = (-44 + h[1]) / 2 + (h[1] < -50 ? 0 : 2);
-    pDisc(sx, -44, 2.6, C.skin);                       // épaule
-    pLine(sx, -44, ex, ey, 3, C.skin);                 // bras
-    pLine(ex, ey, h[0], h[1], 3, C.skin);              // avant-bras
-    const wx = ex + (h[0] - ex) * .72, wy = ey + (h[1] - ey) * .72;
-    pLine(wx, wy, ex + (h[0] - ex) * .86, ey + (h[1] - ey) * .86, 3, C.trim); // poignet
-    pDisc(h[0], h[1], 2, C.skin);                      // main
-  };
-  const leg = (hx, fx, fy) => {
-    const kx = (hx + fx) / 2 + f * 2, ky = (-14 + fy) / 2;
-    pLine(hx, -14, kx, ky, 4, C.skin); pLine(kx, ky, fx, fy - 5, 3, C.skin);
-    pLine(fx, fy - 11, fx, fy - 4, 3, C.white);        // chaussette haute
-    pLine(fx - 1, fy - 10, fx + 1, fy - 10, 2, C.jer); // rayure
-    pLine(fx - f * 2.5, fy - 2.5, fx + f * 4.5, fy - 2.5, 3, C.white); // basket
-    pLine(fx - f * 2.5, fy - .5, fx + f * 5, fy - .5, 1, C.sole);
-    pLine(fx, fy - 3, fx + f * 2.5, fy - 2.5, 1, C.jer);
-  };
-  arm(-f * 7, hb);
-  if (air) { leg(-3, -3 - f * 4, -5); leg(3, 4 + f * 3, -11); } else { leg(-3.5, -3.5 + swq * 8, 0); leg(3.5, 3.5 - swq * 8, 0); }
-  // short ample
-  pPoly([[-9.5, -28], [9.5, -28], [11, -11], [1.5, -11], [0, -16], [-1.5, -11], [-11, -11]], C.jer);
-  pLine(-9.6, -27, -11, -12, 2, C.trim); pLine(9.6, -27, 11, -12, 2, C.trim);
-  pLine(-9.5, -27.5, 9.5, -27.5, 2, C.jerD);
-  // maillot sans manches
-  pPoly([[-8, -48], [-4.5, -48], [0, -43], [4.5, -48], [8, -48], [8.8, -27], [-8.8, -27]], C.jer);
-  pLine(-4.5, -48, 0, -43.5, 1, C.trim); pLine(0, -43.5, 4.5, -48, 1, C.trim);
-  pLine(-8, -47, -8.6, -28, 1, C.trim); pLine(8, -47, 8.6, -28, 1, C.trim);
-  if (!down) pNumber(p.def.numero, f * 1, -36, C.trim);
-  // tête, un peu grosse comme dans les jeux d'arcade
-  pLine(0, -50, 0, -46, 4, C.skin);
-  pDisc(f * .5, -56, 7.4, C.skin);
-  pDisc(f * .5 - f * 2.4, -59.6, 5.6, C.hair);
-  pLine(-f * 6, -57, f * 3.5, -62.4, 2, C.hair);
-  pDisc(-f * 1.2, -55.5, 1.3, C.skinD);                 // oreille
-  if (p.def.numero % 2) pLine(-f * 6.5, -59.5, f * 7.6, -59.5, 2, C.trim); // bandeau
-  { const [ex, ey] = tx(f * 4, -56.8), X = Math.round(ex), Y = Math.round(ey);
-    plot(X, Y, C.white); plot(X + f, Y, C.eye);                         // œil
-    plot(X, Y - 2, C.hair); plot(X + f, Y - 2, C.hair);                 // sourcil
-    const [mx, my] = tx(f * 5.2, -52.6); plot(Math.round(mx), Math.round(my), C.mouth); }
-  arm(f * 7, hf);
-  autoShade(f, new Set([C.white, C.eye, C.mouth, C.trim, C.sole]));
-  // contour noir, puis un liseré aux couleurs de l'équipe : les joueurs restent distincts quand ils se touchent
-  outline();
-  const cv2 = document.createElement('canvas'); cv2.width = SPR_W; cv2.height = SPR_H;
-  cv2.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(sprBuf.buffer.slice(0)), SPR_W, SPR_H), 0, 0);
-  if (spriteCache.size > 800) spriteCache.clear();
-  spriteCache.set(key, cv2);
-  return cv2;
-}
+/* ---------- joueurs : dessin lisse, proportions réalistes, ombrage en dégradé ---------- */
+const SU = 1.6;    // pixels écran par unité de corps (un joueur mesure ~72 unités)
+const SD = 2;      // densité du canevas de pose, pour rester net sur les écrans de téléphone
+const SPR_W = 156, SPR_H = 166, SPR_OX = 78, SPR_OY = 152;
 const spriteCache = new Map();
 let spriteIds = 0;
 function shadeHex(hex, k) {
@@ -1161,6 +1002,141 @@ function shadeHex(hex, k) {
   const n = parseInt(h, 16), f = v => Math.round(k > 0 ? v + (255 - v) * k : v * (1 + k));
   return '#' + [n >> 16 & 255, n >> 8 & 255, n & 255].map(v => f(v).toString(16).padStart(2, '0')).join('');
 }
+// Cinématique inverse à deux segments : position du genou ou du coude.
+function ik(ax, ay, bx, by, l1, l2, bend) {
+  const dx = bx - ax, dy = by - ay; let d = Math.hypot(dx, dy) || .01;
+  d = Math.min(d, l1 + l2 - .01);
+  const a = (l1 * l1 - l2 * l2 + d * d) / (2 * d), h = Math.sqrt(Math.max(0, l1 * l1 - a * a));
+  const n = Math.hypot(dx, dy) || .01, ux = dx / n, uy = dy / n;
+  return [ax + ux * a - uy * h * bend, ay + uy * a + ux * h * bend];
+}
+
+// Renvoie le canevas de la pose du joueur (dessinée une seule fois, puis réutilisée telle quelle).
+function renderSprite(p, b) {
+  const tm = G.teams[p.team], f = p.face;
+  const down = p.state === 'down';
+  const moving = Math.hypot(p.vx, p.vy) > .5 && p.z === 0 && p.state === 'run';
+  const ph = moving ? Math.round((((p.anim % 6.2832) + 6.2832) % 6.2832) / .5236) % 12 : -1;
+  const a = ph * .5236, sw = moving ? Math.sin(a) : 0;
+  const air = p.z > 0 || p.state === 'dunk' || p.state === 'hang';
+  const hang = p.state === 'hang';
+  const hasBall = ball.mode === 'held' && ball.owner === p;
+  const up = p.state === 'jumpshot' || p.state === 'dunk' || hang || (air && hasBall);
+
+  let hb, hf;
+  if (up) { hb = [f * 2, -84]; hf = [f * 7, -83]; if (hang) { hb = [f * 8, -82]; hf = [f * 11, -82]; } }
+  else if (air) { hb = [-8, -84]; hf = [8, -85]; }
+  else if (p.reach > 0) { hb = [-f * 5 - sw * 5, -36]; hf = [f * 26, -48]; }
+  else if (hasBall && p.state === 'run' && b) {
+    const bp = P(ball.x, ball.y, ball.z), k = sc(p.y) / 1.4;
+    hb = [-f * 4 - sw * 6, -35]; hf = [(bp.x - b.x) / SU / k, (bp.y - b.y) / SU / k - 1.5];
+  } else { hb = [-f * 3 - sw * 8, -34]; hf = [f * 3 + sw * 8, -34]; }
+  hb = hb.map(Math.round); hf = hf.map(Math.round);
+
+  if (!p.def._id) p.def._id = ++spriteIds;
+  const key = [p.def._id, p.team, f, down ? 1 : 0, air ? 1 : 0, hang ? 1 : 0, ph, hb, hf].join();
+  const hit = spriteCache.get(key); if (hit) return hit;
+
+  const cvs = document.createElement('canvas'); cvs.width = SPR_W * SD; cvs.height = SPR_H * SD;
+  const g = cvs.getContext('2d');
+  g.scale(SD, SD); g.translate(SPR_OX, SPR_OY);
+  if (down) { g.translate(0, -7); g.rotate(-f * 1.45); }
+  g.scale(SU, SU); g.lineCap = 'round'; g.lineJoin = 'round';
+
+  const skin = p.def.peau || '#e0ac69', hair = p.def.cheveux || '#222222';
+  const K = {
+    skin, skinL: shadeHex(skin, .22), skinD: shadeHex(skin, -.28), skinB: shadeHex(skin, -.14),
+    jer: tm.couleur, jerL: shadeHex(tm.couleur, .2), jerD: shadeHex(tm.fonce, -.15), trim: tm.clair,
+    hair, hairL: shadeHex(hair, .25), line: 'rgba(25,12,12,.6)',
+  };
+  const grad = (x0, x1, c0, c1, c2) => { const gr = g.createLinearGradient(f * x0, 0, f * x1, 0); gr.addColorStop(0, c0); gr.addColorStop(.55, c1); gr.addColorStop(1, c2); return gr; };
+  const poly = (pts, fill, stroke = K.line) => {
+    g.beginPath(); pts.forEach((q, i) => i ? g.lineTo(f * q[0], q[1]) : g.moveTo(f * q[0], q[1])); g.closePath();
+    g.fillStyle = fill; g.fill(); if (stroke) { g.strokeStyle = stroke; g.lineWidth = .55; g.stroke(); }
+  };
+  // membre en volume : contour doux, couleur, ombre côté dos, reflet côté lumière
+  const limb = (pts, w, col, colL, colD) => {
+    const path = (dx, dy) => { g.beginPath(); pts.forEach((q, i) => i ? g.lineTo(q[0] + dx, q[1] + dy) : g.moveTo(q[0] + dx, q[1] + dy)); };
+    path(0, 0); g.strokeStyle = K.line; g.lineWidth = w + .9; g.stroke();
+    g.strokeStyle = col; g.lineWidth = w; g.stroke();
+    path(-f * w * .22, w * .12); g.strokeStyle = colD; g.lineWidth = w * .42; g.stroke();
+    path(f * w * .24, -w * .08); g.strokeStyle = colL; g.lineWidth = w * .26; g.stroke();
+  };
+
+  // --- jambes (pieds en coordonnées corps, y négatif vers le haut)
+  let fa, fb;
+  if (air) { fb = [-f * 4, -7]; fa = [f * 4, -13]; }
+  else if (moving) { fa = [f * Math.sin(a) * 9, -Math.max(0, Math.cos(a)) * 4]; fb = [-f * Math.sin(a) * 9, -Math.max(0, -Math.cos(a)) * 4]; }
+  else { fa = [f * 3.5, 0]; fb = [-f * 3, 0]; }
+  const leg = (hipX, foot, back) => {
+    const hx = hipX, hy = -36, kn = ik(hx, hy, foot[0], foot[1] - 3, 17, 16, -f);
+    const sk = back ? K.skinB : K.skin;
+    limb([[hx, hy], kn, [foot[0], foot[1] - 3]], back ? 5.6 : 6, sk, K.skinL, K.skinD);
+    // chaussette et chaussure
+    limb([[foot[0], foot[1] - 6.5], [foot[0], foot[1] - 3]], 4.4, back ? '#d9d9d9' : '#f4f4f4', '#fff', '#bdbdbd');
+    g.beginPath(); g.ellipse(foot[0] + f * 2, foot[1] - 1.7, 4.9, 2.2, 0, 0, 7);
+    g.fillStyle = back ? '#dcdcdc' : '#fafafa'; g.fill(); g.strokeStyle = K.line; g.lineWidth = .55; g.stroke();
+    g.fillStyle = '#2a2a2a'; g.fillRect(foot[0] - 2.9 + f * 2 - (f < 0 ? 0 : 0), foot[1] - .7, 9.8, .9);
+    g.strokeStyle = K.jer; g.lineWidth = .8; g.beginPath(); g.moveTo(foot[0] - f * .5, foot[1] - 2.2); g.lineTo(foot[0] + f * 3.5, foot[1] - 1.4); g.stroke();
+  };
+  // --- bras
+  const arm = (sx, hand, back) => {
+    const sy = -54, el = ik(sx * 1.3, sy, hand[0], hand[1], 12.5, 11.5, f);
+    const sk = back ? K.skinB : K.skin;
+    limb([[sx * 1.3, sy], el, hand], back ? 4.4 : 4.8, sk, K.skinL, K.skinD);
+    const wx = el[0] + (hand[0] - el[0]) * .78, wy = el[1] + (hand[1] - el[1]) * .78;
+    limb([[wx, wy], [el[0] + (hand[0] - el[0]) * .9, el[1] + (hand[1] - el[1]) * .9]], 3.9, K.trim, K.trim, shadeHex(K.trim, -.2));
+    g.beginPath(); g.arc(hand[0], hand[1], 1.95, 0, 7); g.fillStyle = sk; g.fill(); g.strokeStyle = K.line; g.lineWidth = .5; g.stroke();
+  };
+
+  arm(-f * 2.5, hb, true);
+  leg(-f * 1.5, fb, true);
+  leg(f * 1.5, fa, false);
+  // torse et short un peu plus larges : silhouette d'athlète
+  g.save(); g.scale(1.22, 1);
+  // short ample
+  poly([[-6.3, -39], [6.6, -39], [7.8, -22], [1.3, -21.5], [.3, -25], [-.8, -21.5], [-6.8, -22]], grad(-7, 8, K.jerD, K.jer, K.jerL));
+  g.strokeStyle = K.trim; g.lineWidth = 1.3; g.beginPath(); g.moveTo(f * 1.2, -38.5); g.lineTo(f * 1.8, -22.3); g.stroke();
+  g.fillStyle = K.jerD; g.fillRect(-6.3, -39.4, 12.9, 1.4);
+  // maillot sans manches
+  poly([[-4.6, -56.5], [-5.8, -50], [-5.2, -44], [-5.8, -37.5], [6, -37.5], [6.4, -44], [6.9, -50], [4.4, -56.5], [2, -53.6]], grad(-6, 7, K.jerD, K.jer, K.jerL));
+  g.strokeStyle = K.trim; g.lineWidth = .9;
+  g.beginPath(); g.moveTo(f * -4.6, -56.4); g.quadraticCurveTo(f * -1, -54, f * 2, -53.6); g.lineTo(f * 4.4, -56.4); g.stroke();
+  g.beginPath(); g.moveTo(f * 4.6, -55.5); g.quadraticCurveTo(f * 2.2, -50.5, f * 6.3, -48.5); g.stroke();
+  g.save(); g.scale(f, 1);
+  g.font = `900 8.5px ${FONT}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.lineWidth = 1.2; g.strokeStyle = K.jerD; g.fillStyle = K.trim;
+  if (f < 0) g.scale(-1, 1);
+  g.strokeText(String(p.def.numero), f * 1.6, -45); g.fillText(String(p.def.numero), f * 1.6, -45);
+  g.restore();
+  g.restore();
+  // cou et tête
+  limb([[f * .4, -59], [f * .6, -55]], 3.6, K.skin, K.skinL, K.skinD);
+  const hx = f * 1.1, hy = -64.2;
+  const rg = g.createRadialGradient(hx + f * 1.6, hy - 1.8, .5, hx, hy, 5.6);
+  rg.addColorStop(0, K.skinL); rg.addColorStop(.6, K.skin); rg.addColorStop(1, K.skinD);
+  g.beginPath(); g.ellipse(hx, hy, 4.3, 5.1, 0, 0, 7); g.fillStyle = rg; g.fill(); g.strokeStyle = K.line; g.lineWidth = .55; g.stroke();
+  g.beginPath(); g.ellipse(hx + f * 1.4, hy + 3.4, 2.5, 1.7, 0, 0, 7); g.fillStyle = K.skin; g.fill(); // mâchoire
+  // cheveux
+  g.beginPath(); g.ellipse(hx - f * .7, hy - 2.1, 4.1, 3.3, f * -.2, Math.PI * .95, Math.PI * 2.05); g.fillStyle = K.hair; g.fill();
+  g.beginPath(); g.ellipse(hx - f * 2.6, hy - .4, 1.9, 3.5, 0, 0, 7); g.fill();
+  g.strokeStyle = K.hairL; g.lineWidth = .5; g.beginPath(); g.arc(hx - f * .5, hy - 2.4, 2.8, Math.PI * 1.15, Math.PI * 1.55); g.stroke();
+  if (p.def.numero % 2) { g.fillStyle = K.trim; g.beginPath(); g.ellipse(hx - f * .2, hy - 2.2, 4.4, 1, f * -.1, 0, 7); g.fill(); }
+  // oreille, œil, sourcil, nez, bouche
+  g.fillStyle = K.skinD; g.beginPath(); g.ellipse(hx - f * 1.4, hy + .3, .8, 1.3, 0, 0, 7); g.fill();
+  g.fillStyle = '#fff'; g.beginPath(); g.ellipse(hx + f * 2.3, hy - .5, .75, .55, 0, 0, 7); g.fill();
+  g.fillStyle = '#1b1210'; g.beginPath(); g.ellipse(hx + f * 2.6, hy - .5, .42, .5, 0, 0, 7); g.fill();
+  g.strokeStyle = K.hair; g.lineWidth = .55; g.beginPath(); g.moveTo(hx + f * 1.5, hy - 1.7); g.lineTo(hx + f * 3.3, hy - 1.6); g.stroke();
+  g.fillStyle = K.skin; g.strokeStyle = K.skinD; g.lineWidth = .35;
+  g.beginPath(); g.moveTo(hx + f * 3.6, hy - .6); g.lineTo(hx + f * 4.7, hy + 1.3); g.lineTo(hx + f * 3.7, hy + 1.6); g.fill(); g.stroke();
+  g.strokeStyle = '#6b2a24'; g.lineWidth = .4; g.beginPath(); g.moveTo(hx + f * 2.5, hy + 3); g.lineTo(hx + f * 3.6, hy + 2.9); g.stroke();
+  arm(f * 2.5, hf, false);
+
+  if (spriteCache.size > 600) spriteCache.clear();
+  spriteCache.set(key, cvs);
+  return cvs;
+}
+
 /* ---------- décor ---------- */
 const CROWD = [];
 (function () {
@@ -1177,8 +1153,8 @@ function buildCrowd(s0) {
   const g = c.getContext('2d');
   for (const p of CROWD) {
     const sx = Math.round(((p.x + 480) * s0 * .92 + 20) / LS), sy = Math.round((66 + p.r * 15 + Math.sin(p.ph) * .8 - 40) / LS);
-    g.fillStyle = p.c; g.fillRect(sx - 3, sy, 6, 5);
-    g.fillStyle = p.sk; g.fillRect(sx - 2, sy - 4, 4, 4);
+    g.fillStyle = p.c; g.beginPath(); g.ellipse(sx, sy + 6, 6.5, 6, 0, Math.PI, 0); g.fill(); g.fillRect(sx - 6.5, sy + 6, 13, 6);
+    g.fillStyle = p.sk; g.beginPath(); g.arc(sx, sy - 1, 4.2, 0, 7); g.fill();
   }
   return c;
 }
@@ -1198,9 +1174,9 @@ function drawArena() {
     if (sx < -10 || sx > VW + 10) continue;
     const bob = (G.hype > .05 ? Math.abs(Math.sin(G.frame * .25 + c.ph)) * 6 * G.hype : 0) + Math.sin(G.frame * .03 + c.ph) * .8;
     const sy = snap(66 + c.r * 15 - bob);
-    ctx.fillStyle = c.c; ctx.fillRect(sx - 6, sy, 12, 10);
-    ctx.fillStyle = c.sk; ctx.fillRect(sx - 4, sy - 8, 8, 8);
-    if (G.hype > .4 && (c.ph * 10 | 0) % 3 === 0) { ctx.fillRect(sx - 8, sy - 12, 2, 12); ctx.fillRect(sx + 6, sy - 12, 2, 12); }
+    ctx.fillStyle = c.c; ctx.beginPath(); ctx.ellipse(sx, sy + 6, 6.5, 6, 0, Math.PI, 0); ctx.fill(); ctx.fillRect(sx - 6.5, sy + 6, 13, 6);
+    ctx.fillStyle = c.sk; ctx.beginPath(); ctx.arc(sx, sy - 1, 4.2, 0, 7); ctx.fill();
+    if (G.hype > .4 && (c.ph * 10 | 0) % 3 === 0) { ctx.fillRect(sx - 8.5, sy - 12, 2.2, 13); ctx.fillRect(sx + 6.3, sy - 12, 2.2, 13); }
   }
   // panneau publicitaire
   const by = TOP - 48;
@@ -1289,11 +1265,10 @@ function drawPlayer(p) {
   ctx.beginPath(); ctx.ellipse(g.x, g.y, 16 * s, 5 * s, 0, 0, 7); ctx.stroke();
   if (p.human && !G.demo) { ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(g.x, g.y, 20 * s, 6 * s, 0, 0, 7); ctx.stroke(); }
   if (p.fire) { ctx.fillStyle = 'rgba(255,120,0,.3)'; ctx.beginPath(); ctx.ellipse(g.x, g.y, 24 * s, 7 * s, 0, 0, 7); ctx.fill(); }
-  const spr = renderSprite(p, b);
-  loPixel();
-  loCtx.drawImage(spr, Math.round(b.x / LS) - SPR_OX, Math.round(b.y / LS) - SPR_OY);
-  loVector();
-  G.tags.push({ p, x: b.x + shk.x * LS, y: b.y + shk.y * LS - 116 });
+  const spr = renderSprite(p, b), k = s / 1.4;
+  ctx.imageSmoothingEnabled = true;
+  ctx.drawImage(spr, b.x - SPR_OX * k, b.y - SPR_OY * k, SPR_W * k, SPR_H * k);
+  G.tags.push({ p, x: b.x + shk.x, y: b.y + shk.y - 122 * k });
 }
 
 function drawBall() {
@@ -1302,18 +1277,16 @@ function drawBall() {
   ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(g.x, g.y, r * LS * (1 - Math.min(ball.z, 200) / 400), r * LS * .35, 0, 0, 7); ctx.fill();
   const fire = ball.owner && ball.owner.fire || (ball.shot && ball.shot.shooter.fire);
   if (fire) { ctx.fillStyle = 'rgba(255,140,0,.5)'; ctx.beginPath(); ctx.arc(b.x, b.y, r * LS * 1.9, 0, 7); ctx.fill(); }
-  loPixel();
-  const cx = Math.round(b.x / LS), cy = Math.round(b.y / LS), a = G.frame * .2, ca = Math.cos(a), sa = Math.sin(a);
-  const R2 = r * r + r * .6, I2 = (r - 1) * (r - 1) + (r - 1) * .6;
-  for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) {
-    const d2 = i * i + j * j; if (d2 > R2) continue;
-    let col = '#e8731c';
-    if (d2 > I2) col = '#3a1503';
-    else if (Math.abs(i * ca + j * sa) < .7) col = '#7a3510';
-    else if (i < 0 && j < 0 && i + j <= -r * .8) col = '#ffb070';
-    loCtx.fillStyle = col; loCtx.fillRect(cx + i, cy + j, 1, 1);
-  }
-  loVector();
+  const R = r * LS, rot = G.frame * .2;
+  const bg = ctx.createRadialGradient(b.x - R * .35, b.y - R * .4, R * .15, b.x, b.y, R);
+  bg.addColorStop(0, '#ffb26b'); bg.addColorStop(.55, '#e8731c'); bg.addColorStop(1, '#9c4310');
+  ctx.beginPath(); ctx.arc(b.x, b.y, R, 0, 7); ctx.fillStyle = bg; ctx.fill();
+  ctx.strokeStyle = '#3a1503'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.save(); ctx.beginPath(); ctx.arc(b.x, b.y, R, 0, 7); ctx.clip();
+  ctx.strokeStyle = 'rgba(58,21,3,.85)'; ctx.lineWidth = .9;
+  ctx.beginPath(); ctx.moveTo(b.x - R * Math.cos(rot), b.y - R * Math.sin(rot)); ctx.lineTo(b.x + R * Math.cos(rot), b.y + R * Math.sin(rot)); ctx.stroke();
+  ctx.beginPath(); ctx.ellipse(b.x, b.y, R * .5, R, rot, 0, 7); ctx.stroke();
+  ctx.restore();
   if (fire && G.frame % 2 === 0) spawn(ball.x, ball.y, ball.z, rnd(-.4, .4), 0, rnd(.5, 1.2), 16, pick(['#ff6a00', '#ffb300']), rnd(2, 4));
 }
 
@@ -1322,7 +1295,7 @@ function drawParts() {
   for (const q of G.parts) {
     const s = P(q.x, q.y, q.z), z = Math.max(1, Math.round(q.size * (.4 + .6 * q.life / q.max) * .55));
     loCtx.globalAlpha = Math.min(1, q.life / q.max * 1.6); loCtx.fillStyle = q.color;
-    loCtx.fillRect(Math.round(s.x / LS) - (z >> 1), Math.round(s.y / LS) - (z >> 1), z, z);
+    loCtx.beginPath(); loCtx.arc(s.x, s.y, z * .9, 0, 7); loCtx.fill();
   }
   loCtx.globalAlpha = 1;
   loVector();
@@ -1363,7 +1336,7 @@ function drawWorld() {
   ents.sort((a, b) => a.y - b.y).forEach(e => e.d());
   drawParts();
   ctx = mainCtx;
-  ctx.imageSmoothingEnabled = false;
+  ctx.imageSmoothingEnabled = true;
   ctx.drawImage(lo, 0, 0, VW, VH);
   drawTags();
   const me = G.players.find(p => p.human && !G.demo);
@@ -1466,7 +1439,7 @@ function drawTitle() {
   txt('< DIFFICULTÉ : ' + DIFF[G.diff].nom + ' >', 480, 370, 14, '#fff', 'center', 'pix', 5);
   if (G.frame % 60 < 40) txt(G.touch ? "TOUCHE L'ÉCRAN POUR JOUER" : 'APPUIE SUR ESPACE POUR JOUER', 480, 430, 16, '#fff', 'center', 'pix', 6);
   txt('CREDIT 01', 20, 528, 9, '#ffd23f', 'left', 'pix');
-  txt('v7c', 940, 528, 8, '#666', 'right', 'pix');
+  txt('v8', 940, 528, 8, '#666', 'right', 'pix');
   txt(G.touch ? 'Joystick à gauche (à fond = turbo) · TIR près du panier = dunk' : 'Flèches/ZQSD · Tir : Espace (près du panier = dunk) · Passe/Vol : K · Turbo : Maj · Pousser : Maj+K · M : son', 480, 500, 15, '#bbb', 'center', '700');
 }
 
@@ -1493,10 +1466,9 @@ function drawSelect() {
     // aperçu du joueur en pixel art (il court quand il est choisi)
     const fake = { def: j, team: 0, face: 1, state: 'run', z: 0, vx: si >= 0 ? 1 : 0, vy: 0, anim: G.frame * .2, reach: 0 };
     const spr = renderSprite(fake, null);
-    const sh = Math.min(2, (c.h - 34) / 66);
-    ctx.imageSmoothingEnabled = false;
-    ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(spr, 19, 14, 34, 66, c.x + c.w - 14 - 34 * sh, c.y + c.h - 4 - 66 * sh, 34 * sh, 66 * sh);
+    const sk = (c.h - 14) / SPR_H;
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(spr, c.x + c.w - 6 - (SPR_OX + 28) * sk, c.y + c.h - 6 - SPR_OY * sk, SPR_W * sk, SPR_H * sk);
     if (si >= 0) {
       const bw = si === 0 ? 40 : 100, bx = c.x + c.w - 10 - bw;
       ctx.fillStyle = si === 0 ? '#ffd23f' : '#fff'; ctx.fillRect(bx, c.y + 32, bw, 16);
