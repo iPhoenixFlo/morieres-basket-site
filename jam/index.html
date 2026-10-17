@@ -1054,7 +1054,7 @@ function outline(col = OUT) {
   for (const i of list) b[i] = col;
 }
 
-// Dessine le joueur dans sprCv. b = position écran (pour orienter le bras vers le ballon).
+// Dessine le joueur et renvoie son canevas. b = position écran (pour orienter le bras vers le ballon).
 function renderSprite(p, b) {
   sprBuf.fill(0);
   const tm = G.teams[p.team], f = p.face;
@@ -1110,7 +1110,10 @@ function renderSprite(p, b) {
   arm(f * 6, hf);
   // contour noir, puis un second contour aux couleurs de l'équipe : les joueurs restent distincts quand ils se touchent
   outline(); outline(p.team === 0 ? c32('#ffffff') : c32(tm.clair));
-  sprCtx.putImageData(sprImg, 0, 0);
+  // Un canevas par joueur : Safari diffère les copies, un canevas partagé afficherait 4 fois le même joueur.
+  if (!p._cv) { p._cv = document.createElement('canvas'); p._cv.width = SPR_W; p._cv.height = SPR_H; }
+  p._cv.getContext('2d').putImageData(sprImg, 0, 0);
+  return p._cv;
 }
 
 /* ---------- décor ---------- */
@@ -1220,9 +1223,9 @@ function drawPlayer(p) {
   }
   if (p.human && !G.demo) { ctx.strokeStyle = '#ffd23f'; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(g.x, g.y, 20 * s, 6 * s, 0, 0, 7); ctx.stroke(); }
   if (p.fire) { ctx.fillStyle = 'rgba(255,120,0,.3)'; ctx.beginPath(); ctx.ellipse(g.x, g.y, 24 * s, 7 * s, 0, 0, 7); ctx.fill(); }
-  renderSprite(p, b);
+  const spr = renderSprite(p, b);
   loPixel();
-  loCtx.drawImage(sprCv, Math.round(b.x / LS) - SPR_OX, Math.round(b.y / LS) - SPR_OY);
+  loCtx.drawImage(spr, Math.round(b.x / LS) - SPR_OX, Math.round(b.y / LS) - SPR_OY);
   loVector();
   G.tags.push({ p, x: b.x + shk.x * LS, y: b.y + shk.y * LS - 92 });
 }
@@ -1393,6 +1396,7 @@ function drawStatBar(x, y, label, v, w) {
   const n = Math.round(v), seg = (w - 9) / 10;
   for (let i = 0; i < 10; i++) { ctx.fillStyle = i < n ? CONFIG.club.couleur : '#333'; ctx.fillRect(Math.round(x + 38 + i * (seg + 1)), y - 4, Math.max(1, Math.floor(seg)), 8); }
 }
+const CARD_CV = [];
 function drawSelect() {
   ctx.fillStyle = '#120708'; ctx.fillRect(0, 0, VW, VH);
   drawLogo(36, 22);
@@ -1409,11 +1413,11 @@ function drawSelect() {
     const step = (c.h - 50) / 5;
     if (step > 9) rows.forEach((r, k) => drawStatBar(c.x + 10, c.y + 46 + k * step, r[0], r[1], c.w - 120));
     // aperçu du joueur en pixel art (il court quand il est choisi)
-    const fake = { def: j, team: 0, face: 1, state: 'run', z: 0, vx: si >= 0 ? 1 : 0, vy: 0, anim: G.frame * .2, reach: 0 };
-    renderSprite(fake, null);
+    const fake = { def: j, team: 0, face: 1, state: 'run', z: 0, vx: si >= 0 ? 1 : 0, vy: 0, anim: G.frame * .2, reach: 0, _cv: CARD_CV[i] };
+    CARD_CV[i] = renderSprite(fake, null);
     const sh = Math.min(2, (c.h - 34) / 52);
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(sprCv, 16, 10, 28, 52, c.x + c.w - 14 - 28 * sh, c.y + c.h - 4 - 52 * sh, 28 * sh, 52 * sh);
+    ctx.drawImage(CARD_CV[i], 16, 10, 28, 52, c.x + c.w - 14 - 28 * sh, c.y + c.h - 4 - 52 * sh, 28 * sh, 52 * sh);
     if (si >= 0) {
       const bw = si === 0 ? 40 : 100, bx = c.x + c.w - 10 - bw;
       ctx.fillStyle = si === 0 ? '#ffd23f' : '#fff'; ctx.fillRect(bx, c.y + 32, bw, 16);
