@@ -1,5 +1,8 @@
 {
   "regions": ["cdg1"],
+  "functions": {
+    "api/*.js": { "maxDuration": 60 }
+  },
   "crons": [
     { "path": "/api/stages?purge=1", "schedule": "0 4 * * *" }
   ]
