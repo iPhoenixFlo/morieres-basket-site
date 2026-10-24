@@ -31,7 +31,7 @@ export const STAGES = [
     prixJour: 20,
     prixSemaine: 90,
     paiement3xDes: 40,   // deux jours ou plus : en dessous, les échéances seraient dérisoires
-    ouvert: true,
+    ouvert: false,  // stage terminé le 23 octobre 2026
   },
   {
     id: "toussaint-2026-u15-u18",
@@ -49,7 +49,7 @@ export const STAGES = [
     prixJour: 20,
     prixSemaine: 90,
     paiement3xDes: 40,   // deux jours ou plus : en dessous, les échéances seraient dérisoires
-    ouvert: true,
+    ouvert: false,  // stage terminé le 23 octobre 2026
   },
 ];
 
