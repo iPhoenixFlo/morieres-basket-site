@@ -89,3 +89,51 @@ export async function listerPayees(stageId) {
   const r = await requete(`inscriptions?stage_id=eq.${encodeURIComponent(stageId)}&statut=eq.payee&select=*&order=cree_le`);
   return (r || []).map(depuisBase);
 }
+
+/* ---------- cache FFBB ----------
+   Depuis le 19 octobre 2026, le pare-feu de la FFBB refuse les requêtes
+   venant des hébergeurs. Les données sont collectées depuis une connexion
+   ordinaire (collecte/collecte-ffbb.mjs), déposées par /api/ingest, et le
+   site ne lit plus que cette table.
+
+   Clés : "club", ou "equipe:<identifiant d'engagement>". */
+
+/* Mémo par instance : sur une même requête, resultats.js interroge
+   /api/club puis plusieurs /api/equipe. Inutile de retourner en base pour
+   une clé qu'on vient de lire. */
+const memoFfbb = new Map();
+const MEMO_FFBB_MS = 60 * 1000;
+
+export async function lireCacheFfbb(cle) {
+  const enMemoire = memoFfbb.get(cle);
+  if (enMemoire && Date.now() - enMemoire.t < MEMO_FFBB_MS) return enMemoire.v;
+
+  const r = await requete(
+    `ffbb_cache?cle=eq.${encodeURIComponent(cle)}&select=charge,maj,collecte_le&limit=1`
+  );
+  const ligne = Array.isArray(r) ? r[0] : null;
+  const valeur = ligne
+    ? { charge: ligne.charge, maj: ligne.maj, collecteLe: ligne.collecte_le || null }
+    : null;
+
+  memoFfbb.set(cle, { t: Date.now(), v: valeur });
+  return valeur;
+}
+
+export async function deposerCacheFfbb(cle, charge, collecteLe = null) {
+  const maj = await rpc("deposer_ffbb", {
+    p_cle: cle,
+    p_charge: charge,
+    p_collecte_le: collecteLe || new Date().toISOString(),
+  });
+  memoFfbb.delete(cle);
+  return maj;
+}
+
+/** Âge d'une entrée en minutes, pour afficher "données d'il y a 2 h". */
+export function ageMinutes(maj) {
+  if (!maj) return null;
+  const t = Date.parse(maj);
+  if (!Number.isFinite(t)) return null;
+  return Math.max(0, Math.round((Date.now() - t) / 60000));
+}

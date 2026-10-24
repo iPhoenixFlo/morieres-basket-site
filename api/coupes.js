@@ -130,7 +130,9 @@ export default async function handler(req, res) {
     res.status(200).json(data);
   } catch (e) {
     if (enMemoire) {
-      res.setHeader("Cache-Control", "public, s-maxage=300");
+      // Pendant un blocage FFBB, le CDN garde la copie périmée plus longtemps :
+      // moins d'appels partis vers un pare-feu qui les refuse de toute façon.
+      res.setHeader("Cache-Control", "public, s-maxage=1800");
       res.status(200).json({ ...enMemoire.data, perime: true, erreur: e.message });
       return;
     }

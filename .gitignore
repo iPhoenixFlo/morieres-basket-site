@@ -1,0 +1,13 @@
+# Secrets du collecteur : la clé de dépôt ne doit jamais partir sur GitHub.
+collecte/.env
+
+# Journaux et vidages produits par le collecteur en local.
+collecte/*.log
+collecte/*.log.1
+collecte/club.json
+collecte/equipe_*.json
+
+# Divers
+.DS_Store
+node_modules/
+.vercel

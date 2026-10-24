@@ -29,6 +29,13 @@ const FFBB_API = "https://api.ffbb.com";
    un User-Agent accepté, et un repli sur l'origine bo.ffbb.com.
    L'origine qui a fonctionné est mémorisée pour les appels suivants.
    --------------------------------------------------------------- */
+import { lireCacheFfbb, ageMinutes } from "./_db.js";
+
+/* "direct" = on interroge la FFBB pour de vrai. Réservé au collecteur qui
+   tourne sur une connexion ordinaire. Partout ailleurs, et donc sur
+   l'hébergeur, on lit ce que le collecteur a déposé. */
+const MODE_DIRECT = process.env.FFBB_MODE === "direct";
+
 const FFBB_UA = process.env.FFBB_USER_AGENT || "okhttp/4.12.0";
 
 const FFBB_ORIGINES = [
@@ -40,11 +47,26 @@ const FFBB_ORIGINES = [
 
 let origineOk = null;
 
+/* Depuis le 19 octobre 2026, le pare-feu de la FFBB refuse les requêtes
+   venant des hébergeurs. Insister est contre-productif : un pare-feu
+   interprète les tentatives répétées comme un comportement abusif et peut
+   prolonger le bannissement. Après un refus sur toutes les origines, on
+   s'interdit donc tout nouvel appel pendant FFBB_PAUSE_MINUTES, et on sert
+   la dernière copie connue en attendant. */
+const FFBB_PAUSE_MS = Number(process.env.FFBB_PAUSE_MINUTES || 360) * 60000;
+let bloqueeJusqua = 0;
+
 async function ffbbFetch(chemin, entetes = {}) {
+  if (bloqueeJusqua > Date.now()) {
+    const minutes = Math.ceil((bloqueeJusqua - Date.now()) / 60000);
+    throw new Error(`FFBB bloquée (pare-feu). Prochaine tentative dans ${minutes} min.`);
+  }
+
   const tete = { Accept: "application/json", "User-Agent": FFBB_UA, ...entetes };
   const ordre = origineOk ? [origineOk, ...FFBB_ORIGINES.filter((o) => o !== origineOk)] : FFBB_ORIGINES;
 
   let dernier = null;
+  let refuse = false;
   for (const origine of ordre) {
     let r;
     try {
@@ -55,10 +77,12 @@ async function ffbbFetch(chemin, entetes = {}) {
     }
     // 403 = pare-feu, on essaie l'origine suivante.
     // 401 = jeton périmé, l'appelant s'en occupe, on ne change pas d'origine.
-    if (r.status === 403) { dernier = `${origine} refusé (403)`; continue; }
+    if (r.status === 403) { refuse = true; dernier = `${origine} refusé (403)`; continue; }
     origineOk = origine;
     return r;
   }
+
+  if (refuse) bloqueeJusqua = Date.now() + FFBB_PAUSE_MS;
   throw new Error(`FFBB inaccessible. ${dernier || "aucune origine n'a répondu"}`);
 }
 
@@ -411,6 +435,38 @@ export default async function handler(req, res) {
   const debug = req.query?.debug === "1";
 
   const cle = `club:${CLUB_CODE}:${options.saison || (options.toutes ? "toutes" : "active")}`;
+
+  /* Sur l'hébergeur, on ne contacte plus la FFBB : son pare-feu refuse les
+     requêtes venant des datacenters depuis le 19 octobre 2026. On sert ce
+     que le collecteur a déposé depuis une connexion ordinaire.
+     Le mode direct ne sert qu'au collecteur lui-même, qui tourne sur une
+     machine à connexion résidentielle. */
+  /* Le collecteur ne ramène que la saison en cours, celle dont le site a
+     besoin. Les autres variantes continuent d'interroger la FFBB : mieux
+     vaut un échec franc que de leur servir la saison courante en se faisant
+     passer pour autre chose. */
+  const variantePrincipale = !options.toutes && !options.saison;
+
+  if (!MODE_DIRECT && variantePrincipale) {
+    try {
+      const entree = await lireCacheFfbb("club");
+      if (entree) {
+        const age = ageMinutes(entree.maj);
+        res.setHeader("Cache-Control", "public, s-maxage=600, stale-while-revalidate=86400");
+        res.setHeader("X-MBC-Cache", "collecte");
+        res.setHeader("X-MBC-Age-Minutes", String(age ?? ""));
+        res.status(200).json({ ...entree.charge, collecteLe: entree.collecteLe, ageMinutes: age });
+        return;
+      }
+      /* Cache encore vide : on continue vers la FFBB. Ça couvre la période
+         d'installation, où le collecteur n'a pas encore tourné. La pause
+         après 403 nous empêche d'insister pour rien. */
+    } catch (e) {
+      // Supabase indisponible n'est pas une raison de ne rien afficher.
+      console.error("cache FFBB illisible, repli sur la FFBB :", e.message);
+    }
+  }
+
   const enMemoire = memo.get(cle);
   if (enMemoire && Date.now() - enMemoire.t < MEMO_MS && !debug) {
     res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
@@ -445,7 +501,9 @@ export default async function handler(req, res) {
     res.status(200).json(data);
   } catch (e) {
     if (enMemoire) {
-      res.setHeader("Cache-Control", "public, s-maxage=300");
+      // Pendant un blocage FFBB, le CDN garde la copie périmée plus longtemps :
+      // moins d'appels partis vers un pare-feu qui les refuse de toute façon.
+      res.setHeader("Cache-Control", "public, s-maxage=1800");
       res.setHeader("X-MBC-Cache", "perime");
       res.status(200).json({ ...enMemoire.data, perime: true, erreur: e.message });
       return;

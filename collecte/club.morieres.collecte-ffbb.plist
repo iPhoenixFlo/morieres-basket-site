@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Planificateur du collecteur FFBB.
+
+  À copier dans ~/Library/LaunchAgents/ puis à charger. Remplacer
+  REMPLACER_CHEMIN par le dossier qui contient lancer.sh.
+
+  StartInterval relance la tâche toutes les 3 heures. Sur un portable,
+  launchd rattrape au réveil une exécution tombée pendant la veille, donc
+  une nuit fermée ne fait pas perdre la mise à jour du lendemain.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>club.morieres.collecte-ffbb</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>REMPLACER_CHEMIN/lancer.sh</string>
+  </array>
+
+  <!-- Toutes les 3 heures. Les calendriers FFBB bougent après les
+       rencontres, inutile d'interroger plus souvent. -->
+  <key>StartInterval</key>
+  <integer>10800</integer>
+
+  <!-- Une collecte au chargement, pour ne pas attendre 3 heures après un
+       redémarrage. -->
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>WorkingDirectory</key>
+  <string>REMPLACER_CHEMIN</string>
+
+  <key>StandardOutPath</key>
+  <string>REMPLACER_CHEMIN/launchd.log</string>
+  <key>StandardErrorPath</key>
+  <string>REMPLACER_CHEMIN/launchd.log</string>
+
+  <!-- Priorité basse : la collecte ne doit jamais ralentir la machine. -->
+  <key>LowPriorityIO</key>
+  <true/>
+  <key>Nice</key>
+  <integer>5</integer>
+</dict>
+</plist>

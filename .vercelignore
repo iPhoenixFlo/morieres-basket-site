@@ -1,0 +1,4 @@
+# Tout fichier du dépôt est servi publiquement par Vercel. Le collecteur et
+# les scripts SQL n'ont rien à faire en ligne : ils tournent en local.
+collecte/
+sql/
