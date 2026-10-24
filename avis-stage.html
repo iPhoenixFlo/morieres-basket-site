@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Votre avis sur le stage - Morières Basket Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --rouge:#BA2A2F;--rouge-fonce:#8f1f23;--noir:#1a1a1a;--gris:#6b6b6b;
+    --gris-clair:#e6e6e6;--fond:#f5f3f0;--blanc:#ffffff;--ok:#2e7d32;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:'Barlow',system-ui,sans-serif;background:var(--fond);color:var(--noir);line-height:1.5;padding:0 0 60px}
+  .wrap{max-width:680px;margin:0 auto;padding:0 16px}
+
+  header{background:var(--blanc);border-bottom:4px solid var(--rouge);padding:22px 0 18px;margin-bottom:22px}
+  .header-inner{max-width:680px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:16px}
+  .badge{width:52px;height:52px;border-radius:50%;background:var(--rouge);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:900;font-size:20px;letter-spacing:.5px;flex-shrink:0}
+  .header-text .club{font-family:'Barlow Condensed';font-weight:900;font-size:26px;line-height:1;text-transform:uppercase;letter-spacing:.5px}
+  .header-text .sub{font-size:13px;color:var(--gris);margin-top:3px}
+
+  h1{font-family:'Barlow Condensed';font-weight:900;font-size:30px;line-height:1.05;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .intro{font-size:14.5px;color:var(--gris);margin-bottom:22px}
+
+  .card{background:var(--blanc);border:1px solid var(--gris-clair);border-radius:10px;padding:18px 18px 20px;margin-bottom:16px}
+  .card-title{font-family:'Barlow Condensed';font-weight:700;font-size:19px;text-transform:uppercase;letter-spacing:.4px;color:var(--rouge);margin-bottom:14px;display:flex;align-items:center;gap:9px}
+  .card-title .num{width:24px;height:24px;border-radius:6px;background:var(--rouge);color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+  .field:last-child{margin-bottom:0}
+  .field > label,.field > .lbl{font-size:13.5px;font-weight:600}
+  .req{color:var(--rouge)}
+  .hint{font-size:12px;color:var(--gris);font-weight:400}
+  input[type=text],textarea{font-family:'Barlow',sans-serif;font-size:15.5px;padding:11px 12px;border:1px solid var(--gris-clair);border-radius:8px;background:var(--blanc);color:var(--noir);width:100%;transition:border-color .15s}
+  textarea{min-height:120px;resize:vertical;line-height:1.45}
+  input:focus,textarea:focus{outline:none;border-color:var(--rouge);box-shadow:0 0 0 3px rgba(186,42,47,.12)}
+
+  .choix{display:flex;gap:10px;flex-wrap:wrap}
+  .choix.col{flex-direction:column}
+  .choix label{flex:1;min-width:120px;cursor:pointer;border:1px solid var(--gris-clair);border-radius:8px;padding:11px 13px;font-weight:600;font-size:14.5px;transition:all .15s;background:var(--blanc);display:flex;flex-direction:column;gap:1px}
+  .choix.col label{min-width:0}
+  .choix input{position:absolute;opacity:0;pointer-events:none}
+  .choix label:has(input:checked){background:var(--rouge);border-color:var(--rouge);color:#fff}
+  .choix label:has(input:focus-visible){box-shadow:0 0 0 3px rgba(186,42,47,.25)}
+  .choix label .sub{font-weight:400;font-size:12.5px;opacity:.85}
+
+  /* Notes de 1 à 5 : ballons qui se remplissent jusqu'à la note choisie */
+  .note{display:inline-flex;flex-direction:row-reverse;gap:6px;align-self:flex-start}
+  .note input{position:absolute;opacity:0;pointer-events:none}
+  .note label{cursor:pointer;width:46px;height:46px;border-radius:50%;border:1px solid var(--gris-clair);background:var(--blanc);display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed';font-weight:900;font-size:20px;color:var(--gris);transition:all .15s}
+  .note label:hover,.note label:hover ~ label,
+  .note input:checked ~ label{background:var(--rouge);border-color:var(--rouge);color:#fff}
+  .note input:focus-visible + label{box-shadow:0 0 0 3px rgba(186,42,47,.25)}
+  .note-legende{display:flex;justify-content:space-between;max-width:262px;font-size:12px;color:var(--gris)}
+
+  .piege{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+  .submit{width:100%;background:var(--rouge);color:#fff;border:none;border-radius:10px;padding:16px;font-family:'Barlow Condensed';font-weight:900;font-size:19px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;margin-top:8px;transition:background .15s}
+  .submit:hover{background:var(--rouge-fonce)}
+  .submit:disabled{background:#c9a3a4;cursor:not-allowed}
+
+  .error-box{display:none;background:#fdf2f2;border:1px solid var(--rouge);border-radius:8px;padding:12px 14px;font-size:13.5px;color:var(--rouge-fonce);margin-top:14px}
+  .error-box.show{display:block}
+  .merci{display:none;background:var(--blanc);border:1px solid var(--gris-clair);border-radius:10px;padding:30px 22px;text-align:center}
+  .merci.show{display:block}
+  .merci .barre{width:28px;height:3px;background:var(--rouge);margin:0 auto 14px}
+  .merci .ttl{font-family:'Barlow Condensed';font-weight:900;font-size:26px;text-transform:uppercase;margin-bottom:8px}
+  .merci p{color:var(--gris);font-size:14.5px}
+  .merci a{display:inline-block;margin-top:18px;color:var(--rouge);font-weight:600}
+  .footer-note{text-align:center;font-size:12px;color:var(--gris);margin-top:26px;line-height:1.6}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="badge">MBC</div>
+    <div class="header-text">
+      <div class="club">Morières Basket Club</div>
+      <div class="sub">Stages vacances</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="zoneFormulaire">
+    <h1>Votre avis sur le stage</h1>
+    <p class="intro">Merci d'avoir confié votre enfant au club pendant les vacances ! Pour que les prochains stages soient encore meilleurs, dites-nous ce qui vous a plu et ce qu'on peut améliorer. Deux minutes suffisent, et les réponses sont anonymes.</p>
+
+    <form id="formAvis" novalidate>
+      <!-- 1. Le stage -->
+      <div class="card">
+        <div class="card-title"><span class="num">1</span>Le stage</div>
+        <div class="field">
+          <span class="lbl">Quel stage votre enfant a-t-il suivi ? <span class="req">*</span></span>
+          <div class="choix col" id="listeStages"><span class="hint">Chargement des stages...</span></div>
+        </div>
+        <div class="field">
+          <label for="prenom">Prénom de l'enfant <span class="hint">(facultatif)</span></label>
+          <input type="text" id="prenom" maxlength="40" autocomplete="off">
+        </div>
+      </div>
+
+      <!-- 2. Les notes -->
+      <div class="card">
+        <div class="card-title"><span class="num">2</span>Votre ressenti</div>
+        <div class="field">
+          <span class="lbl">Note globale du stage <span class="req">*</span></span>
+          <div class="note" role="radiogroup" aria-label="Note globale">
+            <input type="radio" name="note" id="n5" value="5"><label for="n5">5</label>
+            <input type="radio" name="note" id="n4" value="4"><label for="n4">4</label>
+            <input type="radio" name="note" id="n3" value="3"><label for="n3">3</label>
+            <input type="radio" name="note" id="n2" value="2"><label for="n2">2</label>
+            <input type="radio" name="note" id="n1" value="1"><label for="n1">1</label>
+          </div>
+          <div class="note-legende"><span>Déçus</span><span>Ravis</span></div>
+        </div>
+        <div class="field">
+          <span class="lbl">L'encadrement</span>
+          <div class="note" role="radiogroup" aria-label="Encadrement">
+            <input type="radio" name="encadrement" id="e5" value="5"><label for="e5">5</label>
+            <input type="radio" name="encadrement" id="e4" value="4"><label for="e4">4</label>
+            <input type="radio" name="encadrement" id="e3" value="3"><label for="e3">3</label>
+            <input type="radio" name="encadrement" id="e2" value="2"><label for="e2">2</label>
+            <input type="radio" name="encadrement" id="e1" value="1"><label for="e1">1</label>
+          </div>
+          <div class="note-legende"><span>À revoir</span><span>Top</span></div>
+        </div>
+        <div class="field">
+          <span class="lbl">Pour votre enfant, le niveau était...</span>
+          <div class="choix">
+            <label><input type="radio" name="niveau" value="facile">Trop facile</label>
+            <label><input type="radio" name="niveau" value="adapte">Adapté</label>
+            <label><input type="radio" name="niveau" value="difficile">Trop difficile</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. L'organisation -->
+      <div class="card">
+        <div class="card-title"><span class="num">3</span>L'organisation</div>
+        <div class="field">
+          <span class="lbl">Les horaires</span>
+          <div class="choix col">
+            <label><input type="radio" name="horaires" value="ok">Ça nous convient</label>
+            <label><input type="radio" name="horaires" value="plus_tot">On préférerait commencer et finir plus tôt</label>
+            <label><input type="radio" name="horaires" value="plus_tard">On préférerait commencer et finir plus tard</label>
+            <label><input type="radio" name="horaires" value="plus_court">Des journées plus courtes</label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="lbl">Le format idéal pour vous</span>
+          <div class="choix col">
+            <label><input type="radio" name="format" value="semaine">La semaine complète<span class="sub">Un groupe qui progresse ensemble du lundi au vendredi</span></label>
+            <label><input type="radio" name="format" value="carte">Quelques jours à la carte<span class="sub">Comme aujourd'hui, au jour près</span></label>
+            <label><input type="radio" name="format" value="demi">Des demi-journées<span class="sub">Matin ou après-midi seulement</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="lbl">Le tarif (20 € la journée, 90 € la semaine) vous paraît...</span>
+          <div class="choix">
+            <label><input type="radio" name="tarif" value="abordable">Abordable</label>
+            <label><input type="radio" name="tarif" value="juste">Juste</label>
+            <label><input type="radio" name="tarif" value="cher">Trop cher</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. La suite -->
+      <div class="card">
+        <div class="card-title"><span class="num">4</span>La suite</div>
+        <div class="field">
+          <span class="lbl">Un prochain stage vous intéresserait pendant les vacances de... <span class="hint">(plusieurs choix possibles)</span></span>
+          <div class="choix">
+            <label><input type="checkbox" name="vacances" value="noel">Noël</label>
+            <label><input type="checkbox" name="vacances" value="fevrier">Février</label>
+            <label><input type="checkbox" name="vacances" value="paques">Pâques</label>
+            <label><input type="checkbox" name="vacances" value="ete">Été</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ameliorer">Qu'est-ce qu'on devrait améliorer en priorité ?</label>
+          <textarea id="ameliorer" maxlength="1500" placeholder="Ce qui a plu, ce qui a manqué, une idée pour la prochaine fois..."></textarea>
+        </div>
+      </div>
+
+      <div class="piege" aria-hidden="true"><label>Site web <input type="text" id="site" tabindex="-1" autocomplete="off"></label></div>
+
+      <button type="submit" class="submit" id="envoyer">Envoyer mon avis</button>
+      <div class="error-box" id="erreurs" role="alert"></div>
+    </form>
+  </div>
+
+  <div class="merci" id="merci">
+    <div class="barre"></div>
+    <div class="ttl">Merci beaucoup !</div>
+    <p>Votre avis est bien arrivé. On s'en sert pour préparer les prochains stages, et on espère revoir votre enfant très vite au gymnase.</p>
+    <a href="https://morieres-basket.club">Retour au site du club</a>
+  </div>
+
+  <p class="footer-note">Morières Basket Club - Gymnase Pierre Perdiguier, Morières-lès-Avignon<br>Réponses anonymes, utilisées uniquement par le bureau du club pour améliorer les stages.</p>
+</div>
+
+<script>
+(function () {
+  /* La page peut être servie par Vercel ou intégrée ailleurs :
+     l'API reste toujours celle du projet Vercel. */
+  var h = location.hostname;
+  var API = (h === "api.morieres-basket.club" || h.indexOf("vercel.app") > -1 || h === "localhost")
+    ? "/api/avis"
+    : "https://api.morieres-basket.club/api/avis";
+
+  var liste = document.getElementById("listeStages");
+  var form = document.getElementById("formAvis");
+  var bouton = document.getElementById("envoyer");
+  var boite = document.getElementById("erreurs");
+  var parametre = new URLSearchParams(location.search).get("stage");
+
+  function texte(t) { var s = document.createElement("span"); s.textContent = t; return s; }
+
+  fetch(API).then(function (r) { return r.json(); }).then(function (d) {
+    liste.innerHTML = "";
+    (d.stages || []).forEach(function (s) {
+      var l = document.createElement("label");
+      var i = document.createElement("input");
+      i.type = "radio"; i.name = "stage"; i.value = s.id;
+      if (s.id === parametre) i.checked = true;
+      l.appendChild(i);
+      l.appendChild(texte(s.titre));
+      var sub = texte([s.encadrant, s.horaires].filter(Boolean).join(" - "));
+      sub.className = "sub";
+      l.appendChild(sub);
+      liste.appendChild(l);
+    });
+    if (!(d.stages || []).length) liste.innerHTML = '<span class="hint">Aucun stage à évaluer pour le moment.</span>';
+  }).catch(function () {
+    liste.innerHTML = '<span class="hint">Impossible de charger les stages. Rechargez la page.</span>';
+  });
+
+  function valeur(nom) { var e = form.querySelector('input[name="' + nom + '"]:checked'); return e ? e.value : null; }
+
+  function afficherErreurs(e) {
+    boite.innerHTML = "";
+    e.forEach(function (m) { var p = document.createElement("div"); p.textContent = m; boite.appendChild(p); });
+    boite.classList.add("show");
+  }
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    boite.classList.remove("show");
+    var corps = {
+      stage: valeur("stage"),
+      prenom: document.getElementById("prenom").value,
+      note: Number(valeur("note")),
+      encadrement: valeur("encadrement") ? Number(valeur("encadrement")) : null,
+      niveau: valeur("niveau"),
+      horaires: valeur("horaires"),
+      format: valeur("format"),
+      tarif: valeur("tarif"),
+      vacances: Array.prototype.map.call(form.querySelectorAll('input[name="vacances"]:checked'), function (e) { return e.value; }),
+      ameliorer: document.getElementById("ameliorer").value,
+      site: document.getElementById("site").value
+    };
+    var manque = [];
+    if (!corps.stage) manque.push("Choisissez le stage auquel votre enfant a participé.");
+    if (!corps.note) manque.push("Donnez une note globale au stage.");
+    if (manque.length) { afficherErreurs(manque); return; }
+
+    bouton.disabled = true; bouton.textContent = "Envoi en cours...";
+    fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(corps) })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (x) {
+        if (!x.ok) throw x.j.erreurs || ["Une erreur est survenue. Réessayez dans quelques minutes."];
+        document.getElementById("zoneFormulaire").style.display = "none";
+        document.getElementById("merci").classList.add("show");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      })
+      .catch(function (e) {
+        afficherErreurs(Array.isArray(e) ? e : ["Connexion impossible. Vérifiez votre réseau et réessayez."]);
+        bouton.disabled = false; bouton.textContent = "Envoyer mon avis";
+      });
+  });
+})();
+</script>
+</body>
+</html>

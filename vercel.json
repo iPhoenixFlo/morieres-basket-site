@@ -1,9 +1,22 @@
 {
-  "regions": ["cdg1"],
+  "regions": [
+    "cdg1"
+  ],
   "functions": {
-    "api/*.js": { "maxDuration": 60 }
+    "api/*.js": {
+      "maxDuration": 60
+    }
   },
   "crons": [
-    { "path": "/api/stages?purge=1", "schedule": "0 4 * * *" }
+    {
+      "path": "/api/stages?purge=1",
+      "schedule": "0 4 * * *"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/avis-stage",
+      "destination": "/avis-stage.html"
+    }
   ]
 }

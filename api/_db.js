@@ -137,3 +137,12 @@ export function ageMinutes(maj) {
   if (!Number.isFinite(t)) return null;
   return Math.max(0, Math.round((Date.now() - t) / 60000));
 }
+
+/* ---------- avis des familles après un stage ---------- */
+export const creerAvis = (avis) =>
+  requete("avis_stages", { methode: "POST", corps: avis, prefer: "return=minimal" });
+
+export async function listerAvis(stageId) {
+  const filtre = stageId ? `stage_id=eq.${encodeURIComponent(stageId)}&` : "";
+  return (await requete(`avis_stages?${filtre}select=*&order=cree_le`)) || [];
+}
