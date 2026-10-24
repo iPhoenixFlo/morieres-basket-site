@@ -16,6 +16,7 @@
  */
 import { STAGES, trouverStage, anneeSurclassement } from "./_config-stages.js";
 import { placesPrises, listerPayees, purger } from "./_db.js";
+import avis from "./_avis.js";
 
 const JOURS = ["dim.", "lun.", "mar.", "mer.", "jeu.", "ven.", "sam."];
 const MOIS = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
@@ -31,6 +32,10 @@ function csv(lignes) {
 }
 
 export default async function handler(req, res) {
+  /* Vercel (offre gratuite) limite le site à 12 fonctions : cette route
+     est servie ici, via une réécriture déclarée dans vercel.json. */
+  if (req.query?._route === "avis") return avis(req, res);
+
   res.setHeader("Access-Control-Allow-Origin", "*");
 
   // ---------- tâche quotidienne ----------

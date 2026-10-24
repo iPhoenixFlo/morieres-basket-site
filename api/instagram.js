@@ -269,7 +269,13 @@ function transformer(compte, medias) {
 /* ---------------------------------------------------------------
    Handler
    --------------------------------------------------------------- */
+import imageInstagram from "./_instagram-image.js";
+
 export default async function handler(req, res) {
+  /* Vercel (offre gratuite) limite le site à 12 fonctions : cette route
+     est servie ici, via une réécriture déclarée dans vercel.json. */
+  if (req.query?._route === "image") return imageInstagram(req, res);
+
   res.setHeader("Access-Control-Allow-Origin", "*");
 
   const n = Math.min(Math.max(parseInt(req.query?.n, 10) || 6, 1), 25);

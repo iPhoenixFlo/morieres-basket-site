@@ -13,5 +13,15 @@
       "schedule": "0 4 * * *"
     }
   ],
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/avis",
+      "destination": "/api/stages?_route=avis"
+    },
+    {
+      "source": "/api/instagram-image",
+      "destination": "/api/instagram?_route=image"
+    }
+  ]
 }
