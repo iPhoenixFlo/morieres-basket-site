@@ -58,6 +58,7 @@
   .note input:focus-visible + label{box-shadow:0 0 0 3px rgba(186,42,47,.25)}
   .note-legende{display:flex;justify-content:space-between;max-width:262px;font-size:12px;color:var(--gris)}
 
+  .info-note{background:#fbeceb;border-radius:8px;padding:11px 13px;font-size:13px;color:var(--rouge-fonce);margin-bottom:4px}
   .piege{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
   .submit{width:100%;background:var(--rouge);color:#fff;border:none;border-radius:10px;padding:16px;font-family:'Barlow Condensed';font-weight:900;font-size:19px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;margin-top:8px;transition:background .15s}
@@ -177,9 +178,15 @@
         <div class="field">
           <span class="lbl">Un prochain stage vous intéresserait pendant les vacances de... <span class="hint">(plusieurs choix possibles)</span></span>
           <div class="choix">
-            <label><input type="checkbox" name="vacances" value="noel">Noël</label>
             <label><input type="checkbox" name="vacances" value="fevrier">Février</label>
             <label><input type="checkbox" name="vacances" value="paques">Pâques</label>
+          </div>
+        </div>
+        <div class="field">
+          <span class="lbl">Et si c'était possible, pendant les vacances de...</span>
+          <p class="info-note">Le gymnase n'est pas disponible pour le club à Noël et l'été. Si vous êtes nombreux à être intéressés, nous monterons un projet concret à présenter à la mairie pour tenter d'obtenir un créneau.</p>
+          <div class="choix">
+            <label><input type="checkbox" name="vacances" value="noel">Noël</label>
             <label><input type="checkbox" name="vacances" value="ete">Été</label>
           </div>
         </div>

@@ -24,7 +24,7 @@ const NIVEAUX = { facile: "Trop facile", adapte: "Adapté", difficile: "Trop dif
 const HORAIRES = { ok: "Ça nous convient", plus_tot: "Plus tôt", plus_tard: "Plus tard", plus_court: "Journées plus courtes" };
 const FORMATS = { semaine: "Semaine complète", carte: "Jours à la carte", demi: "Demi-journées" };
 const TARIFS = { abordable: "Abordable", juste: "Juste", cher: "Trop cher" };
-const VACANCES = { noel: "Noël", fevrier: "Février", paques: "Pâques", ete: "Été" };
+const VACANCES = { noel: "Noël (si négocié)", fevrier: "Février", paques: "Pâques", ete: "Été (si négocié)" };
 
 function csv(lignes) {
   const echap = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
