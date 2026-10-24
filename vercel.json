@@ -13,10 +13,5 @@
       "schedule": "0 4 * * *"
     }
   ],
-  "rewrites": [
-    {
-      "source": "/avis-stage",
-      "destination": "/avis-stage.html"
-    }
-  ]
+  "cleanUrls": true
 }
