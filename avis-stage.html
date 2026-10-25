@@ -91,7 +91,7 @@
 <div class="wrap">
   <div id="zoneFormulaire">
     <h1>Votre avis sur le stage</h1>
-    <p class="intro">Merci d'avoir confié votre enfant au club pendant les vacances ! Pour que les prochains stages soient encore meilleurs, dites-nous ce qui vous a plu et ce qu'on peut améliorer. Deux minutes suffisent, et les réponses sont anonymes.</p>
+    <p class="intro">Merci d'avoir confié votre enfant au club pendant les vacances ! Pour que les prochains stages soient encore meilleurs, dites-nous ce qui vous a plu et ce qu'on peut améliorer. Deux minutes suffisent.</p>
 
     <form id="formAvis" novalidate>
       <!-- 1. Le stage -->
@@ -102,8 +102,9 @@
           <div class="choix col" id="listeStages"><span class="hint">Chargement des stages...</span></div>
         </div>
         <div class="field">
-          <label for="prenom">Prénom de l'enfant <span class="hint">(facultatif)</span></label>
-          <input type="text" id="prenom" maxlength="40" autocomplete="off">
+          <label for="prenom">Nom et prénom de l'enfant</label>
+          <input type="text" id="prenom" maxlength="60" autocomplete="off" placeholder="Ex. : Lucas MARTIN">
+          <span class="hint">Conseillé : ça nous permet de revenir vers vous si besoin et de suivre chaque stagiaire d'un stage à l'autre.</span>
         </div>
       </div>
 
@@ -210,7 +211,7 @@
     <a href="https://morieres-basket.club">Retour au site du club</a>
   </div>
 
-  <p class="footer-note">Morières Basket Club - Gymnase Pierre Perdiguier, Morières-lès-Avignon<br>Réponses anonymes, utilisées uniquement par le bureau du club pour améliorer les stages.</p>
+  <p class="footer-note">Morières Basket Club - Gymnase Pierre Perdiguier, Morières-lès-Avignon<br>Réponses utilisées uniquement par le bureau du club pour améliorer les stages.</p>
 </div>
 
 <script>

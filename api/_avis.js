@@ -96,7 +96,7 @@ export default async function handler(req, res) {
   try {
     await creerAvis({
       stage_id: stage.id,
-      prenom: nettoyer(b.prenom, 40) || null,
+      prenom: nettoyer(b.prenom, 60) || null,
       note,
       encadrement: entier(b.encadrement, 1, 5),
       niveau: parmi(b.niveau, Object.keys(NIVEAUX)),
