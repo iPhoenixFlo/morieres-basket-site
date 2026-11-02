@@ -21,7 +21,7 @@
   var EVENEMENTS = [
     {
       debut: "2026-10-24",
-      fin: "2026-11-03",
+      fin: "2026-11-10",
       titre: "Spécial Halloween",
       texte: "Ballon citrouille et terrain hanté à débloquer",
       accent: "#E87A2E"
@@ -57,6 +57,9 @@
   /* "dernier jour" vaut mieux que "encore 1 jour" : c'est ce qui fait
      cliquer. On compare des dates de calendrier, pas des millisecondes,
      pour ne pas se tromper d'un jour selon l'heure. */
+  var MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet",
+              "août", "septembre", "octobre", "novembre", "décembre"];
+
   function echeance(fin) {
     var f = jour(fin, false);
     if (!f) return "";
@@ -66,7 +69,10 @@
     if (jours <= 0) return "dernier jour";
     if (jours === 1) return "jusqu'à demain";
     if (jours <= 6) return "encore " + jours + " jours";
-    return "";
+    /* Au-delà d'une semaine, un décompte ne parle plus : on donne la
+       date, qui reste une information utile. */
+    var n = f.getDate();
+    return "jusqu'au " + (n === 1 ? "1er" : n) + " " + MOIS[f.getMonth()];
   }
 
   function styles() {
@@ -76,7 +82,7 @@
     s.textContent = [
       ".mbcjeu-evt{",
       "  display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;",
-      "  margin:14px 0 0;padding:9px 16px;border-radius:10px;",
+      "  margin:22px 0 0;padding:12px 18px;border-radius:10px;",
       "  background:rgba(255,255,255,.07);",
       "  border:1px solid rgba(255,255,255,.18);",
       "  border-left:4px solid var(--mbcjeu-accent,#E87A2E);",

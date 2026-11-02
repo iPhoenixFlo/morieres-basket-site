@@ -1,0 +1,99 @@
+/* ============================================================
+   MBC - BLOC "LE JEU DU CLUB" DE LA PAGE D'ACCUEIL
+   ------------------------------------------------------------
+   Servi depuis le dépôt : un ajustement ici se voit sur le site
+   au prochain commit, sans recoller la page d'accueil.
+
+   Les sélecteurs sont préfixés .mbcjeu- et n'héritent de rien :
+   le bloc ne peut casser aucune autre section de l'accueil.
+   ============================================================ */
+
+.mbcjeu{
+  --rouge:#BA2A2F;
+  --encre:#17181A;
+  font-family:'Barlow',system-ui,sans-serif;
+  background:var(--encre);
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+.mbcjeu *{box-sizing:border-box;}
+/* Trame de terrain, comme sur la page Coupes */
+.mbcjeu::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 86% 50%, rgba(186,42,47,.46) 0 34%, transparent 35%),
+    linear-gradient(90deg, transparent 0 49.6%, rgba(255,255,255,.08) 49.6% 50.4%, transparent 50.4%);
+}
+.mbcjeu-wrap{
+  max-width:1180px;margin:0 auto;padding:48px 20px;
+  position:relative;z-index:2;
+  display:flex;align-items:center;gap:30px;flex-wrap:wrap;
+}
+.mbcjeu-txt{flex:1 1 340px;min-width:0;}
+.mbcjeu-sur{
+  display:inline-block;margin-bottom:10px;padding:5px 14px;border-radius:100px;
+  background:var(--rouge);
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+}
+.mbcjeu-t{
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  text-transform:uppercase;letter-spacing:.01em;line-height:.98;
+  font-size:clamp(32px,4.6vw,50px);margin:0;
+}
+.mbcjeu-t span{color:#F07076;}
+.mbcjeu-p{
+  margin:15px 0 0;font-size:16px;line-height:1.6;
+  color:rgba(255,255,255,.84);max-width:52ch;
+}
+/* Trois arguments en pastilles : ça remplit l'espace laissé par le
+   second bouton retiré, et ça donne envie plus qu'un paragraphe. */
+.mbcjeu-points{
+  display:flex;gap:9px;flex-wrap:wrap;margin-top:22px;padding:0;list-style:none;
+}
+.mbcjeu-points li{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:7px 14px;border-radius:100px;
+  background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:13.5px;letter-spacing:.05em;text-transform:uppercase;
+  color:rgba(255,255,255,.92);
+}
+.mbcjeu-points svg{width:15px;height:15px;fill:#F07076;flex-shrink:0;}
+.mbcjeu-boutons{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px;align-items:center;}
+.mbcjeu-btn{
+  display:inline-flex;align-items:center;gap:11px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  text-transform:uppercase;font-size:20px;letter-spacing:.06em;
+  padding:16px 32px;border-radius:100px;text-decoration:none;
+  background:var(--rouge);color:#fff;
+  box-shadow:0 10px 28px rgba(186,42,47,.42);
+  transition:transform .15s,background .15s,box-shadow .15s;
+}
+.mbcjeu-btn:hover,.mbcjeu-btn:focus-visible{
+  transform:translateY(-3px);background:#D13A40;color:#fff;
+  box-shadow:0 14px 34px rgba(186,42,47,.55);
+}
+.mbcjeu-btn:focus-visible{outline:3px solid #fff;outline-offset:3px;}
+.mbcjeu-btn svg{width:20px;height:20px;fill:currentColor;flex-shrink:0;}
+.mbcjeu-note{
+  font-size:13.5px;color:rgba(255,255,255,.6);
+}
+/* Le thème WordPress impose un height:auto sur les images :
+   le !important est indispensable ici. */
+.mbcjeu-masc{
+  height:178px!important;max-height:178px!important;
+  width:auto!important;max-width:none!important;
+  flex-shrink:0;object-fit:contain;margin-left:auto;
+}
+@media (max-width:760px){
+  .mbcjeu-wrap{padding:34px 20px;gap:20px;}
+  .mbcjeu-t{font-size:clamp(30px,8vw,38px);}
+  .mbcjeu-btn{font-size:18px;padding:15px 26px;width:100%;justify-content:center;}
+  .mbcjeu-masc{height:112px!important;max-height:112px!important;margin:0 auto;}
+}
+@media (prefers-reduced-motion:reduce){
+  .mbcjeu-btn{transition:none;}
+  .mbcjeu-btn:hover{transform:none;}
+}
