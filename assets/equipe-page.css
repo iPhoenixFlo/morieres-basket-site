@@ -1,0 +1,332 @@
+/* ============================================================
+   MBC - PAGES ÉQUIPE : feuille de style commune
+   ------------------------------------------------------------
+   Extraite de la page U18, inchangée dans son apparence.
+   Servie depuis le dépôt, donc une correction ici se répercute
+   sur les sept pages d'un coup.
+
+   Tout est préfixé .mbc- et enfermé dans .mbc-root : aucun
+   conflit possible avec le thème WordPress / Elementor.
+   ============================================================ */
+
+/* Les polices sont importées ici plutôt que dans chaque page :
+   une balise de moins à coller, et Elementor ne touche pas au
+   <head>. L'import doit rester la première règle du fichier. */
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+.mbc-root{
+  --rouge:#BA2A2F;
+  --rouge-fonce:#8E1F23;
+  --rouge-clair:#FDF2F2;
+  --encre:#17181A;
+  --gris:#6B6F76;
+  --gris-clair:#E8E9EB;
+  --fond:#FFFFFF;
+  --fond-alt:#F6F7F8;
+  --vert:#1D7A55;
+  --vert-clair:#E9F5F0;
+  --or:#C9A227;
+  --rayon:10px;
+  --max:1180px;
+
+  font-family:'Barlow',system-ui,sans-serif;
+  color:var(--encre);
+  background:var(--fond);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.mbc-root *{box-sizing:border-box;}
+.mbc-root img{max-width:100%;display:block;}
+.mbc-root a{color:inherit;text-decoration:none;}
+.mbc-root p,.mbc-root h2,.mbc-root h3,.mbc-root h4{margin:0;}
+.mbc-root ul{margin:0;padding:0;list-style:none;}
+.mbc-wrap{max-width:var(--max);margin:0 auto;padding:0 20px;}
+
+.mbc-titre{
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  text-transform:uppercase;letter-spacing:.02em;line-height:1;
+  font-size:clamp(24px,3.2vw,34px);
+}
+.mbc-titre span{color:var(--rouge);}
+.mbc-soustitre{color:var(--gris);font-size:14.5px;margin-top:5px;}
+.mbc-section{padding:44px 0;}
+.mbc-section--alt{background:var(--fond-alt);}
+.mbc-head{margin-bottom:22px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+
+.mbc-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;text-transform:uppercase;
+  font-size:15px;letter-spacing:.06em;padding:11px 20px;border-radius:100px;
+  background:var(--rouge);color:#fff;transition:transform .15s,background .15s;
+}
+.mbc-btn:hover{transform:translateY(-2px);background:var(--rouge-fonce);}
+.mbc-btn--ligne{background:transparent;color:var(--encre);border:2px solid var(--gris-clair);}
+.mbc-btn--ligne:hover{background:var(--fond-alt);border-color:var(--rouge);color:var(--rouge);}
+.mbc-btn--blanc{background:#fff;color:var(--rouge);}
+.mbc-btn--blanc:hover{background:#fff;}
+.mbc-btn svg{width:16px;height:16px;fill:currentColor;}
+
+/* ---------- BANDEAU ÉQUIPE ---------- */
+.mbc-entete{background:var(--rouge);color:#fff;padding:30px 0 26px;}
+.mbc-entete-haut{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+.mbc-entete-haut img{height:64px;width:auto;flex-shrink:0;}
+.mbc-entete h1{
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;text-transform:uppercase;
+  font-size:clamp(30px,5vw,46px);line-height:.95;letter-spacing:.01em;margin:0;
+}
+.mbc-entete-comp{color:#F7C1C1;font-size:15px;margin-top:4px;}
+.mbc-entete-saison{
+  margin-left:auto;background:#fff;color:var(--rouge-fonce);
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;text-transform:uppercase;
+  font-size:13px;letter-spacing:.1em;padding:6px 15px;border-radius:100px;flex-shrink:0;
+}
+.mbc-entete-bas{
+  display:flex;gap:22px;flex-wrap:wrap;margin-top:18px;
+  padding-top:16px;border-top:1px solid rgba(255,255,255,.22);
+  color:#F7C1C1;font-size:14px;
+}
+.mbc-entete-bas span{display:inline-flex;align-items:center;gap:7px;}
+.mbc-entete-bas svg{width:16px;height:16px;fill:currentColor;flex-shrink:0;}
+
+/* ---------- INDICATEURS ---------- */
+.mbc-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:12px;}
+.mbc-stat{background:var(--fond-alt);border-radius:8px;padding:14px 16px;}
+.mbc-stat-l{
+  font-size:12px;color:var(--gris);text-transform:uppercase;letter-spacing:.08em;font-weight:600;
+  display:inline-block;padding-bottom:7px;border-bottom:2px solid var(--rouge);
+}
+.mbc-stat-v{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:32px;line-height:1.05;}
+.mbc-stat-v small{font-size:15px;color:var(--gris);}
+.mbc-stat-v .vert{color:var(--vert);}
+
+/* ---------- PROCHAINS MATCHS ---------- */
+.mbc-liste{border:1px solid var(--gris-clair);border-radius:var(--rayon);overflow:hidden;background:#fff;}
+.mbc-ligne{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--gris-clair);transition:background .18s;}
+.mbc-ligne:last-child{border-bottom:0;}
+.mbc-ligne:hover{background:var(--fond-alt);}
+.mbc-ligne-j{
+  width:34px;flex-shrink:0;text-align:center;
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:13px;
+  color:var(--gris);letter-spacing:.05em;
+}
+.mbc-ligne-d{width:70px;flex-shrink:0;text-align:center;}
+.mbc-ligne-jour{font-size:11.5px;color:var(--gris);text-transform:uppercase;letter-spacing:.06em;}
+.mbc-ligne-h{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;line-height:1;}
+.mbc-ligne-logo{width:34px;height:34px;object-fit:contain;flex-shrink:0;}
+.mbc-ligne-c{flex:1;min-width:0;}
+.mbc-ligne-adv{
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:19px;
+  line-height:1.15;text-transform:uppercase;letter-spacing:.02em;
+}
+.mbc-ligne-lieu{font-size:13px;color:var(--gris);}
+.mbc-tag{
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;text-transform:uppercase;
+  font-size:11px;letter-spacing:.09em;padding:4px 11px;border-radius:100px;flex-shrink:0;
+}
+.mbc-tag--dom{background:var(--vert-clair);color:var(--vert);}
+.mbc-tag--ext{background:var(--fond-alt);color:var(--gris);}
+.mbc-tag--derby{background:#3E3009;color:#FFD966;}
+.mbc-tag--affiche{background:var(--rouge);color:#fff;}
+.mbc-ligne-score{
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:23px;
+  line-height:1;flex-shrink:0;min-width:74px;text-align:right;
+}
+.mbc-ligne-score.v{color:var(--vert);}
+.mbc-ligne-score.attente{font-size:12px;font-weight:700;color:var(--gris);letter-spacing:.06em;}
+
+/* ---------- CALENDRIER ---------- */
+.mbc-cal{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff;}
+.mbc-cal th{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;
+  font-size:12px;letter-spacing:.09em;color:var(--gris);text-align:left;
+  padding:10px 8px;border-bottom:2px solid var(--gris-clair);white-space:nowrap;
+}
+.mbc-cal td{padding:11px 8px;border-bottom:1px solid var(--gris-clair);}
+.mbc-cal tr.dom td{background:var(--vert-clair);}
+.mbc-cal tr.dom td:first-child{box-shadow:inset 3px 0 0 var(--vert);}
+.mbc-cal-j{font-family:'Barlow Condensed',sans-serif;font-weight:900;color:var(--gris);width:38px;}
+.mbc-cal-adv{font-weight:600;}
+.mbc-cal-sc{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:17px;text-align:right;white-space:nowrap;}
+.mbc-cal-sc.v{color:var(--vert);}
+.mbc-cal-wrap{border:1px solid var(--gris-clair);border-radius:var(--rayon);overflow:hidden;}
+.mbc-cal-scroll{overflow-x:auto;}
+
+/* ---------- CLASSEMENT ---------- */
+.mbc-classement{width:100%;border-collapse:collapse;font-size:15px;background:#fff;}
+.mbc-classement th{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;
+  font-size:12px;letter-spacing:.09em;color:var(--gris);text-align:right;
+  padding:10px 8px;border-bottom:2px solid var(--gris-clair);
+}
+.mbc-classement th:nth-child(1),.mbc-classement th:nth-child(2){text-align:left;}
+.mbc-classement td{padding:12px 8px;text-align:right;border-bottom:1px solid var(--gris-clair);}
+.mbc-classement td:nth-child(1),.mbc-classement td:nth-child(2){text-align:left;}
+.mbc-classement td:nth-child(2){font-weight:600;}
+.mbc-classement tr.nous td{background:var(--rouge-clair);color:var(--rouge);font-weight:700;}
+.mbc-classement tr.nous td:first-child{box-shadow:inset 3px 0 0 var(--rouge);}
+
+/* ---------- ATTENTE ---------- */
+.mbc-attente{background:var(--rouge-clair);border:1px dashed #E9B9BB;border-radius:var(--rayon);padding:26px;text-align:center;}
+.mbc-attente-t{font-family:'Barlow Condensed',sans-serif;font-weight:900;text-transform:uppercase;font-size:19px;color:var(--rouge);}
+.mbc-attente p{font-size:14px;color:var(--gris);margin-top:5px;}
+
+/* ---------- STICKER À CÔTÉ D'UN TITRE ---------- */
+/* Un seul par section. Décoratif, donc alt vide et aria-hidden. */
+.mbc-head-sticker{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;}
+.mbc-root .mbc-sticker-titre{
+  height:120px!important;max-height:120px!important;
+  width:auto!important;max-width:none!important;
+  flex-shrink:0;object-fit:contain;margin-left:auto;
+}
+.mbc-root .mbc-sticker-mini{
+  height:52px!important;max-height:52px!important;
+  width:auto!important;max-width:none!important;
+  flex-shrink:0;object-fit:contain;
+}
+@media (max-width:700px){
+  .mbc-root .mbc-sticker-titre{height:88px!important;max-height:88px!important;margin-left:0;}
+}
+
+/* ---------- STICKERS DE LA MASCOTTE ---------- */
+/* Uniquement dans les blocs qui seraient vides sans eux.
+   Jamais dans une section de contenu. */
+.mbc-attente{display:flex;align-items:center;gap:20px;text-align:left;justify-content:center;}
+.mbc-attente-txt{max-width:46ch;}
+/* Le thème WordPress impose un height:auto sur les images.
+   Les !important sont indispensables ici, sinon le sticker
+   s'affiche à sa taille native. */
+.mbc-root .mbc-sticker{
+  height:96px!important;
+  max-height:96px!important;
+  width:auto!important;
+  max-width:none!important;
+  flex-shrink:0;
+  object-fit:contain;
+}
+@media (max-width:640px){
+  .mbc-attente{flex-direction:column;text-align:center;gap:12px;}
+  .mbc-attente-txt{max-width:none;}
+  .mbc-root .mbc-sticker{height:76px!important;max-height:76px!important;}
+}
+
+.mbc-maj{margin-top:12px;font-size:12px;color:var(--gris);}
+
+/* ---------- STAFF ---------- */
+.mbc-staff{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;}
+.mbc-coach{
+  background:#fff;border:1px solid var(--gris-clair);
+  border-radius:8px;padding:18px 20px;
+}
+.mbc-coach-n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:23px;text-transform:uppercase;line-height:1;}
+.mbc-coach-r{
+  font-size:13px;color:var(--rouge);text-transform:uppercase;letter-spacing:.08em;font-weight:600;
+  display:inline-block;margin-top:6px;padding-bottom:8px;border-bottom:2px solid var(--rouge);
+}
+.mbc-coach-x{font-size:14px;color:var(--gris);margin-top:8px;line-height:1.6;}
+
+/* ---------- EFFECTIF : cartes maillot ---------- */
+.mbc-effectif{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:14px;}
+.mbc-joueur{
+  background:linear-gradient(165deg,#FFFFFF 0%,#F2F3F5 100%);
+  border:1px solid var(--gris-clair);border-radius:12px;
+  padding:14px 12px 16px;text-align:center;
+  transition:transform .2s,box-shadow .2s,border-color .2s;
+}
+.mbc-joueur:hover{
+  transform:translateY(-4px);border-color:var(--rouge);
+  box-shadow:0 10px 26px rgba(186,42,47,.14);
+}
+/* Le maillot est une image unique, le flocage est du texte posé
+   par-dessus. Un seul fichier pour toute l'équipe. */
+.mbc-maillot{position:relative;width:100%;max-width:134px;margin:0 auto 12px;}
+.mbc-root .mbc-maillot img{
+  width:100%!important;height:auto!important;max-width:none!important;display:block;
+}
+
+/* Flocage du prénom, en arc, comme sur un vrai dos de maillot.
+   Le SVG est en unités relatives : il se met à l'échelle du
+   maillot quel que soit l'écran. La taille du texte, elle, dépend
+   de la longueur du prénom, sinon SAMI flotte et ALEJANDRO
+   déborde sur les bandes rouges. La contrainte n'est pas la largeur
+   du maillot mais celle de la zone blanche, soit à peu près la
+   largeur du mot MORIÈRES. Sept paliers, à choisir en comptant les
+   lettres :
+     --l1  4 lettres ou moins
+     --l2  5
+     --l3  6
+     --l4  7
+     --l5  8
+     --l6  9 à 10
+     --l7  11 et plus
+   L'identifiant du chemin (mbcArc1, mbcArc2...) doit être unique
+   sur la page : en dupliquant une carte, pense à l'incrémenter
+   dans le path ET dans le textPath. */
+.mbc-root .mbc-flocage{
+  position:absolute;left:0;right:0;top:52%;transform:translateY(-50%);
+  width:100%!important;height:auto!important;max-width:none!important;
+  pointer-events:none;overflow:visible;
+}
+.mbc-flocage-nom{
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  fill:var(--rouge-fonce);letter-spacing:.02em;
+}
+.mbc-flocage--l1 .mbc-flocage-nom{font-size:38px;}
+.mbc-flocage--l2 .mbc-flocage-nom{font-size:31px;}
+.mbc-flocage--l3 .mbc-flocage-nom{font-size:26px;}
+.mbc-flocage--l4 .mbc-flocage-nom{font-size:23px;}
+.mbc-flocage--l5 .mbc-flocage-nom{font-size:20px;}
+.mbc-flocage--l6 .mbc-flocage-nom{font-size:17px;}
+.mbc-flocage--l7 .mbc-flocage-nom{font-size:14px;}
+/* Nom du club sous le prénom, droit et plus discret. */
+.mbc-flocage-club{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  fill:var(--rouge);letter-spacing:.14em;font-size:19px;
+}
+
+/* Variante numéro, conservée si tu veux revenir en arrière ou
+   ajouter le numéro sous le nom une fois les dossards attribués. */
+.mbc-maillot-num{
+  position:absolute;left:0;right:0;top:52%;transform:translateY(-50%);
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  font-size:68px;line-height:1;color:var(--rouge-fonce);
+  letter-spacing:-.03em;pointer-events:none;
+}
+
+.mbc-joueur-p{
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:20px;
+  text-transform:uppercase;line-height:1.05;letter-spacing:.02em;
+}
+.mbc-joueur-poste{
+  display:inline-block;margin-top:7px;padding:4px 12px;border-radius:100px;
+  background:var(--rouge-clair);color:var(--rouge);
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+}
+/* Place non attribuée : le maillot garde ses couleurs,
+   seuls le flocage et le nom passent en gris. */
+.mbc-joueur--libre .mbc-maillot-num{color:#B9BDC2;}
+.mbc-joueur--libre .mbc-flocage-nom{fill:#B9BDC2;}
+.mbc-joueur--libre .mbc-flocage-club{fill:#C9CDD2;}
+.mbc-joueur--libre .mbc-joueur-p{color:var(--gris);}
+.mbc-joueur--libre .mbc-joueur-poste{background:var(--fond-alt);color:var(--gris);}
+
+/* ---------- LE MOT DU CLUB ---------- */
+.mbc-mot{background:#fff;border:1px solid var(--gris-clair);border-radius:var(--rayon);padding:26px 30px;}
+.mbc-mot p{font-size:16.5px;line-height:1.75;color:#3A3D42;}
+.mbc-mot p + p{margin-top:14px;}
+.mbc-mot-sig{margin-top:16px;font-size:12.5px;color:var(--gris);font-style:italic;}
+
+/* ---------- CTA ---------- */
+.mbc-boutons{display:flex;gap:11px;flex-wrap:wrap;}
+
+@media (max-width:700px){
+  .mbc-section{padding:34px 0;}
+  .mbc-entete-saison{margin-left:0;}
+  .mbc-ligne{flex-wrap:wrap;gap:10px;}
+  .mbc-ligne-c{flex:1 1 100%;order:3;}
+  .mbc-ligne-score{margin-left:auto;}
+  .mbc-mot{padding:20px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .mbc-root *{animation:none!important;transition:none!important;}
+}
