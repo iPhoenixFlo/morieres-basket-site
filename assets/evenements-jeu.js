@@ -82,7 +82,7 @@
     s.textContent = [
       ".mbcjeu-evt{",
       "  display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;",
-      "  margin:22px 0 0;padding:12px 18px;border-radius:10px;",
+      "  margin:30px 0 0;padding:14px 20px;border-radius:10px;",
       "  background:rgba(255,255,255,.07);",
       "  border:1px solid rgba(255,255,255,.18);",
       "  border-left:4px solid var(--mbcjeu-accent,#E87A2E);",
