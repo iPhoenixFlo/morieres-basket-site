@@ -24,6 +24,19 @@
   var MEMOIRE = "mbc-bulle-jeu-fermee";
   var DELAI = 1200;   // laisse la page s'afficher avant d'apparaître
 
+  /* Pages où la bulle n'a rien à faire : un parent en train de remplir
+     une inscription ou de payer un stage n'a pas besoin qu'on lui
+     propose un jeu au même moment. */
+  var EXCLUES = ["/inscription", "/stages", "/avis-stage", "/paiement"];
+
+  function pageExclue() {
+    var chemin = (location.pathname || "").toLowerCase();
+    for (var i = 0; i < EXCLUES.length; i++) {
+      if (chemin.indexOf(EXCLUES[i]) === 0 || chemin.indexOf(EXCLUES[i] + "/") > -1) return true;
+    }
+    return false;
+  }
+
   /* localStorage peut lever une exception en navigation privée ou
      quand les données de site sont bloquées. On n'empêche jamais la
      bulle de s'afficher pour autant. */
@@ -148,6 +161,7 @@
   }
 
   function lancer() {
+    if (pageExclue()) return;
     if (dejaFermee()) return;
     /* Le header peut se retrouver collé deux fois sur une page. Chaque
        exemplaire du script a sa propre portée, donc le drapeau doit
