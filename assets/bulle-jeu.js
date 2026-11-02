@@ -19,7 +19,7 @@
 
   /* Changer cette adresse le jour où le jeu déménage sur
      jeu.morieres-basket.club : c'est le seul endroit à toucher. */
-  var JEU = "https://iphoenixflo.github.io/mbc-jam/shootout.html";
+  var JEU = "https://jeu.morieres-basket.club/";
   var MASCOTTE = "https://morieres-basket.club/wp-content/uploads/2026/09/sticker-fier.png";
   var MEMOIRE = "mbc-bulle-jeu-fermee";
   var DELAI = 1200;   // laisse la page s'afficher avant d'apparaître
