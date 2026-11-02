@@ -72,6 +72,24 @@ On attend `"etat": "complet"` et `"manquants": 0`.
 
 ### 6. Automatiser toutes les 3 heures
 
+**N'installer l'automatisation que sur UNE machine.** Deux collecteurs en
+parallèle doublent les requêtes vers la FFBB sans rien apporter, et c'est
+exactement le genre de comportement que leur pare-feu sanctionne. Choisir
+la machine qui reste allumée.
+
+#### Sur Linux
+
+```bash
+cd ~/morieres-basket-site/collecte
+bash installer-cron.sh
+```
+
+Le script est rejouable : le relancer met la ligne à jour au lieu d'en
+ajouter une seconde, et il laisse les autres lignes de cron intactes.
+Pour désinstaller, `bash installer-cron.sh --retirer`.
+
+#### Sur macOS
+
 ```bash
 cd ~/morieres-basket-site/collecte
 sed -i '' "s|REMPLACER_CHEMIN|$(pwd)|g" club.morieres.collecte-ffbb.plist
@@ -94,13 +112,15 @@ tail -30 ~/morieres-basket-site/collecte/collecte.log
 Lancer une collecte tout de suite, par exemple juste après les matchs :
 
 ```bash
-launchctl kickstart -k gui/$(id -u)/club.morieres.collecte-ffbb
+bash ~/morieres-basket-site/collecte/lancer.sh          # partout
+launchctl kickstart -k gui/$(id -u)/club.morieres.collecte-ffbb   # macOS
 ```
 
 Arrêter l'automatisation :
 
 ```bash
-launchctl unload ~/Library/LaunchAgents/club.morieres.collecte-ffbb.plist
+bash ~/morieres-basket-site/collecte/installer-cron.sh --retirer  # Linux
+launchctl unload ~/Library/LaunchAgents/club.morieres.collecte-ffbb.plist   # macOS
 ```
 
 ## Codes de sortie
